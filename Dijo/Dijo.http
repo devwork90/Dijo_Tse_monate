@@ -1,0 +1,6 @@
+@Dijo_HostAddress = http://localhost:5198
+
+GET {{Dijo_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
