@@ -127,10 +127,13 @@ namespace Dijo.API.Controllers
 
             var menuDto = new MenuDto
             { 
+            Id = menuDomainModel.Id,
                Name= menuDomainModel.Name,
                Description= menuDomainModel.Description,
                is_active=menuDomainModel.is_active,
-               updated_at = DateTime.UtcNow
+               updated_at = menuDomainModel.updated_at,
+               created_at = (DateTime)menuDomainModel.created_at,
+               restaurantId = menuDomainModel.restaurantId
             };
 
             return Ok(menuDto);

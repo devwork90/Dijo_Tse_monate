@@ -2,6 +2,7 @@
 using Dijo.API.Models.Domain;
 using Dijo.API.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace Dijo.API.Controllers
@@ -19,10 +20,10 @@ namespace Dijo.API.Controllers
 
         //Get all restaurants 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             //Get Data from Database via Domain model
-            var restaurants = dbContext.restaurants.ToList();
+            var restaurants = await dbContext.restaurants.ToListAsync();
 
             //Map Domain modela to DTOs
             var restaurantDto = new List<RestaurantDto>();
@@ -47,10 +48,10 @@ namespace Dijo.API.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
-        public IActionResult GetById([FromRoute] Guid id) {
+        public async Task<IActionResult> GetById([FromRoute] Guid id) {
 
             //Get data from Database via - Domain models
-            var restaurant = dbContext.restaurants.FirstOrDefault(x => x.Id == id);
+            var restaurant = await dbContext.restaurants.FirstOrDefaultAsync(x => x.Id == id);
 
             if (restaurant == null)
             {
@@ -76,7 +77,7 @@ namespace Dijo.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] AddRestaurantRequestDto addRestaurantRequestDto)
+        public async Task<IActionResult> Create([FromBody] AddRestaurantRequestDto addRestaurantRequestDto)
         {
             //Map DTO to Domain model
             var restaurantDomainModel = new Restaurant
@@ -92,8 +93,8 @@ namespace Dijo.API.Controllers
             };
 
             //Use domain model to ceate a restaurant in the DB
-            dbContext.restaurants.Add(restaurantDomainModel);
-            dbContext.SaveChanges();
+            await dbContext.restaurants.AddAsync(restaurantDomainModel);
+            await dbContext.SaveChangesAsync();
 
 
             //Map Domain models back to DTOs
@@ -117,10 +118,10 @@ namespace Dijo.API.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
-        public IActionResult DeleteItem([FromRoute] Guid id) 
+        public async Task<IActionResult> DeleteItem([FromRoute] Guid id) 
         {
             //Get data from Database via - Domain models
-            var restaurant = dbContext.restaurants.FirstOrDefault(x => x.Id == id);
+            var restaurant = await dbContext.restaurants.FirstOrDefaultAsync(x => x.Id == id);
 
             if (restaurant == null)
             {
@@ -128,17 +129,17 @@ namespace Dijo.API.Controllers
             }
 
             dbContext.Remove(restaurant);
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
 
             return NoContent();
         }
 
         [HttpPut]
         [Route("{id:Guid}")]
-        public IActionResult Update([FromRoute] Guid id,[FromBody] UpdateRestaurantRequestDto updateRestaurantRequestDto)
+        public async Task<IActionResult> Update([FromRoute] Guid id,[FromBody] UpdateRestaurantRequestDto updateRestaurantRequestDto)
         {
             //Check if the restaurant exists
-            var restaurantDomainModel = dbContext.restaurants.FirstOrDefault(x => x.Id == id);
+            var restaurantDomainModel = await dbContext.restaurants.FirstOrDefaultAsync(x => x.Id == id);
 
             if(restaurantDomainModel == null) 
             { 
@@ -154,7 +155,7 @@ namespace Dijo.API.Controllers
             restaurantDomainModel.is_open = updateRestaurantRequestDto.is_open;
             restaurantDomainModel.updated_at = DateTime.UtcNow;
 
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
 
             //Convert Domain Model to DTO
 
@@ -167,7 +168,8 @@ namespace Dijo.API.Controllers
                 logo_url = restaurantDomainModel.logo_url,
                 rating = restaurantDomainModel.rating,
                 is_open = restaurantDomainModel.is_open,
-                updated_at = DateTime.UtcNow
+                created_at = (DateTime)restaurantDomainModel.created_at,
+                updated_at = restaurantDomainModel.updated_at,
 
             };
 
