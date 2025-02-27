@@ -37,6 +37,7 @@ namespace Dijo.API.Controllers
                     description = restaurant.description,
                     logo_url = restaurant.logo_url,
                     rating = restaurant.rating,
+                    is_open = restaurant.is_open,
                     created_at = restaurant.created_at ?? DateTime.Now,
                     updated_at = restaurant.updated_at
                 });
