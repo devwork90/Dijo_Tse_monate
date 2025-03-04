@@ -12,12 +12,10 @@ namespace Dijo.API.Controllers
     [ApiController]
     public class RestaurantsController : ControllerBase
     {
-        private readonly DijoDbContext dbContext;
         private readonly IRestaurantRepository restaurantRepository;
 
-        public RestaurantsController(DijoDbContext dbContext, IRestaurantRepository restaurantRepository)
+        public RestaurantsController(IRestaurantRepository restaurantRepository)
         {
-            this.dbContext = dbContext;
             this.restaurantRepository = restaurantRepository;
         }
 

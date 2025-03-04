@@ -1,1 +1,13 @@
+# Visual Studio and Rider related files
 .vs/
+.idea/
+*.csproj.user
+*.pidb
+*.dotCover
+
+# Build results
+bin/
+obj/
+out/
+TestResults/
+GeneratedFiles/
