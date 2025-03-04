@@ -10,6 +10,5 @@
         public int rating { get; set; }
         public bool is_open { get; set; }
 
-        //public DateTime updated_at { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Dijo.API.Models.Domain;
+﻿
+using Dijo.API.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dijo.API.Data

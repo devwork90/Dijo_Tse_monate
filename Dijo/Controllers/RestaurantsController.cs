@@ -1,6 +1,7 @@
 ﻿using Dijo.API.Data;
 using Dijo.API.Models.Domain;
 using Dijo.API.Models.DTO;
+using Dijo.API.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,10 +13,12 @@ namespace Dijo.API.Controllers
     public class RestaurantsController : ControllerBase
     {
         private readonly DijoDbContext dbContext;
+        private readonly IRestaurantRepository restaurantRepository;
 
-        public RestaurantsController(DijoDbContext dbContext)
+        public RestaurantsController(DijoDbContext dbContext, IRestaurantRepository restaurantRepository)
         {
             this.dbContext = dbContext;
+            this.restaurantRepository = restaurantRepository;
         }
 
         //Get all restaurants 
@@ -23,7 +26,7 @@ namespace Dijo.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             //Get Data from Database via Domain model
-            var restaurants = await dbContext.restaurants.ToListAsync();
+            var restaurants = await restaurantRepository.GetAllAsync();
 
             //Map Domain modela to DTOs
             var restaurantDto = new List<RestaurantDto>();
@@ -52,7 +55,7 @@ namespace Dijo.API.Controllers
         public async Task<IActionResult> GetById([FromRoute] Guid id) {
 
             //Get data from Database via - Domain models
-            var restaurant = await dbContext.restaurants.FirstOrDefaultAsync(x => x.Id == id);
+            var restaurant = await restaurantRepository.GetRestaurantbyIdAsync(id);
 
             if (restaurant == null)
             {
@@ -94,12 +97,10 @@ namespace Dijo.API.Controllers
             };
 
             //Use domain model to ceate a restaurant in the DB
-            await dbContext.restaurants.AddAsync(restaurantDomainModel);
-            await dbContext.SaveChangesAsync();
+            await restaurantRepository.CreateRestaurantAsync(restaurantDomainModel);
 
 
             //Map Domain models back to DTOs
-
             var restaurantDto = new RestaurantDto
             {
                 Id = restaurantDomainModel.Id,
@@ -122,15 +123,12 @@ namespace Dijo.API.Controllers
         public async Task<IActionResult> DeleteItem([FromRoute] Guid id) 
         {
             //Get data from Database via - Domain models
-            var restaurant = await dbContext.restaurants.FirstOrDefaultAsync(x => x.Id == id);
+            var restaurant = await restaurantRepository.DeleteRestaurantAsync(id);
 
             if (restaurant == null)
             {
                 return NotFound();
             }
-
-            dbContext.Remove(restaurant);
-            await dbContext.SaveChangesAsync();
 
             return NoContent();
         }
@@ -139,24 +137,25 @@ namespace Dijo.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id,[FromBody] UpdateRestaurantRequestDto updateRestaurantRequestDto)
         {
+            //Map DTO to Domain Model
+            var restaurantDomainModel = new Restaurant
+            {
+                name = updateRestaurantRequestDto.name,
+                Address = updateRestaurantRequestDto.Address,
+                description = updateRestaurantRequestDto.description,
+                logo_url = updateRestaurantRequestDto.logo_url,
+                rating = updateRestaurantRequestDto.rating,
+                is_open = updateRestaurantRequestDto.is_open,
+                updated_at = DateTime.UtcNow
+        };
+
             //Check if the restaurant exists
-            var restaurantDomainModel = await dbContext.restaurants.FirstOrDefaultAsync(x => x.Id == id);
+            restaurantDomainModel = await restaurantRepository.UpdateRestaurantAsync(id, restaurantDomainModel);
 
             if(restaurantDomainModel == null) 
             { 
                 return NotFound();
             }
-
-            //Map DTO's to Domain Model
-            restaurantDomainModel.name = updateRestaurantRequestDto.name;
-            restaurantDomainModel.Address = updateRestaurantRequestDto.Address;
-            restaurantDomainModel.description = updateRestaurantRequestDto.description;
-            restaurantDomainModel.logo_url = updateRestaurantRequestDto.logo_url;
-            restaurantDomainModel.rating = updateRestaurantRequestDto.rating;
-            restaurantDomainModel.is_open = updateRestaurantRequestDto.is_open;
-            restaurantDomainModel.updated_at = DateTime.UtcNow;
-
-            await dbContext.SaveChangesAsync();
 
             //Convert Domain Model to DTO
 
@@ -173,7 +172,6 @@ namespace Dijo.API.Controllers
                 updated_at = restaurantDomainModel.updated_at,
 
             };
-
             return Ok(restaurantDto);
         }
     }
