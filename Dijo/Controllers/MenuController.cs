@@ -1,6 +1,7 @@
 ﻿using Dijo.API.Data;
 using Dijo.API.Models.Domain;
 using Dijo.API.Models.DTO;
+using Dijo.API.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,18 +11,19 @@ namespace Dijo.API.Controllers
     [ApiController]
     public class MenuController : ControllerBase
     {
-        private readonly DijoDbContext dbContext;
+        
+        private readonly IMenuRepository menuRepository;
 
-        public MenuController(DijoDbContext dbContext)
+        public MenuController(IMenuRepository menuRepository)
         {
-            this.dbContext = dbContext;
+            this.menuRepository = menuRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll() 
         {
             //Get Data from DB by Domain Model
-            var menuItems = await dbContext.Menu.ToListAsync();
+            var menuItems = await menuRepository.GetAllMenusAsync();
 
             //Map Model to DTO
             var menuDto = new List<MenuDto>();
@@ -49,7 +51,7 @@ namespace Dijo.API.Controllers
         public async Task<IActionResult> GetById([FromRoute] Guid id) {
 
             //Get data from DB  via - Domain model
-            var menuItem = await dbContext.Menu.FirstOrDefaultAsync(x => x.Id == id);
+            var menuItem = await menuRepository.GetByIdAsync(id);
 
             if (menuItem == null)
             {
@@ -74,6 +76,7 @@ namespace Dijo.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddMenuRequestDto addMenuRequestDto) {
 
+
             //Map Dto to Domain Model
 
             var menuDomainModel = new Menu 
@@ -85,12 +88,9 @@ namespace Dijo.API.Controllers
                 created_at = DateTime.UtcNow,
             };
 
-            //Use domain model to create a new menu item in the DB
-            await dbContext.Menu.AddAsync(menuDomainModel);
-            await dbContext.SaveChangesAsync();
+            menuDomainModel = await menuRepository.CreateMenuAsync(menuDomainModel);
 
             //Map Domain models back to DTO's
-
             var menuDto = new MenuDto
             {
                 Id = menuDomainModel.Id,
@@ -109,7 +109,14 @@ namespace Dijo.API.Controllers
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateMenuRequestDto updateMenuRequestDto)
         {
             //Get data from DB  via - Domain model
-            var menuDomainModel = await dbContext.Menu.FirstOrDefaultAsync(x => x.Id == id);
+            var menuDomainModel = new Menu()
+            {
+                Name = updateMenuRequestDto.Name,
+                Description = updateMenuRequestDto.Description,
+                is_active = updateMenuRequestDto.is_active,
+            };
+
+             menuDomainModel = await menuRepository.UpdateMenuAsync(id, menuDomainModel);
 
             if (menuDomainModel == null) 
             {
@@ -120,9 +127,6 @@ namespace Dijo.API.Controllers
             menuDomainModel.Name = updateMenuRequestDto.Name;
             menuDomainModel.Description = updateMenuRequestDto.Description;
             menuDomainModel.is_active = updateMenuRequestDto.is_active;
-            menuDomainModel.updated_at = DateTime.UtcNow;
-
-            await dbContext.SaveChangesAsync();
 
             //Map Domain model back to DTO
 
@@ -145,15 +149,13 @@ namespace Dijo.API.Controllers
         public async Task<IActionResult> DeleteItem([FromRoute] Guid id)
         {
             //Get Data from Data via domain Model
-            var menuDomainModel = await dbContext.Menu.FirstOrDefaultAsync(y => y.Id == id);
+            var menuDomainModel = await menuRepository.DeleteMenuAsync(id);
 
             //Check if data exist
             if (menuDomainModel == null)
             {
                 return NotFound();
             }
-            dbContext.Remove(menuDomainModel);
-            await dbContext.SaveChangesAsync();
 
             return NoContent();
         }

@@ -19,7 +19,7 @@ namespace Dijo.API.Repositories
             await dbContext.restaurants.AddAsync(restaurant);
             await dbContext.SaveChangesAsync();
 
-            return restaurant;
+             return restaurant;
         }
 
         public async Task<Restaurant?> DeleteRestaurantAsync(Guid id)

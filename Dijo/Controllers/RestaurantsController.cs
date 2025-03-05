@@ -144,7 +144,6 @@ namespace Dijo.API.Controllers
                 logo_url = updateRestaurantRequestDto.logo_url,
                 rating = updateRestaurantRequestDto.rating,
                 is_open = updateRestaurantRequestDto.is_open,
-                updated_at = DateTime.UtcNow
         };
 
             //Check if the restaurant exists

@@ -15,6 +15,8 @@ builder.Services.AddDbContext<DijoDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DijoConnectionString")));
 
 builder.Services.AddScoped<IRestaurantRepository, SQLRestaurantRepository>();
+builder.Services.AddScoped<IMenuRepository, SQLMenuRepository>();
+builder.Services.AddScoped<IMenuItemRepository, SQLMenuItemRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,6 +1,7 @@
 ﻿using Dijo.API.Data;
 using Dijo.API.Models.Domain;
 using Dijo.API.Models.DTO;
+using Dijo.API.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,17 +12,18 @@ namespace Dijo.API.Controllers
     [ApiController]
     public class MenutItemController : ControllerBase
     {
-        private readonly DijoDbContext dbContext;
+ 
+        private readonly IMenuItemRepository menuRepository;
 
-        public MenutItemController(DijoDbContext dbContext)
+        public MenutItemController(IMenuItemRepository menuItemRepository)
         { 
-            this.dbContext = dbContext;
+            this.menuRepository = menuItemRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var menuItems = await dbContext.MenuItem.ToListAsync();
+            var menuItems = await menuRepository.GetAllMenuItemsAsync();
 
             //Map Domain Models to DTO
             var menuItemDto = new List<MenuItemDto>();
@@ -60,8 +62,7 @@ namespace Dijo.API.Controllers
 
             };
 
-            await dbContext.MenuItem.AddAsync(menuItemDomainModel);
-            await dbContext.SaveChangesAsync();
+            await menuRepository.CreateMenuItem(menuItemDomainModel);
 
             //Map Dto back to Domain Model
             var menuItemDto = new MenuItemDto
@@ -84,7 +85,7 @@ namespace Dijo.API.Controllers
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             //Get Data from DB by domain mode
-            var menuItem = await dbContext.MenuItem.FirstOrDefaultAsync(x => x.Id == id);
+            var menuItem = await menuRepository.GetMenuItemByIdAsync(id);
 
             if (menuItem == null) 
             {
@@ -114,24 +115,24 @@ namespace Dijo.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdatedMenuItemDto updatedMenuItemDto) 
         {
-            //Find the record to update in the DB
-            var menuItemDomainModel = await dbContext.MenuItem.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (menuItemDomainModel == null)
-            { 
-                return NotFound();
-            }
 
             //Map Domain Model to Dto
+           var menuItemDomainModel = new MenuItem();
+            
             menuItemDomainModel.Name = updatedMenuItemDto.Name;
             menuItemDomainModel.Description = updatedMenuItemDto.Description;
             menuItemDomainModel.is_available = updatedMenuItemDto.is_available;
             menuItemDomainModel.Price = updatedMenuItemDto.Price;
             menuItemDomainModel.Image_url = updatedMenuItemDto.Image_url;
-            menuItemDomainModel.updated_at = DateTime.UtcNow;
-    
+            
 
-            await dbContext.SaveChangesAsync();
+            //Find the record to update in the DB
+            menuItemDomainModel = await menuRepository.UpdateMenuItemAsync(id, menuItemDomainModel);
+
+            if (menuItemDomainModel == null)
+            {
+                return NotFound();
+            }
 
             //Map DTO back to Domain Models
 
@@ -142,9 +143,10 @@ namespace Dijo.API.Controllers
                 Description = menuItemDomainModel.Description,
                 Image_url = menuItemDomainModel.Image_url,
                 Price = menuItemDomainModel.Price,
-                updated_at = menuItemDomainModel.updated_at,
                 created_at = (DateTime)menuItemDomainModel.created_at,
+                updated_at = menuItemDomainModel.updated_at,
                 MenuId = menuItemDomainModel.MenuId,
+                
             };
 
             return Ok(menuItemDto);
@@ -154,15 +156,14 @@ namespace Dijo.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id) 
         {
-            var menuItem = await dbContext.MenuItem.FirstOrDefaultAsync(x => x.Id == id);
+            var menuItem = await menuRepository.DeleteMenuItem(id);
 
             if (menuItem == null)
             {
                 return NotFound();
             }
 
-            dbContext.Remove(menuItem);
-            await dbContext.SaveChangesAsync();
+            
 
         return NoContent();
         }
