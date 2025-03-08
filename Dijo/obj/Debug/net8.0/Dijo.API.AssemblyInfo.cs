@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Dijo.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1f7d1f30414cb7e6b2f06ff373f393f05eafad96")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cf300ee70b70979e71cab06fc2743e49168c091f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Dijo.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Dijo.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
