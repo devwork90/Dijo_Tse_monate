@@ -76,32 +76,37 @@ namespace Dijo.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddMenuRequestDto addMenuRequestDto) {
 
-
-            //Map Dto to Domain Model
-
-            var menuDomainModel = new Menu 
+            if (ModelState.IsValid)
             {
-                Name = addMenuRequestDto.Name,
-                Description = addMenuRequestDto.Description,
-                is_active = addMenuRequestDto.is_active,
-                restaurantId = addMenuRequestDto.restaurantId,
-                created_at = DateTime.UtcNow,
-            };
+                //Map Dto to Domain Model
+                var menuDomainModel = new Menu
+                {
+                    Name = addMenuRequestDto.Name,
+                    Description = addMenuRequestDto.Description,
+                    is_active = addMenuRequestDto.is_active,
+                    restaurantId = addMenuRequestDto.restaurantId,
+                    created_at = DateTime.UtcNow,
+                };
 
-            menuDomainModel = await menuRepository.CreateMenuAsync(menuDomainModel);
+                menuDomainModel = await menuRepository.CreateMenuAsync(menuDomainModel);
 
-            //Map Domain models back to DTO's
-            var menuDto = new MenuDto
+                //Map Domain models back to DTO's
+                var menuDto = new MenuDto
+                {
+                    Id = menuDomainModel.Id,
+                    Name = menuDomainModel.Name,
+                    Description = menuDomainModel.Description,
+                    is_active = menuDomainModel.is_active,
+                    created_at = (DateTime)menuDomainModel.created_at,
+                    restaurantId = menuDomainModel.restaurantId,
+                };
+
+                return CreatedAtAction(nameof(GetById), new { id = menuDto.Id }, menuDto);
+            }
+            else
             {
-                Id = menuDomainModel.Id,
-                Name = menuDomainModel.Name,
-                Description = menuDomainModel.Description,
-                is_active = menuDomainModel.is_active,
-                created_at = (DateTime)menuDomainModel.created_at,
-                restaurantId = menuDomainModel.restaurantId,
-            };
-
-            return CreatedAtAction(nameof(GetById), new { id = menuDto.Id }, menuDto);
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpPut]
@@ -148,16 +153,23 @@ namespace Dijo.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> DeleteItem([FromRoute] Guid id)
         {
-            //Get Data from Data via domain Model
-            var menuDomainModel = await menuRepository.DeleteMenuAsync(id);
-
-            //Check if data exist
-            if (menuDomainModel == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
-            }
+                //Get Data from Data via domain Model
+                var menuDomainModel = await menuRepository.DeleteMenuAsync(id);
 
-            return NoContent();
+                //Check if data exist
+                if (menuDomainModel == null)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
+            }
+            else
+            { 
+                return BadRequest(ModelState);
+            }
         }
     }
 }

@@ -81,39 +81,46 @@ namespace Dijo.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddRestaurantRequestDto addRestaurantRequestDto)
         {
-            //Map DTO to Domain model
-            var restaurantDomainModel = new Restaurant
+            if (ModelState.IsValid)
             {
-                name = addRestaurantRequestDto.name,
-                Address = addRestaurantRequestDto.Address,
-                description = addRestaurantRequestDto.description,
-                logo_url = addRestaurantRequestDto.logo_url,
-                rating = addRestaurantRequestDto.rating,
-                is_open = addRestaurantRequestDto.is_open,
-                created_at = DateTime.UtcNow
+                //Map DTO to Domain model
+                var restaurantDomainModel = new Restaurant
+                {
+                    name = addRestaurantRequestDto.name,
+                    Address = addRestaurantRequestDto.Address,
+                    description = addRestaurantRequestDto.description,
+                    logo_url = addRestaurantRequestDto.logo_url,
+                    rating = addRestaurantRequestDto.rating,
+                    is_open = addRestaurantRequestDto.is_open,
+                    created_at = DateTime.UtcNow
 
-            };
+                };
 
-            //Use domain model to ceate a restaurant in the DB
-            await restaurantRepository.CreateRestaurantAsync(restaurantDomainModel);
-
-
-            //Map Domain models back to DTOs
-            var restaurantDto = new RestaurantDto
-            {
-                Id = restaurantDomainModel.Id,
-                name = restaurantDomainModel.name,
-                Address = restaurantDomainModel.Address,
-                description = restaurantDomainModel.description,
-                logo_url = restaurantDomainModel.logo_url,
-                rating = restaurantDomainModel.rating,
-                created_at = (DateTime)restaurantDomainModel.created_at,
-                is_open = restaurantDomainModel.is_open
-
-            };
+                //Use domain model to ceate a restaurant in the DB
+                await restaurantRepository.CreateRestaurantAsync(restaurantDomainModel);
 
 
-            return CreatedAtAction(nameof(GetById), new { id = restaurantDto.Id }, restaurantDto);
+                //Map Domain models back to DTOs
+                var restaurantDto = new RestaurantDto
+                {
+                    Id = restaurantDomainModel.Id,
+                    name = restaurantDomainModel.name,
+                    Address = restaurantDomainModel.Address,
+                    description = restaurantDomainModel.description,
+                    logo_url = restaurantDomainModel.logo_url,
+                    rating = restaurantDomainModel.rating,
+                    created_at = (DateTime)restaurantDomainModel.created_at,
+                    is_open = restaurantDomainModel.is_open
+
+                };
+
+
+                return CreatedAtAction(nameof(GetById), new { id = restaurantDto.Id }, restaurantDto);
+            }
+            else
+            { 
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpDelete]
@@ -135,41 +142,48 @@ namespace Dijo.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id,[FromBody] UpdateRestaurantRequestDto updateRestaurantRequestDto)
         {
-            //Map DTO to Domain Model
-            var restaurantDomainModel = new Restaurant
+            if (ModelState.IsValid)
             {
-                name = updateRestaurantRequestDto.name,
-                Address = updateRestaurantRequestDto.Address,
-                description = updateRestaurantRequestDto.description,
-                logo_url = updateRestaurantRequestDto.logo_url,
-                rating = updateRestaurantRequestDto.rating,
-                is_open = updateRestaurantRequestDto.is_open,
-        };
+                //Map DTO to Domain Model
+                var restaurantDomainModel = new Restaurant
+                {
+                    name = updateRestaurantRequestDto.name,
+                    Address = updateRestaurantRequestDto.Address,
+                    description = updateRestaurantRequestDto.description,
+                    logo_url = updateRestaurantRequestDto.logo_url,
+                    rating = updateRestaurantRequestDto.rating,
+                    is_open = updateRestaurantRequestDto.is_open,
+                };
 
-            //Check if the restaurant exists
-            restaurantDomainModel = await restaurantRepository.UpdateRestaurantAsync(id, restaurantDomainModel);
+                //Check if the restaurant exists
+                restaurantDomainModel = await restaurantRepository.UpdateRestaurantAsync(id, restaurantDomainModel);
 
-            if(restaurantDomainModel == null) 
-            { 
-                return NotFound();
+                if (restaurantDomainModel == null)
+                {
+                    return NotFound();
+                }
+
+                //Convert Domain Model to DTO
+
+                var restaurantDto = new RestaurantDto
+                {
+                    Id = restaurantDomainModel.Id,
+                    name = restaurantDomainModel.name,
+                    Address = restaurantDomainModel.Address,
+                    description = restaurantDomainModel.description,
+                    logo_url = restaurantDomainModel.logo_url,
+                    rating = restaurantDomainModel.rating,
+                    is_open = restaurantDomainModel.is_open,
+                    created_at = (DateTime)restaurantDomainModel.created_at,
+                    updated_at = restaurantDomainModel.updated_at,
+
+                };
+                return Ok(restaurantDto);
             }
-
-            //Convert Domain Model to DTO
-
-            var restaurantDto = new RestaurantDto
-            {
-                Id = restaurantDomainModel.Id,
-                name = restaurantDomainModel.name,
-                Address = restaurantDomainModel.Address,
-                description = restaurantDomainModel.description,
-                logo_url = restaurantDomainModel.logo_url,
-                rating = restaurantDomainModel.rating,
-                is_open = restaurantDomainModel.is_open,
-                created_at = (DateTime)restaurantDomainModel.created_at,
-                updated_at = restaurantDomainModel.updated_at,
-
-            };
-            return Ok(restaurantDto);
+            else
+            { 
+                return BadRequest(ModelState);
+            }
         }
     }
 }

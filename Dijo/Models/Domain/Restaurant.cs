@@ -12,7 +12,7 @@ namespace Dijo.API.Models.Domain
         public int rating { get; set; }
         public bool is_open { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime? created_at { get; set; } = DateTime.UtcNow;
         public DateTime? updated_at { get;set; }
 
