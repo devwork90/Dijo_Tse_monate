@@ -1,26 +1,23 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
+using RestaurantAPI.API.Data;
 using RestaurantAPI.API.Repositories;
 
 namespace RestaurantAPI.Service
 {
     public class SubMenuService : ISubMenuSerice
     {
-        private readonly ISubMenuRepository subMenuRepository;
+        private readonly IMenuRepository menuRepository;
         //private readonly IRestaurantRepository _restaurantRepository;
 
-        public SubMenuService(ISubMenuRepository subMenuRepository) 
+        public SubMenuService(IMenuRepository menuRepository) 
         {
-            this.subMenuRepository = subMenuRepository;
+            this.menuRepository = menuRepository;
             
         }
-        public async Task DeleteSubMenusByMenuIdAsync(Guid id)
+        public void DeleteAmenu(Guid id)
         {
-            var SubMenus = await subMenuRepository.GetMenuItemByIdAsync(id);
-
-           if (SubMenus == null) { return; }
-            
-
-            await subMenuRepository.DeleteMenuItem(id);
+            menuRepository.GetByIdAsync(id);
         }
 
         //public async Task DeleteSubMenusByRestaurantIdAsync(Guid id)

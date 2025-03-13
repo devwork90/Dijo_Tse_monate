@@ -2,7 +2,7 @@
 {
     public interface ISubMenuSerice
     {
-        Task  DeleteSubMenusByMenuIdAsync(Guid guid);
+        void DeleteAmenu(Guid guid);
         //Task DeleteSubMenusByRestaurantIdAsync(Guid restaurantId);
     }
 }

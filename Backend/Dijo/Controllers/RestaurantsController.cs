@@ -41,7 +41,7 @@ namespace RestaurantAPI.API.Controllers
                     is_open = restaurant.is_open,
                     created_at = restaurant.created_at ?? DateTime.Now,
                     updated_at = restaurant.updated_at,
-                    menuId = restaurant.menuId
+                    menuId = (Guid)restaurant.menuId
                 });
             }
 
@@ -74,7 +74,7 @@ namespace RestaurantAPI.API.Controllers
                 is_open = restaurant.is_open,
                 created_at = restaurant.created_at ?? DateTime.Now,
                 updated_at = restaurant.updated_at,
-                menuId = restaurant.menuId,
+                menuId = (Guid)restaurant.menuId,
 
             };
             return Ok(restaurantDto);
@@ -114,7 +114,7 @@ namespace RestaurantAPI.API.Controllers
                     rating = restaurantDomainModel.rating,
                     created_at = (DateTime)restaurantDomainModel.created_at,
                     is_open = restaurantDomainModel.is_open,
-                    menuId = restaurantDomainModel.menuId,
+                    menuId = (Guid)restaurantDomainModel.menuId,
                 };
 
 
@@ -179,7 +179,7 @@ namespace RestaurantAPI.API.Controllers
                     is_open = restaurantDomainModel.is_open,
                     created_at = (DateTime)restaurantDomainModel.created_at,
                     updated_at = restaurantDomainModel.updated_at,
-                    menuId =  restaurantDomainModel.menuId,
+                    menuId =  (Guid)restaurantDomainModel.menuId,
 
                 };
                 return Ok(restaurantDto);

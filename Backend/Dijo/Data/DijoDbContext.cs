@@ -22,18 +22,18 @@ namespace RestaurantAPI.API.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure SubMenu relationships
+            //Define relationship: A Menu can have many SubMenus, and deleting a Menu should delete SubMenus.
             modelBuilder.Entity<SubMenu>()
                 .HasOne(sm => sm.Menu)
                 .WithMany(m => m.SubMenus) // Ensure this matches the navigation property name in `Menu`
                 .HasForeignKey(sm => sm.MenuId)
-                .OnDelete(DeleteBehavior.Restrict);  // Prevents cascading delete
+                .OnDelete(DeleteBehavior.Cascade);  // Ensure sub-menu deletion
 
-            modelBuilder.Entity<SubMenu>()
-                .HasOne(sm => sm.Restaurant)
-                .WithMany(r => r.SubMenus) // Ensure this matches the navigation property name in `Restaurant`
-                .HasForeignKey(sm => sm.restaurantId)
-                .OnDelete(DeleteBehavior.Restrict);  // Prevents cascading delete
+            modelBuilder.Entity<Restaurant>()
+                .HasOne(r => r.Menu)
+                .WithMany(m => m.Restaurants) // Ensure this matches the navigation property name in `Restaurant`
+                .HasForeignKey(r => r.menuId)
+                .OnDelete(DeleteBehavior.Restrict);  // Prevents cascading deletion to Restaurant
 
             // Seed data for Menu model
             var menus = new List<Menu>()

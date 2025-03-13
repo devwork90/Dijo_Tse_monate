@@ -11,5 +11,6 @@
         public DateTime? updated_at { get; set; }
 
         public ICollection<SubMenu> SubMenus { get; set; } // Ensure this exists
+        public ICollection<Restaurant> Restaurants { get; set; }
     }
 }

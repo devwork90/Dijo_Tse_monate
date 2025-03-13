@@ -13,6 +13,6 @@
         public Menu Menu { get; set; }
         public Restaurant Restaurant { get; set; }
 
-        public ICollection<SubMenu  > SubMenus { get; set; } // Ensure this exists
+        //public ICollection<SubMenu  > SubMenus { get; set; } // Ensure this exists
     }
 }

@@ -15,10 +15,10 @@ namespace RestaurantAPI.API.Models.Domain
         public DateTime? created_at { get; set; } = DateTime.UtcNow;
         public DateTime? updated_at { get;set; }
 
-        public Guid menuId { get; set; }
+        public Guid? menuId { get; set; }
 
         public Menu Menu { get; set; }
 
-        public ICollection<SubMenu> SubMenus { get; set; } // Ensure this exists
+        //public ICollection<SubMenu> SubMenus { get; set; } // Ensure this exists
     }
 }

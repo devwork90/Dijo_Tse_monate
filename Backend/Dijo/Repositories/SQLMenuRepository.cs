@@ -8,12 +8,11 @@ namespace RestaurantAPI.API.Repositories
     public class SQLMenuRepository: IMenuRepository
     {
        private readonly DijoDbContext dbContext;
-       private readonly ISubMenuSerice subMenuSerice;
+    
 
-    public SQLMenuRepository(DijoDbContext dbContext, ISubMenuSerice subMenuSerice) 
+    public SQLMenuRepository(DijoDbContext dbContext) 
         {
             this.dbContext = dbContext;
-            this.subMenuSerice = subMenuSerice;
         }
 
         public async Task<Menu> CreateMenuAsync(Menu menu)
@@ -27,13 +26,14 @@ namespace RestaurantAPI.API.Repositories
 
         public async Task<Menu?> DeleteMenuAsync(Guid id)
         {
-            var deletedMenu = dbContext.Menu.FirstOrDefault(x => x.Id == id);
-            
+            var deletedMenu = dbContext.Menu
+                .Include(m => m.SubMenus)
+                .FirstOrDefault(x => x.Id == id);
+
             if (deletedMenu == null) 
             {
                 return null; 
             }
-            await subMenuSerice.DeleteSubMenusByMenuIdAsync(id);
             dbContext.Remove(deletedMenu);
             await dbContext.SaveChangesAsync();
 

@@ -2,15 +2,18 @@
 using RestaurantAPI.API.Models.Domain;
 using RestaurantAPI.API.Models.DTO;
 using Microsoft.EntityFrameworkCore;
+using RestaurantAPI.Service;
 
 namespace RestaurantAPI.API.Repositories
 {
     public class SQLSubMenuRepository: ISubMenuRepository
     {
         public readonly DijoDbContext dbContext;
-        public SQLSubMenuRepository(DijoDbContext dijoDbContext) 
+        private readonly ISubMenuSerice subMenuSerice;
+        public SQLSubMenuRepository(DijoDbContext dijoDbContext, ISubMenuSerice subMenuSerice) 
         {
             this.dbContext = dijoDbContext;
+            this.subMenuSerice = subMenuSerice;
         }
 
         public async Task<SubMenu> CreateMenuItem(SubMenu item)
