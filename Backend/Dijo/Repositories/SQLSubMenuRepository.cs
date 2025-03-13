@@ -53,6 +53,11 @@ namespace RestaurantAPI.API.Repositories
         {
             var existingMenuItem = dbContext.SubMenu.FirstOrDefault(x => x.Id == guid);
 
+            if (existingMenuItem == null) 
+            {
+                return null;
+            }
+
             existingMenuItem.Name = item.Name;
             existingMenuItem.is_available = item.is_available;
             existingMenuItem.updated_at = DateTime.UtcNow;
