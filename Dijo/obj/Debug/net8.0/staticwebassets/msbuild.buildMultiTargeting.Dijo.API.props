@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\Dijo.API.props" />
-</Project>
