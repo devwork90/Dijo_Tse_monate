@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.API.Data;
 using RestaurantAPI.API.Repositories;
-using RestaurantAPI.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +17,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DijoConnectionSt
 builder.Services.AddScoped<IRestaurantRepository, SQLRestaurantRepository>();
 builder.Services.AddScoped<IMenuRepository, SQLMenuRepository>();
 builder.Services.AddScoped<ISubMenuRepository, SQLSubMenuRepository>();
-builder.Services.AddScoped<ISubMenuSerice, SubMenuService>();
+//builder.Services.AddScoped<IDeleteMenuSerice, IDeleteMenuService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

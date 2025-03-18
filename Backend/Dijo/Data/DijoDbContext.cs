@@ -16,24 +16,43 @@ namespace RestaurantAPI.API.Data
 
         public DbSet<Menu> Menu { get; set; }
         public DbSet<SubMenu> SubMenu { get; set; }
-        public DbSet<Restaurant> restaurants { get; set; }
+        public DbSet<Restaurant> Restaurants { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            //Define relationship: A Menu can have many SubMenus, and deleting a Menu should delete SubMenus.
-            modelBuilder.Entity<SubMenu>()
-                .HasOne(sm => sm.Menu)
-                .WithMany(m => m.SubMenus) // Ensure this matches the navigation property name in `Menu`
-                .HasForeignKey(sm => sm.MenuId)
-                .OnDelete(DeleteBehavior.Cascade);  // Ensure sub-menu deletion
+            //Define a Many-to-Many Relationship between Menu <-> Restaurant
+            modelBuilder.Entity<Menu>()
+                .HasMany(m => m.Restaurants)
+                .WithMany(r => r.Menu)
+                .UsingEntity(j => j.ToTable("MenuRestaurants"));
 
+            //Dfine a One-to-Many Relationship between Menu -> SubMenu
+
+            modelBuilder.Entity<Menu>()
+                .HasMany(m => m.SubMenus)
+                .WithOne(s => s.Menu)
+                .HasForeignKey(s => s.MenuId)
+                .OnDelete(DeleteBehavior.Cascade); //When a Menu is deleted, delete its SubMenus
+
+            //Define a One - to - Many Relationship between Restaurant->SubMenu
             modelBuilder.Entity<Restaurant>()
-                .HasOne(r => r.Menu)
-                .WithMany(m => m.Restaurants) // Ensure this matches the navigation property name in `Restaurant`
-                .HasForeignKey(r => r.menuId)
-                .OnDelete(DeleteBehavior.Restrict);  // Prevents cascading deletion to Restaurant
+                .HasMany(r => r.SubMenus)
+                .WithOne(s => s.Restaurant)
+                .HasForeignKey(s => s.restaurantId)
+                .OnDelete(DeleteBehavior.Cascade); //When a Menu is deleted, delete its SubMenus
+
+            //Prevent Restaurant deletion when a Menus is deleted
+            modelBuilder.Entity<Menu>()
+                .HasMany(m => m.Restaurants)
+                .WithMany(r => r.Menu)
+                .UsingEntity<Dictionary<string, object>>(
+                   "MenuRestaurants",
+                    j => j.HasOne<Restaurant>().WithMany().HasForeignKey("restaurantId"),
+                    j => j.HasOne<Menu>().WithMany().HasForeignKey("MenuId"),
+                    j => j.ToTable("MenuRestaurants")
+                );
 
             // Seed data for Menu model
             var menus = new List<Menu>()
@@ -61,7 +80,7 @@ namespace RestaurantAPI.API.Data
                 new Menu()
                 {
                     Id = Guid.Parse("b7272c86-286d-465c-b993-10e177f6f056"),
-                    Name = "Piza",
+                    Name = "Pizza",
                     Description = "All your Piza Menu",
                     is_active= true,
                     created_at =  new DateTime(2025, 3, 10, 20, 15, 0),

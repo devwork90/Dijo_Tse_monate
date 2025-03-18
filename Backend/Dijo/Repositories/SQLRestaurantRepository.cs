@@ -1,8 +1,6 @@
 ﻿using RestaurantAPI.API.Data;
 using RestaurantAPI.API.Models.Domain;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
-using RestaurantAPI.Service;
 
 namespace RestaurantAPI.API.Repositories
 {
@@ -18,7 +16,7 @@ namespace RestaurantAPI.API.Repositories
 
         public async Task<Restaurant> CreateRestaurantAsync(Restaurant restaurant)
         {
-            await dbContext.restaurants.AddAsync(restaurant);
+            await dbContext.Restaurants.AddAsync(restaurant);
             await dbContext.SaveChangesAsync();
 
              return restaurant;
@@ -26,7 +24,9 @@ namespace RestaurantAPI.API.Repositories
 
         public async Task<Restaurant?> DeleteRestaurantAsync(Guid id)
         {
-            var deletedRestaurant = await dbContext.restaurants.FirstOrDefaultAsync(x => x.Id == id);
+            var deletedRestaurant = await dbContext.Restaurants
+                .Include(m => m.SubMenus)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (deletedRestaurant == null) 
             {
@@ -41,18 +41,18 @@ namespace RestaurantAPI.API.Repositories
 
         public async Task<List<Restaurant>> GetAllAsync()
         {
-            return await dbContext.restaurants.ToListAsync();
+            return await dbContext.Restaurants.ToListAsync();
         }
 
         public async Task<Restaurant?> GetRestaurantbyIdAsync(Guid id)
         {
             //Get data from Database via - Domain models
-           return await dbContext.restaurants.FirstOrDefaultAsync(r => r.Id == id);
+           return await dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == id);
         }
 
         public async Task<Restaurant?> UpdateRestaurantAsync(Guid id, Restaurant restaurant)
         {
-            var existingRestaurant = await dbContext.restaurants.FirstOrDefaultAsync(x => x.Id == id);
+            var existingRestaurant = await dbContext.Restaurants.FirstOrDefaultAsync(x => x.Id == id);
 
             if (existingRestaurant == null)
             {

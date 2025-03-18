@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RestaurantAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDataMigration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,7 +30,7 @@ namespace RestaurantAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "restaurants",
+                name: "Restaurants",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -41,16 +41,33 @@ namespace RestaurantAPI.Migrations
                     rating = table.Column<int>(type: "int", nullable: false),
                     is_open = table.Column<bool>(type: "bit", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    updated_at = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    menuId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    updated_at = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_restaurants", x => x.Id);
+                    table.PrimaryKey("PK_Restaurants", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MenuRestaurants",
+                columns: table => new
+                {
+                    MenuId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    restaurantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MenuRestaurants", x => new { x.MenuId, x.restaurantId });
                     table.ForeignKey(
-                        name: "FK_restaurants_Menu_menuId",
-                        column: x => x.menuId,
+                        name: "FK_MenuRestaurants_Menu_MenuId",
+                        column: x => x.MenuId,
                         principalTable: "Menu",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MenuRestaurants_Restaurants_restaurantId",
+                        column: x => x.restaurantId,
+                        principalTable: "Restaurants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -65,8 +82,7 @@ namespace RestaurantAPI.Migrations
                     created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
                     updated_at = table.Column<DateTime>(type: "datetime2", nullable: true),
                     MenuId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    restaurantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SubMenuId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    restaurantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,18 +92,13 @@ namespace RestaurantAPI.Migrations
                         column: x => x.MenuId,
                         principalTable: "Menu",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SubMenu_SubMenu_SubMenuId",
-                        column: x => x.SubMenuId,
-                        principalTable: "SubMenu",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_SubMenu_restaurants_restaurantId",
+                        name: "FK_SubMenu_Restaurants_restaurantId",
                         column: x => x.restaurantId,
-                        principalTable: "restaurants",
+                        principalTable: "Restaurants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -96,14 +107,14 @@ namespace RestaurantAPI.Migrations
                 values: new object[,]
                 {
                     { new Guid("83b89851-d594-48a0-b66b-94ba920a0c70"), "All your chicken menus", "Chicken", new DateTime(2025, 2, 15, 14, 30, 0, 0, DateTimeKind.Unspecified), true, null },
-                    { new Guid("b7272c86-286d-465c-b993-10e177f6f056"), "All your Piza Menu", "Piza", new DateTime(2025, 3, 10, 20, 15, 0, 0, DateTimeKind.Unspecified), true, null },
+                    { new Guid("b7272c86-286d-465c-b993-10e177f6f056"), "All your Piza Menu", "Pizza", new DateTime(2025, 3, 10, 20, 15, 0, 0, DateTimeKind.Unspecified), true, null },
                     { new Guid("c5e708e3-46e5-49ff-bb27-a94cf56fa2fe"), "All your shisa nyama grills", "Grilled", new DateTime(2025, 2, 27, 18, 15, 0, 0, DateTimeKind.Unspecified), true, null }
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_restaurants_menuId",
-                table: "restaurants",
-                column: "menuId");
+                name: "IX_MenuRestaurants_restaurantId",
+                table: "MenuRestaurants",
+                column: "restaurantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubMenu_MenuId",
@@ -114,24 +125,22 @@ namespace RestaurantAPI.Migrations
                 name: "IX_SubMenu_restaurantId",
                 table: "SubMenu",
                 column: "restaurantId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SubMenu_SubMenuId",
-                table: "SubMenu",
-                column: "SubMenuId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "MenuRestaurants");
+
+            migrationBuilder.DropTable(
                 name: "SubMenu");
 
             migrationBuilder.DropTable(
-                name: "restaurants");
+                name: "Menu");
 
             migrationBuilder.DropTable(
-                name: "Menu");
+                name: "Restaurants");
         }
     }
 }

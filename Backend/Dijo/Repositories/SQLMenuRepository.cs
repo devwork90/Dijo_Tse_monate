@@ -1,7 +1,6 @@
 ﻿using RestaurantAPI.API.Data;
 using RestaurantAPI.API.Models.Domain;
 using Microsoft.EntityFrameworkCore;
-using RestaurantAPI.Service;
 
 namespace RestaurantAPI.API.Repositories
 {
@@ -26,15 +25,18 @@ namespace RestaurantAPI.API.Repositories
 
         public async Task<Menu?> DeleteMenuAsync(Guid id)
         {
-            var deletedMenu = dbContext.Menu
+            var deletedMenu = await dbContext.Menu
                 .Include(m => m.SubMenus)
-                .FirstOrDefault(x => x.Id == id);
+                //.Include(m => m.Restaurants)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (deletedMenu == null) 
             {
                 return null; 
             }
             dbContext.Remove(deletedMenu);
+
+            // Remove the Menu (which deletes its SubMenus due to cascade delete)
             await dbContext.SaveChangesAsync();
 
             return deletedMenu;

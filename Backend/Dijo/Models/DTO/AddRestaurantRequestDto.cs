@@ -16,7 +16,5 @@ namespace RestaurantAPI.API.Models.DTO
 
         [Required]
         public bool is_open { get; set; }
-
-        public Guid menuId { get; set; }
     }
 }
