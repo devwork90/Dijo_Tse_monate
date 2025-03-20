@@ -1,6 +1,7 @@
 ﻿
 using RestaurantAPI.API.Models.Domain;
 using Microsoft.EntityFrameworkCore;
+using RestaurantAPI.Models.Domain;
 
 namespace RestaurantAPI.API.Data
 {
@@ -16,6 +17,8 @@ namespace RestaurantAPI.API.Data
 
         public DbSet<Menu> Menu { get; set; }
         public DbSet<SubMenu> SubMenu { get; set; }
+
+        public DbSet<MenuItem> MenuItems { get; set; }
         public DbSet<Restaurant> Restaurants { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -42,6 +45,21 @@ namespace RestaurantAPI.API.Data
                 .WithOne(s => s.Restaurant)
                 .HasForeignKey(s => s.restaurantId)
                 .OnDelete(DeleteBehavior.Cascade); //When a Menu is deleted, delete its SubMenus
+
+            //Define a One-to-Many relationship between SubMenu->MenuItem
+            modelBuilder.Entity<MenuItem>()
+                .HasOne(mi => mi.SubMenu)
+                .WithMany(sm => sm.MenuItems)
+                .HasForeignKey(mi => mi.SubMenuId)
+                .OnDelete(DeleteBehavior.Cascade);//When a SubMenu is deleted, delete its menuItem
+
+            //Define a One-to-Many relation between Restaurant->MenuItem
+            modelBuilder.Entity<MenuItem>()
+                .HasOne(mi => mi.Restaurant)
+                .WithMany()
+                .HasForeignKey(mi => mi.restaurantId)
+                .OnDelete(DeleteBehavior.Restrict); //When a Restaurant is deleted, delete its MenuItem
+
 
             //Prevent Restaurant deletion when a Menus is deleted
             modelBuilder.Entity<Menu>()

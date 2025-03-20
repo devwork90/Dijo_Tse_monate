@@ -23,7 +23,7 @@ namespace RestaurantAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var SubmenuItems = await menuRepository.GetAllMenuItemsAsync();
+            var SubmenuItems = await menuRepository.GetAllSubMenusAsync();
 
             //Map Domain Models to DTO
             var menuItemDto = new List<SubMenuDto>();
@@ -60,10 +60,10 @@ namespace RestaurantAPI.API.Controllers
 
                 };
 
-                await menuRepository.CreateMenuItem(menuItemDomainModel);
+                await menuRepository.CreateSubMenus(menuItemDomainModel);
 
                 //Map Dto back to Domain Model
-                var menuItemDto = new SubMenuDto
+                var subMenuDto = new SubMenuDto
                 {
                     Id = menuItemDomainModel.Id,
                     Name = addMenuItemDto.Name,
@@ -73,7 +73,7 @@ namespace RestaurantAPI.API.Controllers
                     is_available = addMenuItemDto.is_available,
                 };
 
-                return CreatedAtAction(nameof(GetById), new { id = menuItemDto.Id }, menuItemDto);
+                return CreatedAtAction(nameof(GetById), new { id = subMenuDto.Id }, subMenuDto);
             }
             else 
             {
@@ -86,7 +86,7 @@ namespace RestaurantAPI.API.Controllers
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             //Get Data from DB by domain mode
-            var menuItem = await menuRepository.GetMenuItemByIdAsync(id);
+            var menuItem = await menuRepository.GetSubMenusByIdAsync(id);
 
             if (menuItem == null) 
             {
@@ -126,7 +126,7 @@ namespace RestaurantAPI.API.Controllers
 
 
                 //Find the record to update in the DB
-                menuItemDomainModel = await menuRepository.UpdateMenuItemAsync(id, menuItemDomainModel);
+                menuItemDomainModel = await menuRepository.UpdateSubMenusAsync(id, menuItemDomainModel);
 
                 if (menuItemDomainModel == null)
                 {
@@ -158,7 +158,7 @@ namespace RestaurantAPI.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id) 
         {
-            var menuItem = await menuRepository.DeleteMenuItem(id);
+            var menuItem = await menuRepository.DeleteSubMenus(id);
 
             if (menuItem == null)
             {

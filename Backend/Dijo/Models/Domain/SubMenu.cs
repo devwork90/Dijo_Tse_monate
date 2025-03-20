@@ -1,4 +1,6 @@
-﻿namespace RestaurantAPI.API.Models.Domain
+﻿using RestaurantAPI.Models.Domain;
+
+namespace RestaurantAPI.API.Models.Domain
 {
     public class SubMenu
     {
@@ -15,6 +17,9 @@
         //Foreign Key to Restaurant (One-to-One)
         public Guid restaurantId { get; set; }
         public Restaurant? Restaurant { get; set; }
+
+        // Navigation Property for One-to-Many with MenuItem
+        public List<MenuItem> MenuItems { get; set; } = new();
 
     }
 }

@@ -4,14 +4,14 @@ namespace RestaurantAPI.API.Repositories
 {
     public interface ISubMenuRepository
     {
-        Task<List<SubMenu>> GetAllMenuItemsAsync();
+        Task<List<SubMenu>> GetAllSubMenusAsync();
 
-        Task<SubMenu?> GetMenuItemByIdAsync(Guid id);
+        Task<SubMenu?> GetSubMenusByIdAsync(Guid id);
 
-        Task<SubMenu?> UpdateMenuItemAsync(Guid guid, SubMenu item);
+        Task<SubMenu?> UpdateSubMenusAsync(Guid guid, SubMenu item);
 
-        Task<SubMenu> CreateMenuItem(SubMenu item);
+        Task<SubMenu> CreateSubMenus(SubMenu item);
 
-        Task<SubMenu?> DeleteMenuItem(Guid id);
+        Task<SubMenu?> DeleteSubMenus(Guid id);
     }
 }

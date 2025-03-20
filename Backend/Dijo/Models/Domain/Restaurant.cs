@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using RestaurantAPI.Models.Domain;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RestaurantAPI.API.Models.Domain
 {
@@ -18,6 +19,7 @@ namespace RestaurantAPI.API.Models.Domain
         //Specifies Many-to-Many with Menu
         public ICollection<Menu> Menu { get; set; } = new List<Menu>();
 
+        //public List<SubMenu> SubMenus { get; set; } = new();
         public ICollection<SubMenu> SubMenus { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace RestaurantAPI.API.Repositories
             this.dbContext = dijoDbContext;
         }
 
-        public async Task<SubMenu> CreateMenuItem(SubMenu item)
+        public async Task<SubMenu> CreateSubMenus(SubMenu item)
         {
            
             await dbContext.SubMenu.AddAsync(item);
@@ -21,7 +21,7 @@ namespace RestaurantAPI.API.Repositories
             return item;
         }
 
-        public async Task<SubMenu?> DeleteMenuItem(Guid id)
+        public async Task<SubMenu?> DeleteSubMenus(Guid id)
         {
             var deletedItem = await dbContext.SubMenu.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -36,19 +36,19 @@ namespace RestaurantAPI.API.Repositories
             return deletedItem;
         }
 
-        public async Task<List<SubMenu>> GetAllMenuItemsAsync()
+        public async Task<List<SubMenu>> GetAllSubMenusAsync()
         {
             return await dbContext.SubMenu.ToListAsync();
 
 
         }
 
-        public Task<SubMenu?> GetMenuItemByIdAsync(Guid id)
+        public Task<SubMenu?> GetSubMenusByIdAsync(Guid id)
         {
             return dbContext.SubMenu.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<SubMenu?> UpdateMenuItemAsync(Guid guid, SubMenu item)
+        public async Task<SubMenu?> UpdateSubMenusAsync(Guid guid, SubMenu item)
         {
             var existingMenuItem = dbContext.SubMenu.FirstOrDefault(x => x.Id == guid);
 
