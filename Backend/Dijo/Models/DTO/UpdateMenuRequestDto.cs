@@ -6,6 +6,9 @@ namespace RestaurantAPI.API.Models.DTO
     {
         [Required]
         public string Name { get; set; }
+
+        //[MinLength(20, ErrorMessage = "Description has to be minimum of 20 characters")]
+        //[MaxLength(20 - 50, ErrorMessage = "Description has to to be a maximum of 20 - 50 characters")]
         public string Description { get; set; }
 
         [Required]

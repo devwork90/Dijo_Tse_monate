@@ -9,7 +9,11 @@ namespace RestaurantAPI.API.Models.DTO
        
         [Required]
         public bool is_available { get; set; }
+
+        [Required]
         public Guid MenuId { get; set; }
+
+        [Required]
         public Guid restaurantId { get; set; }
         
 

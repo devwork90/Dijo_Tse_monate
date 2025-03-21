@@ -26,39 +26,46 @@ namespace RestaurantAPI.Controllers
         public async Task<IActionResult> Create([FromBody] AddMenuItemRequestDto addMenuItemRequestDto)
         {
 
-            //Map DTOs to Domain Model
-            var menuItemModel = new MenuItem
+            if(ModelState.IsValid)
             {
-                Name = addMenuItemRequestDto.Name,
-                Description = addMenuItemRequestDto.Description,
-                imageUrl = addMenuItemRequestDto.imageUrl,
-                Price = addMenuItemRequestDto.Price,
-                is_Available = addMenuItemRequestDto.is_Available,
-                restaurantId = addMenuItemRequestDto.restaurantId,
-                SubMenuId = addMenuItemRequestDto.subMenuId,
-                created_at = DateTime.UtcNow
+                //Map DTOs to Domain Model
+                var menuItemModel = new MenuItem
+                {
+                    Name = addMenuItemRequestDto.Name,
+                    Description = addMenuItemRequestDto.Description,
+                    imageUrl = addMenuItemRequestDto.imageUrl,
+                    Price = addMenuItemRequestDto.Price,
+                    is_Available = addMenuItemRequestDto.is_Available,
+                    restaurantId = addMenuItemRequestDto.restaurantId,
+                    SubMenuId = addMenuItemRequestDto.subMenuId,
+                    created_at = DateTime.UtcNow
 
-            };
+                };
 
-            //Use menuItemRepository to save data to DB layer
-            await menuItemRepository.CreateMenuItem(menuItemModel);
+                //Use menuItemRepository to save data to DB layer
+                await menuItemRepository.CreateMenuItem(menuItemModel);
 
-            //Map Domain Model to DTOs
-            var menuItemsDto = new MenuItemsDto
+                //Map Domain Model to DTOs
+                var menuItemsDto = new MenuItemsDto
+                {
+                    Id = menuItemModel.Id,
+                    Name = menuItemModel.Name,
+                    Description = menuItemModel.Description,
+                    imageUrl = menuItemModel.imageUrl,
+                    Price = menuItemModel.Price,
+                    is_Available = menuItemModel.is_Available,
+                    restaurantId = menuItemModel.restaurantId,
+                    subMenuId = menuItemModel.SubMenuId,
+                    created_at = menuItemModel.created_at
+
+                };
+
+                return CreatedAtAction(nameof(GetById), new { id = menuItemsDto.Id }, menuItemsDto);
+            }
+            else
             {
-                Id = menuItemModel.Id,
-                Name = menuItemModel.Name,
-                Description = menuItemModel.Description,
-                imageUrl = menuItemModel.imageUrl,
-                Price = menuItemModel.Price,
-                is_Available = menuItemModel.is_Available,
-                restaurantId = menuItemModel.restaurantId,
-                subMenuId = menuItemModel.SubMenuId,
-                created_at = menuItemModel.created_at
-
-            };
-
-            return CreatedAtAction(nameof(GetById), new { id = menuItemsDto.Id }, menuItemsDto );
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpGet]
@@ -127,42 +134,48 @@ namespace RestaurantAPI.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateMenuItemDto updateMenuItemDto )
         {
-            //Map Dto to Domain Model
-            var menuItemDomainModel = new MenuItem
+            if(ModelState.IsValid) 
             {
-                Name = updateMenuItemDto.Name,
-                Description = updateMenuItemDto.Description,
-                Price = updateMenuItemDto.Price,
-                is_Available = updateMenuItemDto.is_Available,
-                imageUrl = updateMenuItemDto.imageUrl,
-            };
+                //Map Dto to Domain Model
+                var menuItemDomainModel = new MenuItem
+                {
+                    Name = updateMenuItemDto.Name,
+                    Description = updateMenuItemDto.Description,
+                    Price = updateMenuItemDto.Price,
+                    is_Available = updateMenuItemDto.is_Available,
+                    imageUrl = updateMenuItemDto.imageUrl,
+                };
 
 
-            menuItemDomainModel = await menuItemRepository.UpdateMenuItem(id, menuItemDomainModel);
+                menuItemDomainModel = await menuItemRepository.UpdateMenuItem(id, menuItemDomainModel);
 
-            //Check if the item exists
-            if (menuItemDomainModel == null)
-            {
-                return NotFound();
+                //Check if the item exists
+                if (menuItemDomainModel == null)
+                {
+                    return NotFound();
+                }
+
+                var menuItemDto = new MenuItemsDto
+                {
+                    Id = menuItemDomainModel.Id,
+                    Name = menuItemDomainModel.Name,
+                    Description = menuItemDomainModel.Description,
+                    Price = menuItemDomainModel.Price,
+                    imageUrl = menuItemDomainModel.imageUrl,
+                    restaurantId = menuItemDomainModel.restaurantId,
+                    subMenuId = menuItemDomainModel.SubMenuId,
+                    updated_at = menuItemDomainModel.updated_at,
+                    created_at = menuItemDomainModel.created_at,
+
+                };
+
+                //Return DTOs back to client
+                return Ok(menuItemDto);
             }
-
-            var menuItemDto = new MenuItemsDto
+            else
             {
-                Id = menuItemDomainModel.Id,
-                Name = menuItemDomainModel.Name,
-                Description = menuItemDomainModel.Description,
-                Price = menuItemDomainModel.Price,
-                imageUrl = menuItemDomainModel.imageUrl,
-                restaurantId= menuItemDomainModel.restaurantId,
-                subMenuId = menuItemDomainModel.SubMenuId,
-                updated_at = menuItemDomainModel.updated_at,
-                created_at = menuItemDomainModel.created_at,
-
-            };
-
-            //Return DTOs back to client
-            return Ok(menuItemDto);
-
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpDelete]

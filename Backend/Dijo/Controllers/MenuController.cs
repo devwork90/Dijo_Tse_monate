@@ -113,40 +113,49 @@ namespace RestaurantAPI.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateMenuRequestDto updateMenuRequestDto)
         {
-            //Get data from DB  via - Domain model
-            var menuDomainModel = new Menu()
+            if (ModelState.IsValid)
             {
-                Name = updateMenuRequestDto.Name,
-                Description = updateMenuRequestDto.Description,
-                is_active = updateMenuRequestDto.is_active,
-            };
 
-             menuDomainModel = await menuRepository.UpdateMenuAsync(id, menuDomainModel);
+                //Get data from DB  via - Domain model
+                var menuDomainModel = new Menu()
+                {
+                    Name = updateMenuRequestDto.Name,
+                    Description = updateMenuRequestDto.Description,
+                    is_active = updateMenuRequestDto.is_active,
+                };
 
-            if (menuDomainModel == null) 
-            {
-                return NotFound();
+                menuDomainModel = await menuRepository.UpdateMenuAsync(id, menuDomainModel);
+
+                if (menuDomainModel == null)
+                {
+                    return NotFound();
+                }
+
+                //Map Dto Model to Domain Model
+                menuDomainModel.Name = updateMenuRequestDto.Name;
+                menuDomainModel.Description = updateMenuRequestDto.Description;
+                menuDomainModel.is_active = updateMenuRequestDto.is_active;
+
+                //Map Domain model back to DTO
+
+                var menuDto = new MenuDto
+                {
+                    Id = menuDomainModel.Id,
+                    Name = menuDomainModel.Name,
+                    Description = menuDomainModel.Description,
+                    is_active = menuDomainModel.is_active,
+                    updated_at = menuDomainModel.updated_at,
+                    created_at = (DateTime)menuDomainModel.created_at,
+
+                };
+
+                return Ok(menuDto);
             }
-
-            //Map Dto Model to Domain Model
-            menuDomainModel.Name = updateMenuRequestDto.Name;
-            menuDomainModel.Description = updateMenuRequestDto.Description;
-            menuDomainModel.is_active = updateMenuRequestDto.is_active;
-
-            //Map Domain model back to DTO
-
-            var menuDto = new MenuDto
-            { 
-            Id = menuDomainModel.Id,
-               Name= menuDomainModel.Name,
-               Description= menuDomainModel.Description,
-               is_active=menuDomainModel.is_active,
-               updated_at = menuDomainModel.updated_at,
-               created_at = (DateTime)menuDomainModel.created_at,
-
-            };
-
-            return Ok(menuDto);
+            else
+            {
+                return BadRequest(ModelState);
+            }
+            
         }
 
         [HttpDelete]
