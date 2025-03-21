@@ -4,6 +4,8 @@ using RestaurantAPI.API.Data;
 using RestaurantAPI.API.Models.DTO;
 using RestaurantAPI.Models.Domain;
 using RestaurantAPI.Models.DTO;
+using RestaurantAPI.Repositories;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RestaurantAPI.Controllers
 {
@@ -12,17 +14,19 @@ namespace RestaurantAPI.Controllers
     public class MenuItemController : ControllerBase
     {
         private readonly DijoDbContext dbContext;
+        private readonly IMenuItemRepository menuItemRepository;
 
-        public MenuItemController(DijoDbContext dbContext)
+        public MenuItemController(DijoDbContext dbContext, IMenuItemRepository menuItemRepository)
         {
             this.dbContext = dbContext;
+            this.menuItemRepository = menuItemRepository;
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddMenuItemRequestDto addMenuItemRequestDto)
         {
 
-            //DTO to Domain Model
+            //Map DTOs to Domain Model
             var menuItemModel = new MenuItem
             {
                 Name = addMenuItemRequestDto.Name,
@@ -35,10 +39,11 @@ namespace RestaurantAPI.Controllers
                 created_at = DateTime.UtcNow
 
             };
-            await dbContext.MenuItems.AddAsync(menuItemModel);
-            await dbContext.SaveChangesAsync();
 
-            //Map Domain Model back to DTO
+            //Use menuItemRepository to save data to DB layer
+            await menuItemRepository.CreateMenuItem(menuItemModel);
+
+            //Map Domain Model to DTOs
             var menuItemsDto = new MenuItemsDto
             {
                 Id = menuItemModel.Id,
@@ -51,7 +56,6 @@ namespace RestaurantAPI.Controllers
                 subMenuId = menuItemModel.SubMenuId,
                 created_at = menuItemModel.created_at
 
-
             };
 
             return CreatedAtAction(nameof(GetById), new { id = menuItemsDto.Id }, menuItemsDto );
@@ -62,15 +66,15 @@ namespace RestaurantAPI.Controllers
 
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
-            var menuItem = await dbContext.MenuItems.FirstOrDefaultAsync(x => x.Id == id);
+            //Get Data from the Database through the dbContext
+            var menuItem = await menuItemRepository.GetMenuItemByIdAsync(id);
 
             if (menuItem == null) 
             {
                 return NotFound();
             }
 
-            //Map domain model to Dto
-
+            // Map Domain Models to DTOs
             var menuItemDto = new MenuItemsDto
             { 
                 Id = menuItem.Id,
@@ -78,6 +82,7 @@ namespace RestaurantAPI.Controllers
                 Description = menuItem.Description,
                 is_Available = menuItem.is_Available,
                 Price = menuItem.Price,
+                imageUrl = menuItem.imageUrl,
                 created_at = menuItem.created_at ?? DateTime.UtcNow,
                 updated_at = menuItem.updated_at,
                 subMenuId = menuItem.SubMenuId,
@@ -85,18 +90,19 @@ namespace RestaurantAPI.Controllers
 
             };
 
+            //Return DTOs back to client
             return Ok(menuItemDto);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll() 
         {
-            //Get Data from the Database
-            var mennuItems = await dbContext.MenuItems.ToListAsync();
+            //Get Data from the Database through the dbContext
+            var availableMenuItems = await menuItemRepository.GetAllMenuItemsAsync();
 
-            //Map menuItems model to the Dto
+            //Map Domain Models to the DTOs
             var menuItemDto = new List<MenuItemsDto>();
-            foreach (var item in mennuItems) 
+            foreach (var item in availableMenuItems) 
             {
                 menuItemDto.Add(new MenuItemsDto
                 {
@@ -113,6 +119,7 @@ namespace RestaurantAPI.Controllers
                 });
             }
 
+            //Return DTOs back to client
             return Ok(menuItemDto);
         }
 
@@ -120,40 +127,40 @@ namespace RestaurantAPI.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateMenuItemDto updateMenuItemDto )
         {
+            //Map Dto to Domain Model
+            var menuItemDomainModel = new MenuItem
+            {
+                Name = updateMenuItemDto.Name,
+                Description = updateMenuItemDto.Description,
+                Price = updateMenuItemDto.Price,
+                is_Available = updateMenuItemDto.is_Available,
+                imageUrl = updateMenuItemDto.imageUrl,
+            };
 
-            var existingMenuItem = await dbContext.MenuItems.FirstOrDefaultAsync(x => x.Id == id);
 
-            if (existingMenuItem == null)
+            menuItemDomainModel = await menuItemRepository.UpdateMenuItem(id, menuItemDomainModel);
+
+            //Check if the item exists
+            if (menuItemDomainModel == null)
             {
                 return NotFound();
             }
 
-            //Map Dto to Domain Model
-
-            existingMenuItem.Name = updateMenuItemDto.Name;
-            existingMenuItem.Description = updateMenuItemDto.Description;
-            existingMenuItem.Price = updateMenuItemDto.Price;
-            existingMenuItem.imageUrl = updateMenuItemDto.imageUrl;
-            existingMenuItem.updated_at = DateTime.UtcNow;
-              
-            
-            await dbContext.SaveChangesAsync();
-
             var menuItemDto = new MenuItemsDto
             {
-                Id = existingMenuItem.Id,
-                Name = existingMenuItem.Name,
-                Description = existingMenuItem.Description,
-                Price = existingMenuItem.Price,
-                imageUrl = existingMenuItem.imageUrl,
-                restaurantId=existingMenuItem.restaurantId,
-                subMenuId = existingMenuItem.SubMenuId,
-                updated_at = existingMenuItem.updated_at,
-                created_at =existingMenuItem.created_at,
-
+                Id = menuItemDomainModel.Id,
+                Name = menuItemDomainModel.Name,
+                Description = menuItemDomainModel.Description,
+                Price = menuItemDomainModel.Price,
+                imageUrl = menuItemDomainModel.imageUrl,
+                restaurantId= menuItemDomainModel.restaurantId,
+                subMenuId = menuItemDomainModel.SubMenuId,
+                updated_at = menuItemDomainModel.updated_at,
+                created_at = menuItemDomainModel.created_at,
 
             };
 
+            //Return DTOs back to client
             return Ok(menuItemDto);
 
         }
@@ -163,16 +170,13 @@ namespace RestaurantAPI.Controllers
 
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var existingMenuItem = await dbContext.MenuItems.FirstOrDefaultAsync(x => x.Id == id);
+            var existingMenuItem = await menuItemRepository.DeleteMenuItem(id);
 
             if (existingMenuItem == null)
             {
                 return NotFound();
 
             }
-
-            dbContext.Remove(existingMenuItem);
-            await dbContext.SaveChangesAsync();
 
             return NoContent();
 

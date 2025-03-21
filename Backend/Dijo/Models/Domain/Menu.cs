@@ -4,7 +4,7 @@
     {
 
         public Guid Id { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public string? Description { get; set; }
         public bool is_active {  get; set; }
         public DateTime? created_at { get; set; } = DateTime.UtcNow;

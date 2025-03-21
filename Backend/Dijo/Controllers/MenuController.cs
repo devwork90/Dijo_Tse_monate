@@ -29,6 +29,7 @@ namespace RestaurantAPI.API.Controllers
             var menuDto = new List<MenuDto>();
             foreach (var item in menuItems)
             {
+#pragma warning disable CS8601 // Possible null reference assignment.
                 menuDto.Add(new MenuDto
 
                 { 
@@ -40,6 +41,7 @@ namespace RestaurantAPI.API.Controllers
                     updated_at = item.updated_at,
 
                 });
+#pragma warning restore CS8601 // Possible null reference assignment.
             }
 
             return Ok(menuDto);
