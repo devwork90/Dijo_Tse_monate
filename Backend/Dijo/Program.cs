@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.API.Data;
 using RestaurantAPI.API.Repositories;
 using RestaurantAPI.Repositories;
+using RestaurantAPI.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,11 @@ builder.Services.AddScoped<IRestaurantRepository, SQLRestaurantRepository>();
 builder.Services.AddScoped<IMenuRepository, SQLMenuRepository>();
 builder.Services.AddScoped<ISubMenuRepository, SQLSubMenuRepository>();
 builder.Services.AddScoped<IMenuItemRepository, SQLMenuItemRepository>();
+
+builder.Services.AddScoped<IMenuItemService, MenuItemService>();
+builder.Services.AddScoped<ISubMenuService, SubMenuService>();
+builder.Services.AddScoped<IRestaurantService, RestaurantService>();
+builder.Services.AddScoped<IMenuService, MenuService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

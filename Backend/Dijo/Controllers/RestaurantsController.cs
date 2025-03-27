@@ -1,10 +1,6 @@
-﻿using RestaurantAPI.API.Data;
-using RestaurantAPI.API.Models.Domain;
-using RestaurantAPI.API.Models.DTO;
-using RestaurantAPI.API.Repositories;
+﻿using RestaurantAPI.API.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
+using RestaurantAPI.Service;
 
 namespace RestaurantAPI.API.Controllers
 {
@@ -12,178 +8,60 @@ namespace RestaurantAPI.API.Controllers
     [ApiController]
     public class RestaurantsController : ControllerBase
     {
-        private readonly IRestaurantRepository restaurantRepository;
+        
+        private readonly IRestaurantService restaurantService;
 
-        public RestaurantsController(IRestaurantRepository restaurantRepository)
+        public RestaurantsController(IRestaurantService restaurantService)
         {
-            this.restaurantRepository = restaurantRepository;
+            this.restaurantService = restaurantService;
         }
 
         //Get all restaurants 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            //Get Data from Database via Domain model
-            var restaurants = await restaurantRepository.GetAllAsync();
-
-            //Map Domain modela to DTOs
-            var restaurantDto = new List<RestaurantDto>();
-            foreach (var restaurant in restaurants)
-            {
-                restaurantDto.Add(new RestaurantDto
-                {
-                    Id = restaurant.Id,
-                    name = restaurant.name,
-                    Address = restaurant.Address,
-                    description = restaurant.description,
-                    logo_url = restaurant.logo_url,
-                    rating = restaurant.rating,
-                    is_open = restaurant.is_open,
-                    created_at = restaurant.created_at ?? DateTime.Now,
-                    updated_at = restaurant.updated_at,
-                
-                });
-            }
-
-            //return DTOs back to client
-            return Ok(restaurantDto);
+            var restaurantsList = await restaurantService.GetAllRestaurantsAsync();
+            return Ok(restaurantsList);
         }
 
         [HttpGet]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id) {
 
-            //Get data from Database via - Domain models
-            var restaurant = await restaurantRepository.GetRestaurantbyIdAsync(id);
-
-            if (restaurant == null)
-            {
-                return NotFound();
-            }
-
-            //Map Domain models to DTO
-
-            var restaurantDto = new RestaurantDto
-            {
-                Id = restaurant.Id,
-                name = restaurant.name,
-                Address = restaurant.Address,
-                description = restaurant.description,
-                logo_url = restaurant.logo_url,
-                rating = restaurant.rating,
-                is_open = restaurant.is_open,
-                created_at = restaurant.created_at ?? DateTime.Now,
-                updated_at = restaurant.updated_at,
-
-            };
-            return Ok(restaurantDto);
+            var foundRestaurant = await restaurantService.GetRestaurantbyIdAsync(id);
+            if (foundRestaurant == null) { return NotFound(); }
+            return Ok(foundRestaurant);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddRestaurantRequestDto addRestaurantRequestDto)
         {
-            if (ModelState.IsValid)
+           if(ModelState.IsValid) 
             {
-                //Map DTO to Domain model
-                var restaurantDomainModel = new Restaurant
-                {
-                    name = addRestaurantRequestDto.name,
-                    Address = addRestaurantRequestDto.Address,
-                    description = addRestaurantRequestDto.description,
-                    logo_url = addRestaurantRequestDto.logo_url,
-                    rating = addRestaurantRequestDto.rating,
-                    is_open = addRestaurantRequestDto.is_open,
-                    created_at = DateTime.UtcNow
-
-                };
-
-                //Use domain model to ceate a restaurant in the DB
-                await restaurantRepository.CreateRestaurantAsync(restaurantDomainModel);
-
-
-                //Map Domain models back to DTOs
-                var restaurantDto = new RestaurantDto
-                {
-                    Id = restaurantDomainModel.Id,
-                    name = restaurantDomainModel.name,
-                    Address = restaurantDomainModel.Address,
-                    description = restaurantDomainModel.description,
-                    logo_url = restaurantDomainModel.logo_url,
-                    rating = restaurantDomainModel.rating,
-                    created_at = (DateTime)restaurantDomainModel.created_at,
-                    is_open = restaurantDomainModel.is_open,
-                };
-
-
-                return CreatedAtAction(nameof(GetById), new { id = restaurantDto.Id }, restaurantDto);
+                var cratedRestaurant = await restaurantService.CreateRestaurantAsync(addRestaurantRequestDto);
+                return CreatedAtAction(nameof(GetById), new { id = cratedRestaurant.Id }, cratedRestaurant);
             }
-            else
-            { 
-                return BadRequest(ModelState);
-            }
+            else { return BadRequest(ModelState); }
         }
 
         [HttpDelete]
         [Route("{id:Guid}")]
         public async Task<IActionResult> DeleteItem([FromRoute] Guid id) 
         {
-            //Get data from Database via - Domain models
-            var restaurant = await restaurantRepository.DeleteRestaurantAsync(id);
-
-            if (restaurant == null)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
+            var restaurant = await restaurantService.DeleteRestaurantAsync(id);
+            if (!restaurant){ return NotFound();}return NoContent();
         }
 
         [HttpPut]
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id,[FromBody] UpdateRestaurantRequestDto updateRestaurantRequestDto)
         {
-            if (ModelState.IsValid)
+           if(ModelState.IsValid) 
             {
-                //Map DTO to Domain Model
-                var restaurantDomainModel = new Restaurant
-                {
-                    name = updateRestaurantRequestDto.name,
-                    Address = updateRestaurantRequestDto.Address,
-                    description = updateRestaurantRequestDto.description,
-                    logo_url = updateRestaurantRequestDto.logo_url,
-                    rating = updateRestaurantRequestDto.rating,
-                    is_open = updateRestaurantRequestDto.is_open,
-                };
-
-                //Check if the restaurant exists
-                restaurantDomainModel = await restaurantRepository.UpdateRestaurantAsync(id, restaurantDomainModel);
-
-                if (restaurantDomainModel == null)
-                {
-                    return NotFound();
-                }
-
-                //Convert Domain Model to DTO
-
-                var restaurantDto = new RestaurantDto
-                {
-                    Id = restaurantDomainModel.Id,
-                    name = restaurantDomainModel.name,
-                    Address = restaurantDomainModel.Address,
-                    description = restaurantDomainModel.description,
-                    logo_url = restaurantDomainModel.logo_url,
-                    rating = restaurantDomainModel.rating,
-                    is_open = restaurantDomainModel.is_open,
-                    created_at = (DateTime)restaurantDomainModel.created_at,
-                    updated_at = restaurantDomainModel.updated_at,
-
-                };
-                return Ok(restaurantDto);
+                var updatedRestaurant = await restaurantService.UpdateRestaurantAsync(id, updateRestaurantRequestDto);
+                return Ok(updatedRestaurant);
             }
-            else
-            { 
-                return BadRequest(ModelState);
-            }
+            else { return( BadRequest(ModelState)); }
         }
     }
 }
