@@ -1,19 +1,27 @@
 ﻿using RestaurantAPI.API.Models.Domain;
 using RestaurantAPI.API.Models.DTO;
 using RestaurantAPI.API.Repositories;
+using RestaurantAPI.Models.DTO;
 
 namespace RestaurantAPI.Service
 {
     public class RestaurantService : IRestaurantService
     {
         private readonly IRestaurantRepository restaurantRepository;
+        private readonly ISubMenuRepository subMenuRepository;
+        private readonly IMenuRepository menuRepository;
 
-        public RestaurantService(IRestaurantRepository restaurantRepository)
+        public RestaurantService(IRestaurantRepository restaurantRepository,
+                                ISubMenuRepository subMenuRepository,
+                                IMenuRepository menuRepository)
         {
             this.restaurantRepository = restaurantRepository;
+            this.subMenuRepository = subMenuRepository;
+            this.menuRepository = menuRepository;
         }
 
         public async Task<RestaurantDto> CreateRestaurantAsync(AddRestaurantRequestDto addRestaurantRequestDto)
+
         {
             //Map DTO to Domain model
             var restaurantDomainModel = new Restaurant
@@ -59,32 +67,61 @@ namespace RestaurantAPI.Service
             return true;
         }
 
-        public async Task<List<RestaurantDto>> GetAllRestaurantsAsync()
+        public async Task<List<RestaurantResponseDto>> GetAllRestaurantsAsync(string? menuName)
         {
             //Get Data from Database via Domain model
-            var restaurants = await restaurantRepository.GetAllAsync();
+            var restaurants = await restaurantRepository.GetAllAsync(menuName);
+            var Menus = await menuRepository.GetAllMenusAsync();
+            var SubMenus = await subMenuRepository.GetAllSubMenusAsync();
 
-            //Map Domain modela to DTOs
-            var restaurantDto = new List<RestaurantDto>();
-            foreach (var restaurant in restaurants)
+            if(menuName == null)
             {
-                restaurantDto.Add(new RestaurantDto
+                //Map Domain modela to DTOs
+                var restaurantDto = new List<RestaurantDto>();
+                foreach (var restaurant in restaurants)
                 {
-                    Id = restaurant.Id,
-                    name = restaurant.name,
-                    Address = restaurant.Address,
-                    description = restaurant.description,
-                    logo_url = restaurant.logo_url,
-                    rating = restaurant.rating,
-                    is_open = restaurant.is_open,
-                    created_at = restaurant.created_at ?? DateTime.Now,
-                    updated_at = restaurant.updated_at,
+                    restaurantDto.Add(new RestaurantDto
+                    {
+                        Id = restaurant.Id,
+                        name = restaurant.name,
+                        Address = restaurant.Address,
+                        description = restaurant.description,
+                        logo_url = restaurant.logo_url,
+                        rating = restaurant.rating,
+                        is_open = restaurant.is_open,
+                        created_at = restaurant.created_at ?? DateTime.Now,
+                        updated_at = restaurant.updated_at,
 
-                });
+                    });
+                }
+
+                //return DTOs back to client
+                return new List<RestaurantResponseDto> { new RestaurantResponseDto { Restaurants = restaurantDto } };
             }
+            else
+            {
+                var result = restaurants
+                .Join(SubMenus,
+                  r => r.Id,
+                  sb => sb.restaurantId,
+                  (r, sb) => new { r, sb })
+                .Join(Menus,
+                  rs => rs.sb.MenuId,
+                   m => m.Id,
+                   (rs, m) => new { rs.r, rs.sb, m })
+                .Where(rsm => rsm.m.Name == menuName)
+                .GroupBy(rsm => new { rsm.r.Id, rsm.r.name })
+                .Select(g => new RestaurantCategoryDto
+                {
+                    Id = g.Key.Id,
+                    RestaurantName = g.Key.name,
+                    MenuName = g.Min(x => x.m.Name),
+                    SubMenuName = g.Min(x => x.sb.Name),
+                    SubMenuId = g.Min(x => x.sb.Id)
+                }).ToList();
 
-            //return DTOs back to client
-            return restaurantDto;
+                return new List<RestaurantResponseDto> { new RestaurantResponseDto { Categories = result } };
+            }
         }
 
         public async Task<RestaurantDto?> GetRestaurantbyIdAsync(Guid id)

@@ -39,7 +39,7 @@ namespace RestaurantAPI.API.Repositories
             return deletedRestaurant;
         }
 
-        public async Task<List<Restaurant>> GetAllAsync()
+        public async Task<List<Restaurant>> GetAllAsync(string? menuName)
         {
             return await dbContext.Restaurants.ToListAsync();
         }

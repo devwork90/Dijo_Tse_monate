@@ -18,9 +18,9 @@ namespace RestaurantAPI.API.Controllers
 
         //Get all restaurants 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string? menuName)
         {
-            var restaurantsList = await restaurantService.GetAllRestaurantsAsync();
+            var restaurantsList = await restaurantService.GetAllRestaurantsAsync(menuName);
             return Ok(restaurantsList);
         }
 

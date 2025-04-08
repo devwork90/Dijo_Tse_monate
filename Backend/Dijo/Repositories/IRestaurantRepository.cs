@@ -4,7 +4,7 @@ namespace RestaurantAPI.API.Repositories
 {
     public interface IRestaurantRepository
     {
-        Task<List<Restaurant>> GetAllAsync();
+        Task<List<Restaurant>> GetAllAsync(string? menuName);
 
         Task<Restaurant?> GetRestaurantbyIdAsync(Guid guid);
 
