@@ -33,6 +33,14 @@ namespace RestaurantAPI.API.Controllers
             return Ok(foundRestaurant);
         }
 
+        [HttpGet("{restaurantId}/menu-items")]
+        public async Task<IActionResult> GetMenuItems(Guid restaurantId)
+        {
+            var items = await restaurantService.GetMenuItemsByRestaurantAsync(restaurantId);
+            return Ok(items);
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddRestaurantRequestDto addRestaurantRequestDto)
         {
