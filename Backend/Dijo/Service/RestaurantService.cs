@@ -2,7 +2,8 @@
 using RestaurantAPI.API.Models.DTO;
 using RestaurantAPI.API.Repositories;
 using RestaurantAPI.Models.DTO;
-
+using RestaurantAPI.Repositories;
+using System.Linq;
 namespace RestaurantAPI.Service
 {
     public class RestaurantService : IRestaurantService
@@ -10,12 +11,15 @@ namespace RestaurantAPI.Service
         private readonly IRestaurantRepository restaurantRepository;
         private readonly ISubMenuRepository subMenuRepository;
         private readonly IMenuRepository menuRepository;
+        private readonly IMenuItemRepository menuItemRepository;
 
         public RestaurantService(IRestaurantRepository restaurantRepository,
+                                IMenuItemRepository menuItemRepository,
                                 ISubMenuRepository subMenuRepository,
                                 IMenuRepository menuRepository)
         {
             this.restaurantRepository = restaurantRepository;
+            this.menuItemRepository = menuItemRepository;
             this.subMenuRepository = subMenuRepository;
             this.menuRepository = menuRepository;
         }
@@ -73,6 +77,7 @@ namespace RestaurantAPI.Service
             var restaurants = await restaurantRepository.GetAllAsync(menuName);
             var Menus = await menuRepository.GetAllMenusAsync();
             var SubMenus = await subMenuRepository.GetAllSubMenusAsync();
+            var MenuItems = await menuItemRepository.GetAllMenuItemsAsync();
 
             if(menuName == null)
             {
@@ -122,6 +127,32 @@ namespace RestaurantAPI.Service
 
                 return new List<RestaurantResponseDto> { new RestaurantResponseDto { Categories = result } };
             }
+        }
+
+        public async Task<List<MenuItemsDto>> GetMenuItemsByRestaurantAsync(Guid restaurantId)
+        {
+            var MenuItems = await menuItemRepository.GetAllMenuItemsAsync();
+            var SubMenus = await subMenuRepository.GetAllSubMenusAsync();
+            var returnedMenuItems = MenuItems
+                .Where(mi => mi.restaurantId == restaurantId)
+                .Join( SubMenus,
+                mi => mi.SubMenuId,
+                sb => sb.Id,
+                (mi, sb) => new MenuItemsDto
+                {
+                    Id = mi.Id,
+                    Name = mi.Name,
+                    Description = mi.Description,
+                    imageUrl = mi.imageUrl,
+                    Price = mi.Price,
+                    subMenuId = mi.SubMenuId,
+                    is_Available = mi.is_Available,
+                    restaurantId = mi.restaurantId,
+
+
+                })
+                .ToList();
+            return returnedMenuItems;
         }
 
         public async Task<RestaurantDto?> GetRestaurantbyIdAsync(Guid id)

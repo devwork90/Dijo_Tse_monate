@@ -15,5 +15,7 @@ namespace RestaurantAPI.Service
         Task<RestaurantDto?> UpdateRestaurantAsync(Guid id, UpdateRestaurantRequestDto UpdateRestaurantRequestDt);
 
         Task<bool> DeleteRestaurantAsync(Guid id);
+
+        Task<List<MenuItemsDto>> GetMenuItemsByRestaurantAsync(Guid restaurantId);
     }
 }
