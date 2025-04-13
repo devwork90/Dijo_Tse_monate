@@ -129,7 +129,6 @@ namespace RestaurantAPI.Service
                 return new List<RestaurantResponseDto> { new RestaurantResponseDto { Categories = result } };
             }
         }
-
         public async Task<List<GroupedMenuItemsDto>> GetMenuItemsByRestaurantAsync(Guid restaurantId)
         {
             var menuItems = await menuItemRepository.GetAllMenuItemsAsync();
