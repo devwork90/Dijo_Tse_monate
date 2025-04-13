@@ -145,19 +145,18 @@ namespace RestaurantAPI.Service
                SubMenuId = group.Key,
                SubMenuName = SubMenus.FirstOrDefault(sm => sm.Id == group.Key)?.Name,
                Items = group.Select(mi => new MenuItemsDto
-            {
-                Id = mi.Id,
-                Name = mi.Name,
-                Description = mi.Description,
-                imageUrl = mi.imageUrl,
-                Price = mi.Price,
-                subMenuId = mi.SubMenuId,
-                is_Available = mi.is_Available,
-                restaurantId = mi.restaurantId
+               {
+                    Id = mi.Id,
+                    Name = mi.Name,
+                    Description = mi.Description,
+                    imageUrl = mi.imageUrl,
+                    Price = mi.Price,
+                    subMenuId = mi.SubMenuId,
+                    is_Available = mi.is_Available,
+                    restaurantId = mi.restaurantId
 
             }).ToList()
-        })
-                .ToList();
+        }).ToList();
             return groupedMenuItems;
         }
 
