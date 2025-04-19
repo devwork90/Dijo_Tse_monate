@@ -5,11 +5,13 @@ using RestaurantAPI.API.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RestaurantAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+   
     public class MenuController : ControllerBase
     {
         
@@ -22,6 +24,7 @@ namespace RestaurantAPI.API.Controllers
         }
 
         [HttpGet]
+        //[Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetAll() 
         {
             var ListOfMenus =  await menuService.GetMenusAsync();
@@ -30,6 +33,7 @@ namespace RestaurantAPI.API.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetById([FromRoute] Guid id) {
             
             var foundMenu = await menuService.GetmenuByIdAsync(id);
@@ -39,6 +43,7 @@ namespace RestaurantAPI.API.Controllers
         }
 
         [HttpPost]
+        //[Authorize(Roles = "Writer")]
         public async Task<IActionResult> Create([FromBody] AddMenuRequestDto addMenuRequestDto) {
 
             var CreatedMenu = await menuService.CreateMenu(addMenuRequestDto);
@@ -48,6 +53,7 @@ namespace RestaurantAPI.API.Controllers
 
         [HttpPut]
         [Route("{id:Guid}")]
+        //[Authorize(Roles = "Writer")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateMenuRequestDto updateMenuRequestDto)
         {
             if (ModelState.IsValid)
@@ -61,6 +67,7 @@ namespace RestaurantAPI.API.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
+        //[Authorize(Roles = "Writer")]
         public async Task<IActionResult> DeleteItem([FromRoute] Guid id)
         {
             var deletedMenu = await menuService.DeleteMenu(id);

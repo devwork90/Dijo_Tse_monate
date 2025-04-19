@@ -1,6 +1,7 @@
 ﻿using RestaurantAPI.API.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantAPI.Service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RestaurantAPI.API.Controllers
 {
@@ -18,6 +19,7 @@ namespace RestaurantAPI.API.Controllers
 
         //Get all restaurants 
         [HttpGet]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetAll([FromQuery] string? menuName)
         {
             var restaurantsList = await restaurantService.GetAllRestaurantsAsync(menuName);
@@ -34,6 +36,7 @@ namespace RestaurantAPI.API.Controllers
         }
 
         [HttpGet("{restaurantId}/menu-items")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetMenuItems(Guid restaurantId)
         {
             var items = await restaurantService.GetMenuItemsByRestaurantAsync(restaurantId);
