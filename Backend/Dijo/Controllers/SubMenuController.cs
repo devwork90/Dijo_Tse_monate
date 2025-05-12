@@ -34,7 +34,7 @@ namespace RestaurantAPI.API.Controllers
         public async Task<IActionResult> Create([FromBody] AddSubMenuDto addSubMenuDto)
         {
             if(ModelState.IsValid) 
-            {   
+            {       
                 var createdSubMenu = await subMenuService.CreateSubMenus(addSubMenuDto);
                 return CreatedAtAction(nameof(GetById), new { id = createdSubMenu.Id }, createdSubMenu);
             }

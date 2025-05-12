@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Service;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Json;
 
 namespace RestaurantAPI.API.Controllers
 {
@@ -17,23 +18,27 @@ namespace RestaurantAPI.API.Controllers
         
         //private readonly IMenuRepository menuRepository;
         private readonly IMenuService menuService;
+        private readonly ILogger<MenuController> logger;
 
-        public MenuController(IMenuRepository menuRepository, IMenuService menuService)
+        public MenuController(IMenuRepository menuRepository, IMenuService menuService,
+            ILogger<MenuController> logger)
         {
             this.menuService = menuService;
+            this.logger = logger;
         }
 
         [HttpGet]
         //[Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetAll() 
         {
-            var ListOfMenus =  await menuService.GetMenusAsync();
+            var ListOfMenus = await menuService.GetMenusAsync(); 
+            //Create exception
             return Ok(ListOfMenus);
         }
 
         [HttpGet]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "Reader")]
+        //[Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetById([FromRoute] Guid id) {
             
             var foundMenu = await menuService.GetmenuByIdAsync(id);
