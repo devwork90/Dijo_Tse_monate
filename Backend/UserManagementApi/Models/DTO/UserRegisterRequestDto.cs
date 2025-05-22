@@ -17,6 +17,8 @@ namespace UserManagementApi.Models.DTO
         [DataType(DataType.PhoneNumber)]
         public string Phonenumber { get; set; }
 
+        public Guid? RestaurantId { get; set; }
+
         public string[] Roles { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace RestaurantAPI.API.Controllers
 
         //Get all restaurants 
         [HttpGet]
-        [Authorize(Roles = "Customer")]
+        //[Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetAll([FromQuery] string? menuName)
         {
             var restaurantsList = await restaurantService.GetAllRestaurantsAsync(menuName);

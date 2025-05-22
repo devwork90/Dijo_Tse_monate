@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Domain\" />
     <Folder Include="Service\" />
   </ItemGroup>
 

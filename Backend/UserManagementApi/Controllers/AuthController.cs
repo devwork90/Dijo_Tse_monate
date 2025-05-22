@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using UserManagementApi.Models.Domain;
 using UserManagementApi.Models.DTO;
 using UserManagementApi.Repositories;
 
@@ -10,9 +11,9 @@ namespace UserManagementApi.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> userManager;
+        private readonly UserManager<ExtendedUser> userManager;
         private readonly ITokenRepository tokenRepository;
-        public AuthController(UserManager<IdentityUser> userManager, ITokenRepository tokenRepository)
+        public AuthController(UserManager<ExtendedUser> userManager, ITokenRepository tokenRepository)
         {
             this.userManager = userManager;
             this.tokenRepository = tokenRepository;
@@ -22,12 +23,13 @@ namespace UserManagementApi.Controllers
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterRequestDto userRegisterRequestDto)
         {
-            var identityUser = new IdentityUser
+            var identityUser = new ExtendedUser
             {
                
                 Email = userRegisterRequestDto.Username,
                 UserName = userRegisterRequestDto.Name,
-                PhoneNumber = userRegisterRequestDto.Phonenumber
+                PhoneNumber = userRegisterRequestDto.Phonenumber,
+                RestaurantId = userRegisterRequestDto.RestaurantId
                
             };
 
@@ -71,7 +73,7 @@ namespace UserManagementApi.Controllers
                     {
                        //Create Token
 
-                       var jwToken = tokenRepository.CreateJWTToken(user, roles.ToList());
+                       var jwToken = tokenRepository.CreateJWTToken((ExtendedUser)user, roles.ToList());
 
                         var token = new LoginResponseDto { JwtToken = jwToken };
                         return Ok(token);

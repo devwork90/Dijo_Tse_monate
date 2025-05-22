@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using UserManagementApi.Models.Domain;
 
 namespace UserManagementApi.Data
 {
-    public class DijoDbAuthContext : IdentityDbContext
+    public class DijoDbAuthContext : IdentityDbContext<ExtendedUser>
     {
         public DijoDbAuthContext(DbContextOptions options) : base(options)
         {

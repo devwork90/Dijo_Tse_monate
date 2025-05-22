@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using UserManagementApi.Models.Domain;
 
 namespace UserManagementApi.Repositories
 {
     public interface ITokenRepository
     {
-        string CreateJWTToken(IdentityUser user, List<string> roles);
+        string CreateJWTToken(ExtendedUser user, List<string> roles);
 
     }
 }

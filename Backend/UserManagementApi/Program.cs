@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UserManagementApi.Repositories;
+using Microsoft.OpenApi.Models;
+using UserManagementApi.Models.Domain;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
 builder.Services.AddControllers();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -24,9 +25,9 @@ builder.Services.AddDbContext<DijoDbAuthContext>(
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 // Add Identity
 
-builder.Services.AddIdentityCore<IdentityUser>()
-    .AddRoles<IdentityRole>()
-    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("Dijo")
+builder.Services.AddIdentity<ExtendedUser, IdentityRole>()
+    //.AddRoles<IdentityRole>()
+    .AddTokenProvider<DataProtectorTokenProvider<ExtendedUser>>("Dijo")
     .AddEntityFrameworkStores<DijoDbAuthContext>()
     .AddDefaultTokenProviders();
 

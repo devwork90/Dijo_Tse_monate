@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using UserManagementApi.Models.Domain;
 
 namespace UserManagementApi.Repositories
 {
@@ -13,12 +14,13 @@ namespace UserManagementApi.Repositories
         {
            this.configuration = configuration;
         }
-        public string CreateJWTToken(IdentityUser user, List<string> roles)
+        public string CreateJWTToken(ExtendedUser user, List<string> roles)
         {
             //Create claims 
             var claims = new List<Claim>();
 
             claims.Add(new Claim(ClaimTypes.Email, user.Email));
+            claims.Add(new Claim("RestaurantId", user.RestaurantId.ToString()));
 
             foreach (var role in roles)
             {
