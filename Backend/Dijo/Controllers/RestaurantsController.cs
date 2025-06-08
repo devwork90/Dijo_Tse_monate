@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RestaurantAPI.Service;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace RestaurantAPI.API.Controllers
 {
@@ -19,7 +20,7 @@ namespace RestaurantAPI.API.Controllers
 
         //Get all restaurants 
         [HttpGet]
-        //[Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Admin, Customer")]
         public async Task<IActionResult> GetAll([FromQuery] string? menuName)
         {
             var restaurantsList = await restaurantService.GetAllRestaurantsAsync(menuName);
@@ -35,10 +36,28 @@ namespace RestaurantAPI.API.Controllers
             return Ok(foundRestaurant);
         }
 
-        [HttpGet("{restaurantId}/menu-items")]
-        [Authorize(Roles = "Customer")]
+        [HttpGet("menu-items")]
+        [Authorize(Roles = "Admin, Customer")]
         public async Task<IActionResult> GetMenuItems(Guid restaurantId)
         {
+            var roles = HttpContext.User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+
+            if (roles.Contains("Admin") || roles.Contains("Employee"))
+            {
+                if (!HttpContext.Items.TryGetValue("RestaurantId", out var restaurantIdObj))
+                    return Forbid();
+
+                var scopedRestaurantId = (Guid)restaurantIdObj;
+
+                //Prevent Admin Users from accessing another restaurant menuItem
+                if(scopedRestaurantId != restaurantId)
+                {
+                    return Forbid();
+                }
+            }
             var items = await restaurantService.GetMenuItemsByRestaurantAsync(restaurantId);
             return Ok(items);
         }

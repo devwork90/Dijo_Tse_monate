@@ -12,7 +12,7 @@ namespace UserManagementApi.Repositories
         private readonly IConfiguration configuration;
         public TokenRepository(IConfiguration configuration)
         {
-           this.configuration = configuration;
+            this.configuration = configuration;
         }
         public string CreateJWTToken(ExtendedUser user, List<string> roles)
         {
@@ -20,7 +20,11 @@ namespace UserManagementApi.Repositories
             var claims = new List<Claim>();
 
             claims.Add(new Claim(ClaimTypes.Email, user.Email));
-            claims.Add(new Claim("RestaurantId", user.RestaurantId.ToString()));
+
+            if (!roles.Contains("Customer") && user.RestaurantId.HasValue)
+            {
+                claims.Add(new Claim("RestaurantId", user.RestaurantId.ToString()));
+            }
 
             foreach (var role in roles)
             {
@@ -37,7 +41,7 @@ namespace UserManagementApi.Repositories
                 expires: DateTime.UtcNow.AddMinutes(10),
                 signingCredentials: credentials
                 );
-            
+
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }

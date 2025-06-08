@@ -104,12 +104,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 };
 
-app.UseMiddleware<ExceptionHandllerMiddleware>();
-
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionHandllerMiddleware>();
+app.UseMiddleware<RestaurantContextMiddleware>();
 
 app.MapControllers();
 
