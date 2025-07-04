@@ -40,12 +40,8 @@ namespace RestaurantAPI.API.Controllers
         [Authorize(Roles = "Admin, Customer")]
         public async Task<IActionResult> GetMenuItems(Guid restaurantId)
         {
-            var roles = HttpContext.User.Claims
-                .Where(c => c.Type == ClaimTypes.Role)
-                .Select(c => c.Value)
-                .ToList();
-
-            if (roles.Contains("Admin") || roles.Contains("Employee"))
+            
+            if (User.IsInRole("Admin") || User.IsInRole("Employee"))
             {
                 if (!HttpContext.Items.TryGetValue("RestaurantId", out var restaurantIdObj))
                     return Forbid();
