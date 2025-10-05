@@ -6,7 +6,7 @@ const Navbar = () => {
   return (
     <div className="navbar">
       <h1>hello </h1>
-      <img src={assets.gs_logo} alt="" />
+      <img src={assets.logo} alt="" />
     </div>
   );
 };
