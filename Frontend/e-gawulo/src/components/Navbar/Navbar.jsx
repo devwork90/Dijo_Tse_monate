@@ -18,7 +18,7 @@ const Navbar = () => {
           onClick={() => setMenu("menu")}
           className={menu === "menu" ? "active" : ""}
         >
-          menu
+          Restaurants
         </li>
         <li
           onClick={() => setMenu("mobile-app")}

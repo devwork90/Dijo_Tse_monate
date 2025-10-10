@@ -1,0 +1,49 @@
+.header{
+    height: 34vw;
+    margin: 30px auto;
+    background: url("../../assets/shisa_header_img.jpeg") no-repeat center;
+    background-size: contain;
+    position: relative;
+    margin-top: -15px;
+    
+}
+
+.header-contents{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    background: rgba(0, 0, 0, 0.1); /* 40% dark overlay */
+    border-radius: 40px;
+    gap: 1.5 vw;
+    max-width: 50%;
+    bottom: 6vw;
+    left: 6vw;
+    animation: fadeIn 3s;
+}
+
+.header-contents h2{
+    font-weight: 500;
+    color: rgb(214, 213, 213);
+    font-size: max(4.5vw, 24px);
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.header-contents p{
+    font-size: max(1.5vw, 16px);
+    color: rgb(240, 240, 236);
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+    line-height: 1.5;
+}
+
+.header-contents button{
+    border: none;
+    color: #747474;
+    font-weight: 500;
+    padding: 1vw 2.3vw;
+    background-color: white;
+    font-size: max(1vw, 13px);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
