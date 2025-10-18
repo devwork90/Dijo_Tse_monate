@@ -122,6 +122,46 @@ namespace RestaurantAPI.API.Data
                     created_at =  new DateTime(2025, 4, 10, 20, 15, 0),
                     updated_at = null,
                 },
+
+                new Menu()
+                {
+                    Id = Guid.Parse("ec4c5514-ae37-4b7c-ac36-671a3923f6ea"),
+                    Name = "Health food",
+                    Description = "All health menus",
+                    is_active = true,
+                    created_at = new DateTime(2025, 2, 15, 14, 30, 0),
+                    updated_at = null,
+                },
+
+                new Menu()
+                {
+                    Id = Guid.Parse("89b565b4-bf45-46e1-a798-17dd7df1fd94"),
+                    Name = "Breakfast",
+                    Description = "All your Breakfast meals",
+                    is_active= true,
+                    created_at =  new DateTime(2025, 2, 27, 18, 15, 0),
+                    updated_at = null,
+                },
+
+                new Menu()
+                {
+                    Id = Guid.Parse("58077521-cfc5-41a3-8414-5a5c8a7d4da3"),
+                    Name = "Seafood",
+                    Description = "All your Seafood Menu",
+                    is_active= true,
+                    created_at =  new DateTime(2025, 3, 10, 20, 15, 0),
+                    updated_at = null,
+                },
+
+                new Menu()
+                {
+                    Id = Guid.Parse("0c5074ec-73d6-40c1-810e-c5782d318feb"),
+                    Name = "Indian Food",
+                    Description = "All your Indan Menu",
+                    is_active= true,
+                    created_at =  new DateTime(2025, 4, 10, 20, 15, 0),
+                    updated_at = null,
+                },
             };
 
             var restaurants = new List<Restaurant>()
