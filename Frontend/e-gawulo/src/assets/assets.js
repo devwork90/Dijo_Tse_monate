@@ -84,39 +84,73 @@ export const assets = {
   parcel_icon,
 };
 
-export const menu_list = [
+export const restaurants_list = [
+  
   {
-    menu_name: "Salad",
-    menu_image: menu_1,
+    "id": "b7272c86-286d-465c-b993-10e177f6f056",
+    "name": "Pizza",
+    "description": "All your Piza Menu",
+	  "menu_icon": menu_1,
+    "is_active": true,
+    "created_at": "2025-03-10T20:15:00"
   },
   {
-    menu_name: "Rolls",
-    menu_image: menu_2,
+    "id": "89b565b4-bf45-46e1-a798-17dd7df1fd94",
+    "name": "Breakfast",
+    "description": "All your Breakfast meals",
+	  "menu_icon": menu_2,
+    "is_active": true,
+    "created_at": "2025-02-27T18:15:00"
   },
   {
-    menu_name: "Deserts",
-    menu_image: menu_3,
+    "id": "769ad0e9-11b4-4c4d-955f-1efa80c04b9b",
+    "name": "Burger",
+    "description": "All your Burger Menu",
+	  "menu_icon": menu_3,
+    "is_active": true,
+    "created_at": "2025-04-10T20:15:00"
   },
   {
-    menu_name: "Sandwich",
-    menu_image: menu_4,
+    "id": "58077521-cfc5-41a3-8414-5a5c8a7d4da3",
+    "name": "Seafood",
+    "description": "All your Seafood Menu",
+	  "menu_icon": menu_4,
+    "is_active": true,
+    "created_at": "2025-03-10T20:15:00"
   },
   {
-    menu_name: "Cake",
-    menu_image: menu_5,
+    "id": "ec4c5514-ae37-4b7c-ac36-671a3923f6ea",
+    "name": "Healthy food",
+    "description": "All health menus",
+	  "menu_icon": menu_5,
+    "is_active": true,
+    "created_at": "2025-02-15T14:30:00"
   },
   {
-    menu_name: "Pure Veg",
-    menu_image: menu_6,
+    "id": "83b89851-d594-48a0-b66b-94ba920a0c70",
+    "name": "Chicken",
+    "description": "All your chicken menus",
+	  "menu_icon": menu_6,
+    "is_active": true,
+    "created_at": "2025-02-15T14:30:00"
   },
   {
-    menu_name: "Pasta",
-    menu_image: menu_7,
+    "id": "c5e708e3-46e5-49ff-bb27-a94cf56fa2fe",
+    "name": "Grilled/Umbengo",
+    "description": "All your shisa nyama grills",
+	  "menu_icon": menu_7,
+    "is_active": true,
+    "created_at": "2025-02-27T18:15:00"
   },
   {
-    menu_name: "Noodles",
-    menu_image: menu_8,
-  },
+    "id": "0c5074ec-73d6-40c1-810e-c5782d318feb",
+    "name": "Indian Food",
+    "description": "All your Indan Menu",
+	  "menu_icon": menu_8,
+    "is_active": true,
+    "created_at": "2025-04-10T20:15:00"
+  }
+
 ];
 
 export const food_list = [

@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "Dijo\\RestaurantAPI.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "UserManagementApi\\UserManagementApi.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

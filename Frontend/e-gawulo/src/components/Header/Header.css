@@ -13,7 +13,6 @@
     display: flex;
     flex-direction: column;
     align-items: start;
-    background: rgba(0, 0, 0, 0.1); /* 40% dark overlay */
     border-radius: 40px;
     gap: 1.5 vw;
     max-width: 50%;
@@ -22,9 +21,16 @@
     animation: fadeIn 3s;
 }
 
+.overlay{
+  position: absolute;
+  inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0; */
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 26px;
+}
+
 .header-contents h2{
     font-weight: 500;
-    color: rgb(214, 213, 213);
+    color: rgb(240, 240, 236);
     font-size: max(4.5vw, 24px);
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
 }
@@ -40,10 +46,29 @@
     border: none;
     color: #747474;
     font-weight: 500;
-    padding: 1vw 2.3vw;
+    padding: 1.2vw 2.1vw;
     background-color: white;
     font-size: max(1vw, 13px);
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+}
+
+/* Responsive adjustment */
+@media (max-width: 768px) {
+  .header-contents {
+    max-width: 80%;
+    left: 5vw;
+    bottom: -0vw;
+    padding: 4vw;
+    font-size: 0.9rem;
+  }
+
+  .overlay{
+    margin-top: 7.2vw;
+  }
+
+  .header-contents h2{
+    margin-top: 1vw;
+  }
 }
