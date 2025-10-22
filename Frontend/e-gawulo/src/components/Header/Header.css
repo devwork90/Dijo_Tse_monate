@@ -1,74 +1,117 @@
-.header{
-    height: 34vw;
-    margin: 30px auto;
-    background: url("../../assets/shisa_header_img.jpeg") no-repeat center;
-    background-size: contain;
-    position: relative;
-    margin-top: -15px;
-    
-}
-
-.header-contents{
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    border-radius: 40px;
-    gap: 1.5 vw;
-    max-width: 50%;
-    bottom: 6vw;
-    left: 6vw;
-    animation: fadeIn 3s;
-}
-
-.overlay{
-  position: absolute;
-  inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0; */
-  background: rgba(0, 0, 0, 0.1);
+/* === Banner Container === */
+.header {
+  position: relative;
+  height: 25vw; /* adjust this to zoom in/out the banner */
+  margin: 30px auto;
+  margin-top: -15px;
+  background: url("../../assets/shisa_header_img.jpeg") no-repeat center center;
+  background-size: cover;
   border-radius: 26px;
+  overflow: hidden; /* keeps overlay and text inside */
 }
 
-.header-contents h2{
-    font-weight: 500;
-    color: rgb(240, 240, 236);
-    font-size: max(4.5vw, 24px);
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+/* === Overlay inside banner === */
+.overlay {
+  position: absolute;
+  inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0 */
+  background: rgba(0, 0, 0, 0.10);
+  z-index: 1;
+  border-radius: 10px;
 }
 
-.header-contents p{
-    font-size: max(1.5vw, 16px);
-    color: rgb(240, 240, 236);
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
-    line-height: 1.5;
+/* === Text container === */
+.header-contents {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5vw;
+  max-width: 55%;
+  bottom: 6vw;
+  left: 6vw;
+  z-index: 2;
+  animation: fadeIn 2.5s ease-in-out;
 }
 
-.header-contents button{
-    border: none;
-    color: #747474;
-    font-weight: 500;
-    padding: 1.2vw 2.1vw;
-    background-color: white;
-    font-size: max(1vw, 13px);
-    border-radius: 50px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
+/* === Heading text === */
+.header-contents h2 {
+  font-weight: 600;
+  color: rgb(240, 240, 236);
+  font-size: clamp(28px, 4.5vw, 60px);
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+  line-height: 1.2;
+  margin: -15px 0 0 0;
 }
 
-/* Responsive adjustment */
+/* === Subtext === */
+.header-contents p {
+  font-size: clamp(16px, 1.5vw, 22px);
+  color: rgb(240, 240, 236);
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+  line-height: 1.5;
+ margin: -15px 0 0 0;
+}
+
+/* === Button === */
+.header-contents button {
+  border: none;
+  color: #747474;
+  font-weight: 500;
+  padding: 1.2vw 2.1vw;
+  background-color: white;
+  font-size: max(1vw, 13px);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.header-contents button:hover {
+  background-color: #f2f2f2;
+  transform: scale(1.05);
+}
+
+/* === Responsive adjustments === */
 @media (max-width: 768px) {
+  .header {
+    height: 55vw; /* taller banner on mobile for readability */
+    border-radius: 20px;
+  }
+
   .header-contents {
     max-width: 80%;
     left: 5vw;
-    bottom: -0vw;
+    bottom: 5vw;
     padding: 4vw;
-    font-size: 0.9rem;
+    gap: 3vw;
   }
 
-  .overlay{
-    margin-top: 7.2vw;
+  .overlay {
+    background: rgba(0, 0, 0, 0.10); /* darker for mobile readability */
   }
 
-  .header-contents h2{
+  .header-contents h2 {
+    font-size: clamp(22px, 6vw, 38px);
     margin-top: 1vw;
   }
+
+  .header-contents p {
+    font-size: clamp(14px, 3vw, 18px);
+  }
+
+  .header-contents button {
+    padding: 2.5vw 4vw;
+    font-size: 14px;
+  }
+
+  /* === Fade-in animation === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    }
+  } 
 }

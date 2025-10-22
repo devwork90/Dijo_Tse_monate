@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import "./home.css";
 import Header from "../../components/Header/Header";
-import BrowsRestaurants from "../../components/ExploreMenus/BrowsMenus";
+import BrowsMenus from "../../components/ExploreMenus/BrowsMenus";
+import RestaurantDisplay from "../../components/RestuarantsDisplay/RestaurantsDisplay";
 const home = () => {
 
   const [category, setCategory] = useState("All");
   return <div>
     <Header />
-    <BrowsRestaurants category={category} setCategory={setCategory} />
+    <BrowsMenus category={category} setCategory={setCategory} />
+    < RestaurantDisplay  />
   </div>;
 };
 

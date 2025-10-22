@@ -2,7 +2,7 @@ import React from 'react'
 import "./BrowsMenus.css"
 import { restaurants_list } from '../../assets/assets'
 
-const BrowsRestaurants = ({category, setCategory}) => {
+const BrowsMenus = ({category, setCategory}) => {
 
   return (
     <div className="explore-menus" id="explore-menus">
@@ -22,4 +22,4 @@ const BrowsRestaurants = ({category, setCategory}) => {
   )
 }
 
-export default BrowsRestaurants
+export default BrowsMenus
