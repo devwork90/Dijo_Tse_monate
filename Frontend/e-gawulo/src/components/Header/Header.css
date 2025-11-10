@@ -4,7 +4,7 @@
   height: 25vw; /* adjust this to zoom in/out the banner */
   margin: 30px auto;
   margin-top: -15px;
-  background: url("../../assets/shisa_header_img.jpeg") no-repeat center center;
+  background: url("../../assets/shisa_header_img_2.jpeg") no-repeat center center;
   background-size: cover;
   border-radius: 26px;
   overflow: hidden; /* keeps overlay and text inside */

@@ -8,6 +8,7 @@
   border-radius: 26px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   text-align: left;
+  margin-top: 10px;
 }
 
 .restuarant-display h2 {
@@ -68,6 +69,14 @@
 .restaurant-display-option-circle .active {
   border: 3px solid tomato;
   padding: 2px;
+}
+
+.restuarant-display hr {
+  width: 80%;
+  margin: 0 auto;
+  height: 2px;
+  background-color: #e2e2e2;
+  border: none;
 }
 
 /* === Responsive Adjustments === */
