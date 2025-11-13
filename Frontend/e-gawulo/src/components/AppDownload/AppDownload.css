@@ -1,0 +1,120 @@
+.app-download {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;        
+  justify-content: center;    
+  gap: 4vw;
+  padding: 20px 5vw;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 26px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  margin-top: 10px;
+}
+
+.app-download-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.app-download-image h2 {
+  position: absolute;
+  top: 1;
+  right: 21%;
+  margin-bottom: 12px;
+  font-size: clamp(20px, 2.5vw, 32px);
+}
+
+.mobile-icon {
+  width: 60vw;
+  max-width: 320px;
+  border-radius: 1rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+}
+
+/* Store icons opposite each other */
+.app-download-platforms {
+  display: flex;
+  flex-direction: row;  
+  justify-content: space-between;
+  align-items: center;
+  width: 20%;
+  gap: 20px;
+}
+
+.app-download-platforms img {
+  /* width: max(25vw, 120px);
+  max-width: 180px; */
+  height: auto;
+  cursor: pointer;
+  transition: 0.25s ease, box-shadow 0.25s ease;
+}
+
+.app-download-platforms img:hover {
+  filter: grayscale(100%) opacity(0.5);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* 📱 RESPONSIVE STACK */
+@media (max-width: 1880px) {
+  .app-download {
+    flex-direction: column;
+    align-items: center;   /* center everything */
+  }
+
+  .app-download-platforms {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    gap: 1rem;
+  }
+
+  /* Reset h2 positioning for small screens */
+  .app-download-image h2 {
+    position: static;       /* back in flow */
+    text-align: center;     /* center above store icons */
+    margin-bottom: 1rem;   /* spacing from icons */
+  }
+
+  .app-download-platforms {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    gap: 1rem;
+  }
+}
+
+/* 📱 RESPONSIVE STACK */
+@media (max-width: 900px) {
+  .app-download {
+    flex-direction: column;
+    align-items: center;   /* center everything */
+  }
+
+  .app-download-platforms {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    gap: 1rem;
+  }
+
+  /* Reset h2 positioning for small screens */
+  .app-download-image h2 {
+    position: static;       /* back in flow */
+    text-align: center;     /* center above store icons */
+    margin-bottom: 1rem;   /* spacing from icons */
+  }
+
+  .app-download-platforms {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    gap: 1rem;
+  }
+}

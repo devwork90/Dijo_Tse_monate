@@ -17,7 +17,7 @@ const BrowsMenus = ({category, setCategory}) => {
           )
         })}
       </div>
-      <hr />
+      {/* <hr /> */}
     </div>
   )
 }

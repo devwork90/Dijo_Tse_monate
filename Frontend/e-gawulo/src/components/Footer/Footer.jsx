@@ -8,7 +8,7 @@ const footer = () => {
       <div className="footer-content">
         <div className="footer-content-left">
           <img src={assets.logo_2} alt="E-Gawulo Logo" className='footer-logo' />
-          {/* <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eaque voluptatibus repudiandae dolor nostrum debitis. Dolorem delectus cupiditate perspiciatis officia, veniam reiciendis, corporis asperiores rem ipsum a doloribus omnis vero eaque.</p> */}
+          <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eaque voluptatibus repudiandae dolor nostrum debitis. Dolorem delectus cupiditate perspiciatis officia, veniam reiciendis, corporis asperiores rem ipsum a doloribus omnis vero eaque.</p>
         
           <div className="footer-social-icons">
             <img src={assets.facebook_icon} alt="" />

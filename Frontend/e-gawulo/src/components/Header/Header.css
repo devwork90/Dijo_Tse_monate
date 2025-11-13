@@ -1,22 +1,24 @@
 /* === Banner Container === */
 .header {
   position: relative;
-  height: 25vw; /* adjust this to zoom in/out the banner */
+  height: 25vw;
   margin: 30px auto;
   margin-top: -15px;
-  background: url("../../assets/shisa_header_img_2.jpeg") no-repeat center center;
+  background: url("../../assets/shisa_header_img_2.png") no-repeat center center;
   background-size: cover;
   border-radius: 26px;
-  overflow: hidden; /* keeps overlay and text inside */
+  overflow: hidden;
+  transition: all 0.5s ease;
 }
 
 /* === Overlay inside banner === */
 .overlay {
   position: absolute;
-  inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0 */
+  inset: 0;
   background: rgba(0, 0, 0, 0.10);
   z-index: 1;
   border-radius: 10px;
+  transition: all 0.3s ease;
 }
 
 /* === Text container === */
@@ -31,6 +33,7 @@
   left: 6vw;
   z-index: 2;
   animation: fadeIn 2.5s ease-in-out;
+  transition: all 0.3s ease;
 }
 
 /* === Heading text === */
@@ -40,7 +43,7 @@
   font-size: clamp(28px, 4.5vw, 60px);
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
   line-height: 1.2;
-  margin: -15px 0 0 0;
+  transition: all 0.3s ease;
 }
 
 /* === Subtext === */
@@ -49,7 +52,8 @@
   color: rgb(240, 240, 236);
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
   line-height: 1.5;
- margin: -15px 0 0 0;
+  margin: -15px 0 0 0;
+  transition: all 0.3s ease;
 }
 
 /* === Button === */
@@ -70,48 +74,108 @@
   transform: scale(1.05);
 }
 
-/* === Responsive adjustments === */
-@media (max-width: 768px) {
+/* === Responsive scaling starts here === */
+@media (max-width: 1340px) {
   .header {
-    height: 55vw; /* taller banner on mobile for readability */
-    border-radius: 20px;
+    height: 35vw;
+    background-size: 110%;
+  }
+}
+
+@media (max-width: 1050px) {
+  .header {
+    height: 35vw;
+    background-size: 110%;
   }
 
   .header-contents {
-    max-width: 80%;
-    left: 5vw;
-    bottom: 5vw;
-    padding: 4vw;
-    gap: 3vw;
-  }
-
-  .overlay {
-    background: rgba(0, 0, 0, 0.10); /* darker for mobile readability */
+    max-width: 60%;
+    bottom: 8vw;
+    left: 50%;
+    transform: translateX(-50%); /* center horizontally */
+    align-items: center;
+    text-align: center;
   }
 
   .header-contents h2 {
-    font-size: clamp(22px, 6vw, 38px);
-    margin-top: 1vw;
+    font-size: clamp(24px, 4vw, 50px);
   }
 
   .header-contents p {
-    font-size: clamp(14px, 3vw, 18px);
+    font-size: clamp(14px, 1.3vw, 20px);
+  }
+
+  .overlay {
+    background: rgba(0, 0, 0, 0.15);
+    transform: scale(0.95);
+    transform-origin: center;
+  }
+}
+
+/* Tablet screens */
+@media (max-width: 750px) {
+  .header {
+    height: 45vw;
+    background-size: 120%;
+  }
+
+  .header-contents {
+    max-width: 70%;
+    left: 50%;
+    bottom: 10vw;
+    transform: translateX(-50%);
+    align-items: center;
+    text-align: center;
+  }
+
+  .header-contents h2 {
+    font-size: clamp(22px, 3.8vw, 40px);
+  }
+
+  .header-contents p {
+    display: block;
+    font-size: clamp(13px, 3vw, 18px);
   }
 
   .header-contents button {
-    padding: 2.5vw 4vw;
-    font-size: 14px;
+    padding: 2vw 4vw;
+    font-size: max(1.2vw, 13px);
+    margin-top: 1vw;
   }
 
-  /* === Fade-in animation === */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+  .overlay {
+    transform: scale(0.9);
+    transform-origin: center;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    }
-  } 
+}
+
+/* Mobile screens */
+@media (max-width: 549px) {
+  .header {
+    height: 55vw;
+    background-size: 130%;
+    background-position: center top;
+  }
+
+  .header-contents {
+    max-width: 85%;
+    left: 50%;
+    bottom: 12vw;
+    transform: translateX(-50%);
+    align-items: center;
+    text-align: center;
+    gap: 3vw;
+  }
+
+  /* .header-contents h2 {
+    font-size: clamp(20px, 5vw, 34px);
+  } */
+
+  .header-contents p {
+    display: none;
+  }
+
+  .overlay {
+    display: none;
+  }
 }

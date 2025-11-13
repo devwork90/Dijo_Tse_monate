@@ -18,7 +18,7 @@ const RestaurantDisplay = () => {
             )
         })}
         </div>
-        <hr />
+        {/* <hr /> */}
     </div>
   )
 }
