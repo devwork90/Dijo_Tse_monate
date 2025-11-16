@@ -38,6 +38,7 @@
 }
 
 .footer-logo{
+    cursor: pointer;
     display: inline-block;
     max-width: 12rem;      /* ~equivalent to 173px at root font-size 14–16px */
     height: auto;

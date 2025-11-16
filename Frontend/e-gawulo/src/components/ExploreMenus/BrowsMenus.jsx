@@ -5,7 +5,7 @@ import { restaurants_list } from '../../assets/assets'
 const BrowsMenus = ({category, setCategory}) => {
 
   return (
-    <div className="explore-menus" id="explore-menus">
+    <div className="explore-menus" id="explore-res-menus">
       <h1>Explore Our Menus</h1>
       <div className='explore-menus-list'>
         {restaurants_list.map((item, index) => {
