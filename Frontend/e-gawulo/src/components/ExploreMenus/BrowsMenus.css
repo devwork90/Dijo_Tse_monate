@@ -10,7 +10,7 @@
   text-align: left;
 }
 
-.explore-menus h1 {
+.explore-menus h2 {
   color: #262626;
   font-weight: 600;
   font-size: clamp(20px, 2.5vw, 32px);
@@ -70,7 +70,7 @@
   font-weight: 400;
   line-height: 1.2;
   white-space: normal;
- max-width: 100%;
+  max-width: 100%;
 }
 
 .explore-menus-list-item .active {
