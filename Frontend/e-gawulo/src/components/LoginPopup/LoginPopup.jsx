@@ -1,9 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import "./LoginPopup.css"
 import { assets } from '../../assets/assets'
 
 const LoginPopup = ({setShowLogin}) => {
     const [currentState, setCurrentState] = useState("Login")
+    useEffect(() =>{
+        //lock backround scroll
+        document.body.style.overflow = 'hiden';
+
+        //CLeanup when poup closes/unmounts
+        return ()=> {
+            document.body.style.overflow = 'auto'
+        };
+    }, [])
+    
   return (
     <div className='login-popup'>
         <form className="login-popup-wrapper">
@@ -22,7 +32,7 @@ const LoginPopup = ({setShowLogin}) => {
                 <p>By continuing, you agree to the Terms of Service and Privacy Policy and receiving promotional offers.</p>
             </div>
             {currentState==="Sign Up"?<p>Already have an account? <span onClick={()=>setCurrentState('Login')}>Login here</span></p>
-            :<p>Create a new account? <span span onClick={()=>setCurrentState('Sign Up')}>Click here</span></p>}
+            :<p>Create a new account? <span onClick={()=>setCurrentState('Sign Up')}>Click here</span></p>}
             
             
         </form>

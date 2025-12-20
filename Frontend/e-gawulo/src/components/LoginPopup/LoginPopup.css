@@ -1,5 +1,5 @@
 .login-popup{
-    position: absolute;
+    position: fixed;
     z-index: 3;
     width: 100%;
     height: 100%;
@@ -10,6 +10,8 @@
 .login-popup-wrapper{
     place-self: center;
     width: max(23vw, 330px);
+    overflow-y: auto;
+    max-height: 90vh;
     color: #808080;
     background-color: white;
     display: flex;
@@ -61,4 +63,14 @@
   align-items: start;
   gap: 8px;
   margin-top: -15px  
+}
+
+.login-popup-condition input{
+    margin-top: 5px;
+}
+
+.login-popup p span{
+    color: orangered;
+    font-weight: 500;
+    cursor: pointer;
 }
