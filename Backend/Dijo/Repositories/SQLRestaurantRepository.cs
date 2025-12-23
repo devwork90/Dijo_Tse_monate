@@ -39,9 +39,18 @@ namespace RestaurantAPI.API.Repositories
             return deletedRestaurant;
         }
 
-        public async Task<List<Restaurant>> GetAllAsync(string? menuName)
+        public async Task<List<Restaurant>> GetAllAsync()
         {
-            return await dbContext.Restaurants.ToListAsync();
+            return await dbContext.Restaurants
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<List<Restaurant>> GetByMenuNameAsync(string menuName)
+        {
+            return await dbContext.Restaurants 
+                .AsNoTracking()
+                .Where(r => r.SubMenus.Any(sm => sm.Menu.Name == menuName)).ToListAsync();
         }
 
         public async Task<Restaurant?> GetRestaurantbyIdAsync(Guid id)

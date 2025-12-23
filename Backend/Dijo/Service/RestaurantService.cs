@@ -72,62 +72,34 @@ namespace RestaurantAPI.Service
             return true;
         }
 
-        public async Task<List<RestaurantResponseDto>> GetAllRestaurantsAsync(string? menuName)
+        public async Task<RestaurantResponseDto> GetAllRestaurantsAsync(string? menuName)
         {
             //Get Data from Database via Domain model
-            var restaurants = await restaurantRepository.GetAllAsync(menuName);
-            var Menus = await menuRepository.GetAllMenusAsync();
-            var SubMenus = await subMenuRepository.GetAllSubMenusAsync();
-            var MenuItems = await menuItemRepository.GetAllMenuItemsAsync();
-
-            if(menuName == null)
+            List<Restaurant> restaurants;
+            if (string.IsNullOrWhiteSpace(menuName))
             {
-                //Map Domain modela to DTOs
-                var restaurantDto = new List<RestaurantDto>();
-                foreach (var restaurant in restaurants)
-                {
-                    restaurantDto.Add(new RestaurantDto
-                    {
-                        Id = restaurant.Id,
-                        name = restaurant.name,
-                        Address = restaurant.Address,
-                        description = restaurant.description,
-                        logo_url = restaurant.logo_url,
-                        rating = restaurant.rating,
-                        is_open = restaurant.is_open,
-                        created_at = restaurant.created_at ?? DateTime.Now,
-                        updated_at = restaurant.updated_at,
-
-                    });
-                }
-
-                //return DTOs back to client
-                return new List<RestaurantResponseDto> { new RestaurantResponseDto { Restaurants = restaurantDto } };
+                restaurants = await restaurantRepository.GetAllAsync();
             }
             else
             {
-                var result = restaurants
-                .Join(SubMenus,
-                  r => r.Id,
-                  sb => sb.restaurantId,
-                  (r, sb) => new { r, sb })
-                .Join(Menus,
-                  rs => rs.sb.MenuId,
-                   m => m.Id,
-                   (rs, m) => new { rs.r, rs.sb, m })
-                .Where(rsm => rsm.m.Name == menuName)
-                .GroupBy(rsm => new { rsm.r.Id, rsm.r.name })
-                .Select(g => new RestaurantCategoryDto
-                {
-                    Id = g.Key.Id,
-                    RestaurantName = g.Key.name,
-                    MenuName = g.Min(x => x.m.Name),
-                    SubMenuName = g.Min(x => x.sb.Name),
-                    SubMenuId = g.Min(x => x.sb.Id)
-                }).ToList();
-
-                return new List<RestaurantResponseDto> { new RestaurantResponseDto { Categories = result } };
+                restaurants = await restaurantRepository.GetByMenuNameAsync(menuName);
             }
+
+            var restaurantDtos = restaurants.Select(r => new RestaurantDto
+            {
+                Id = r.Id,
+                name = r.name,
+                logo_url = r.logo_url,
+                rating = r.rating,
+                is_open = r.is_open,
+                created_at = (DateTime)r.created_at,
+            }).ToList();
+
+            return new RestaurantResponseDto
+            {
+                Restaurants = restaurantDtos
+            };
+
         }
         public async Task<List<GroupedMenuItemsDto>> GetMenuItemsByRestaurantAsync(Guid restaurantId)
         {
@@ -227,5 +199,10 @@ namespace RestaurantAPI.Service
                 };
               return restaurantDto;
         }
+
+        //Task<List<RestaurantResponseDto>> IRestaurantService.GetAllRestaurantsAsync(string? menuName)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

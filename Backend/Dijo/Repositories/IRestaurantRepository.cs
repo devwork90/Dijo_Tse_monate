@@ -1,10 +1,14 @@
 ﻿using RestaurantAPI.API.Models.Domain;
+using System.Threading.Tasks;
 
 namespace RestaurantAPI.API.Repositories
 {
     public interface IRestaurantRepository
     {
-        Task<List<Restaurant>> GetAllAsync(string? menuName);
+     
+        Task<List<Restaurant>> GetByMenuNameAsync(string? menuName);
+
+        Task<List<Restaurant>> GetAllAsync();
 
         Task<Restaurant?> GetRestaurantbyIdAsync(Guid guid);
 

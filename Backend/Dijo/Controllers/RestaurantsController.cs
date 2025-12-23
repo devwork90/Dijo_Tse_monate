@@ -20,7 +20,7 @@ namespace RestaurantAPI.API.Controllers
 
         //Get all restaurants 
         [HttpGet]
-        [Authorize(Roles = "Admin, Customer")]
+        //[Authorize(Roles = "Admin, Customer")]
         public async Task<IActionResult> GetAll([FromQuery] string? menuName)
         {
             var restaurantsList = await restaurantService.GetAllRestaurantsAsync(menuName);
@@ -37,7 +37,7 @@ namespace RestaurantAPI.API.Controllers
         }
 
         [HttpGet("menu-items")]
-        [Authorize(Roles = "Admin, Customer")]
+        //[Authorize(Roles = "Admin, Customer")]
         public async Task<IActionResult> GetMenuItems(Guid restaurantId)
         {
             

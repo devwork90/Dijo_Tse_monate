@@ -6,7 +6,7 @@ namespace RestaurantAPI.Service
 {
     public interface IRestaurantService
     {
-        Task<List<RestaurantResponseDto>> GetAllRestaurantsAsync(string? menuName);
+        Task<RestaurantResponseDto>GetAllRestaurantsAsync(string? menuName);
 
         Task<RestaurantDto?> GetRestaurantbyIdAsync(Guid id);
 
