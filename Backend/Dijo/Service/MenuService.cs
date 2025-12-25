@@ -4,6 +4,7 @@ using RestaurantAPI.API.Models.Domain;
 using RestaurantAPI.API.Models.DTO;
 using RestaurantAPI.API.Repositories;
 using RestaurantAPI.Models.Domain;
+using RestaurantAPI.Models.DTO;
 
 namespace RestaurantAPI.Service
 {
@@ -64,31 +65,26 @@ namespace RestaurantAPI.Service
             return menuItemDto;
         }
 
-        public async Task<IEnumerable<MenuDto>> GetMenusAsync()
+        public async Task<MenuListResponseDto> GetMenusAsync()
         {
             //Get Data from DB by Domain Model
             var menuItems = await menuRepository.GetAllMenusAsync();
 
             //Map Model to DTO
-            var menuDto = new List<MenuDto>();
-            foreach (var item in menuItems)
+            var menus = menuItems.Select(item => new MenuDto
             {
-#pragma warning disable CS8601 // Possible null reference assignment.
-                menuDto.Add(new MenuDto
+                Id = item.Id,
+                Name = item.Name,
+                Description = item.Description,
+                is_active = item.is_active,
+                created_at = item.created_at ?? DateTime.Now,
+            });
 
-                {
-                    Id = item.Id,
-                    Name = item.Name,
-                    Description = item.Description,
-                    is_active = item.is_active,
-                    created_at = item.created_at ?? DateTime.UtcNow,
-                    updated_at = item.updated_at,
-
-                });
-#pragma warning restore CS8601 // Possible null reference assignment.
-            }
-
-            return menuDto;
+            return new MenuListResponseDto
+            {
+                MenuList = menus
+            };
+           
         }
 
         public async Task<MenuDto?> GetMenuByIdAsync(Guid menuId)

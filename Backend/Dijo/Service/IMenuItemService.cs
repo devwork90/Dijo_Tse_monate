@@ -7,7 +7,7 @@ namespace RestaurantAPI.Service
 {
     public interface IMenuItemService
     {
-        Task<List<MenuItemsDto>> GetAllMenuItemsAsync();
+        Task<MenuItemsResponseDto> GetAllMenuItemsAsync();
 
         Task<MenuItemsDto?> GetMenuItemByIdAsync(Guid id);
 

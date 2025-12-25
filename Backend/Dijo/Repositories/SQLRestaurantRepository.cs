@@ -46,7 +46,7 @@ namespace RestaurantAPI.API.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Restaurant>> GetByMenuNameAsync(string menuName)
+        public async Task<List<Restaurant>> GetByMenuNameAsync(string? menuName)
         {
             return await dbContext.Restaurants 
                 .AsNoTracking()

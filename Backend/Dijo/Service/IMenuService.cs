@@ -1,10 +1,11 @@
 ﻿using RestaurantAPI.API.Models.DTO;
+using RestaurantAPI.Models.DTO;
 
 namespace RestaurantAPI.Service
 {
     public interface IMenuService
     {
-        Task<IEnumerable<MenuDto>> GetMenusAsync();
+        Task<MenuListResponseDto> GetMenusAsync();
 
         Task <MenuDto?> GetmenuByIdAsync(Guid menuId);
 

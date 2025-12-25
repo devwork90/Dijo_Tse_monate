@@ -2,6 +2,7 @@
 using RestaurantAPI.Models.Domain;
 using RestaurantAPI.Models.DTO;
 using RestaurantAPI.Repositories;
+using System.Reflection.Metadata.Ecma335;
 
 namespace RestaurantAPI.Service
 {
@@ -58,16 +59,12 @@ namespace RestaurantAPI.Service
             return true;
         }
 
-        public async Task<List<MenuItemsDto>> GetAllMenuItemsAsync()
+        public async Task<MenuItemsResponseDto> GetAllMenuItemsAsync()
         {
             //Get Data from the Database through the dbContext
             var availableMenuItems = await menuItemRepository.GetAllMenuItemsAsync();
 
-            //Map Domain Models to the DTOs
-            var menuItemDto = new List<MenuItemsDto>();
-            foreach (var item in availableMenuItems)
-            {
-                menuItemDto.Add(new MenuItemsDto
+            var menuItems = availableMenuItems.Select(item => new MenuItemsDto
                 {
                     Id = item.Id,
                     Name = item.Name,
@@ -80,10 +77,12 @@ namespace RestaurantAPI.Service
                     subMenuId = item.SubMenuId,
                     restaurantId = item.restaurantId,
                 });
-            }
 
             //Return DTOs back to client
-            return menuItemDto;
+            return new MenuItemsResponseDto
+            {
+                MenuItems = menuItems,
+            };
         }
 
         public async Task<MenuItemsDto?> GetMenuItemByIdAsync(Guid id)

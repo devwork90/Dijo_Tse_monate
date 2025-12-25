@@ -1,11 +1,12 @@
 ﻿using RestaurantAPI.API.Models.Domain;
 using RestaurantAPI.API.Models.DTO;
+using RestaurantAPI.Models.DTO;
 
 namespace RestaurantAPI.Service
 {
     public interface ISubMenuService
     {
-        Task<List<SubMenuDto>> GetAllSubMenusAsync();
+        Task<SubMenuResponseDto> GetAllSubMenusAsync();
 
         Task<SubMenuDto?> GetSubMenusByIdAsync(Guid id);
 

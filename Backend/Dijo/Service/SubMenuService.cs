@@ -5,11 +5,11 @@ using RestaurantAPI.Models.DTO;
 
 namespace RestaurantAPI.Service
 {
-    public class SubMenuService: ISubMenuService
+    public class SubMenuService : ISubMenuService
     {
         readonly ISubMenuRepository subMenuRepository;
-        public SubMenuService(ISubMenuRepository subMenuRepository) 
-        { 
+        public SubMenuService(ISubMenuRepository subMenuRepository)
+        {
             this.subMenuRepository = subMenuRepository;
         }
 
@@ -54,27 +54,27 @@ namespace RestaurantAPI.Service
             return true;
         }
 
-        public async Task<List<SubMenuDto>> GetAllSubMenusAsync()
+        public async Task<SubMenuResponseDto> GetAllSubMenusAsync()
         {
             var SubmenuItems = await subMenuRepository.GetAllSubMenusAsync();
 
             //Map Domain Models to DTO
-            var menuItemDto = new List<SubMenuDto>();
 
-            foreach (var SubmenuItem in SubmenuItems)
+            var submenu = SubmenuItems.Select(item => new SubMenuDto
             {
-                menuItemDto.Add(new SubMenuDto
-                {
-                    Id = SubmenuItem.Id,
-                    Name = SubmenuItem.Name,
-                    is_available = SubmenuItem.is_available,
-                    updated_at = SubmenuItem.updated_at,
-                    created_at = SubmenuItem.created_at ?? DateTime.Now,
-                    MenuId = SubmenuItem.MenuId,
-                    restaurantId = SubmenuItem.restaurantId,
-                });
-            }
-            return menuItemDto;
+                Id = item.Id,
+                Name = item.Name,
+                is_available = item.is_available,
+                updated_at = item.updated_at,
+                created_at = item.created_at ?? DateTime.Now,
+                MenuId = item.MenuId,
+                restaurantId = item.restaurantId,
+            });
+
+            return new SubMenuResponseDto
+            {
+                SubMenus = submenu
+            };
         }
 
         public async Task<SubMenuDto?> GetSubMenusByIdAsync(Guid id)

@@ -46,7 +46,7 @@ namespace RestaurantAPI.API.Controllers
                 if (!HttpContext.Items.TryGetValue("RestaurantId", out var restaurantIdObj))
                     return Forbid();
 
-                var scopedRestaurantId = (Guid)restaurantIdObj;
+                var scopedRestaurantId = (Guid?)restaurantIdObj;
 
                 //Prevent Admin Users from accessing another restaurant menuItem
                 if(scopedRestaurantId != restaurantId)
