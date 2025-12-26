@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Microsoft.AspNetCore.Diagnostics;
 using RestaurantAPI.Middlewares;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen( options =>
@@ -66,11 +68,13 @@ builder.Services.AddScoped<IRestaurantRepository, SQLRestaurantRepository>();
 builder.Services.AddScoped<IMenuRepository, SQLMenuRepository>();
 builder.Services.AddScoped<ISubMenuRepository, SQLSubMenuRepository>();
 builder.Services.AddScoped<IMenuItemRepository, SQLMenuItemRepository>();
+builder.Services.AddScoped<IImageRepository, SQLImgeRepository>();
 
 builder.Services.AddScoped<IMenuItemService, MenuItemService>();
 builder.Services.AddScoped<ISubMenuService, SubMenuService>();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddScoped<IMenuService, MenuService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -108,6 +112,12 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),
+    RequestPath = "/Images"
+});
 
 app.UseMiddleware<ExceptionHandllerMiddleware>();
 app.UseMiddleware<RestaurantContextMiddleware>();

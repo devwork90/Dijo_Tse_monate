@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestaurantAPI.API.Data;
 
@@ -11,9 +12,11 @@ using RestaurantAPI.API.Data;
 namespace RestaurantAPI.Migrations
 {
     [DbContext(typeof(DijoDbContext))]
-    partial class DijoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251226141101_Adding Images Table")]
+    partial class AddingImagesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -329,18 +332,8 @@ namespace RestaurantAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<long>("FileSizeInBytes")
                         .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("updated_at")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

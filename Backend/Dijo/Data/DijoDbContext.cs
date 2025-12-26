@@ -21,6 +21,8 @@ namespace RestaurantAPI.API.Data
         public DbSet<MenuItem> MenuItems { get; set; }
         public DbSet<Restaurant> Restaurants { get; set; }
 
+        public DbSet<Image> Images { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

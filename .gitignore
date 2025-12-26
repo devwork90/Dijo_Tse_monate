@@ -4,6 +4,8 @@
 *.csproj.user
 *.pidb
 *.dotCover
+Logs/
+*.log
 
 # Build results
 bin/

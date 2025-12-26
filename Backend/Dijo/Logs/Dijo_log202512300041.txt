@@ -1,0 +1,16 @@
+2025-12-30 00:41:11.299 +02:00 [ERR] efad1da8-0d0b-4de3-b0ea-3f53d96530a3 : File size exceeds the allowed limit of 153600 bytes.
+RestaurantAPI.Exceptions.FileSizeExceededException: File size exceeds the allowed limit of 153600 bytes.
+   at RestaurantAPI.Service.ImageService.ValidationFileUpload(ImageUploadRequestDto imageUploadRequestDto) in C:\Users\SiphoC\Documents\software_projects\Dijo_Tse_monate\Backend\Dijo\Service\ImageService.cs:line 78
+   at RestaurantAPI.Service.ImageService.UploadImageAsync(ImageUploadRequestDto imageUploadRequestDto) in C:\Users\SiphoC\Documents\software_projects\Dijo_Tse_monate\Backend\Dijo\Service\ImageService.cs:line 40
+   at RestaurantAPI.Controllers.ImagesController.Upload(ImageUploadRequestDto imageUploadRequestDto) in C:\Users\SiphoC\Documents\software_projects\Dijo_Tse_monate\Backend\Dijo\Controllers\ImagesController.cs:line 33
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at RestaurantAPI.Middlewares.RestaurantContextMiddleware.Invoke(HttpContext context) in C:\Users\SiphoC\Documents\software_projects\Dijo_Tse_monate\Backend\Dijo\Middlewares\RestaurantContextMiddleware.cs:line 25
+   at RestaurantAPI.Middlewares.ExceptionHandllerMiddleware.InvokeAsync(HttpContext httpContext) in C:\Users\SiphoC\Documents\software_projects\Dijo_Tse_monate\Backend\Dijo\Middlewares\ExceptionHandllerMiddleware.cs:line 22

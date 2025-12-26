@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using RestaurantAPI.Exceptions;
+using System.Net;
 
 namespace RestaurantAPI.Middlewares
 {
@@ -28,17 +29,67 @@ namespace RestaurantAPI.Middlewares
                 logger.LogError(ex, $"{errorId} : {ex.Message}");
 
                 //Return a Custom Error Response
-                httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                
                 httpContext.Response.ContentType = "application/json";
 
-                var error = new
-                {
-                    Id = errorId,
-                    errorCode = (int)HttpStatusCode.InternalServerError,
-                    ErrorMessage = "Something went wrong! We are looking into resolving this"
-                };
+                object errorResponse;
+                int statusCode;
 
-                await httpContext.Response.WriteAsJsonAsync(error);
+                switch (ex)
+                {
+                    case UnsupportedFileExtensionException unsupportedFileEx:
+                    statusCode = (int)HttpStatusCode.BadRequest;
+                    errorResponse = new
+                    {
+                        id = errorId,
+                        ErrorCode = statusCode,
+                        ErrorMessage = unsupportedFileEx
+                    };
+                    break;
+
+                    case ArgumentException argEx:
+                    statusCode = (int)HttpStatusCode.BadRequest;
+                    errorResponse = new
+                    {
+                        Id = errorId,
+                        ErrorCode = statusCode,
+                        ErrorMessage = argEx.Message
+                    };
+                    break;
+
+                    case KeyNotFoundException notFoundEx:
+                    statusCode = (int)HttpStatusCode.NotFound;
+                    errorResponse = new
+                    {
+                        Id = errorId,
+                        ErrorCode = statusCode,
+                        ErrorMessage = notFoundEx.Message
+                    };
+                    break;
+
+                    case FileSizeExceededException fileSizeExceededException:
+                    statusCode = StatusCodes.Status413PayloadTooLarge;
+                    errorResponse = new
+                    {
+                        Id = errorId,
+                        ErrorCode = statusCode,
+                        ErrorMessage = fileSizeExceededException.Message
+                    };
+                    break;
+
+                    default:
+                    statusCode = (int)HttpStatusCode.InternalServerError;
+                    errorResponse = new
+                    {
+                        Id = errorId,
+                        ErrorCode = statusCode,
+                        ErrorMessage = "Something went wrong! We are looking into resolving this."
+                    };
+                    break;
+                }
+
+                httpContext.Response.StatusCode = statusCode;
+                await httpContext.Response.WriteAsJsonAsync(errorResponse);
             }
         }
     }
