@@ -15,6 +15,6 @@ namespace RestaurantAPI.Models.Domain
         public string FilPath { get; set; } = string.Empty;
 
         public DateTime? created_at { get; set; } = DateTime.UtcNow;
-        public DateTime updated_at { get; set; }
+        public DateTime? updated_at { get; set; }
     }
 }
