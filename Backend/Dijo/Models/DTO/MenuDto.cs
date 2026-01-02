@@ -1,4 +1,5 @@
 ﻿using RestaurantAPI.API.Models.Domain;
+using RestaurantAPI.Models.DTO;
 
 namespace RestaurantAPI.API.Models.DTO
 {
@@ -11,6 +12,7 @@ namespace RestaurantAPI.API.Models.DTO
         public DateTime created_at { get; set; }
         public DateTime? updated_at { get; set; }
         
+        public ImageDto? MenuIcon { get; set; }
 
     }
 }

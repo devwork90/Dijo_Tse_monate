@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RestaurantAPI.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantAPI.Models.DTO
 {
@@ -8,6 +9,9 @@ namespace RestaurantAPI.Models.DTO
         public IFormFile File { get; set; } 
         [Required]
         public string FileName { get; set; } = string.Empty;
+
+        [Required]
+        public ImageType ImageType { get; set; }
 
     }
 }

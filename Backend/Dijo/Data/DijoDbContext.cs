@@ -25,6 +25,7 @@ namespace RestaurantAPI.API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(DijoDbContext).Assembly);
             base.OnModelCreating(modelBuilder);
 
             //Define a Many-to-Many Relationship between Menu <-> Restaurant
@@ -32,6 +33,12 @@ namespace RestaurantAPI.API.Data
                 .HasMany(m => m.Restaurants)
                 .WithMany(r => r.Menu)
                 .UsingEntity(j => j.ToTable("MenuRestaurants"));
+
+            modelBuilder.Entity<Menu>()
+                .HasOne(m => m.MenuIconImage)
+                .WithMany()
+                .HasForeignKey(m => m.MenuIconImageId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             //Dfine a One-to-Many Relationship between Menu -> SubMenu
 

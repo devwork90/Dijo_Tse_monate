@@ -3,18 +3,25 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using RestaurantAPI.API.Models.Domain;
 using RestaurantAPI.API.Models.DTO;
 using RestaurantAPI.API.Repositories;
+using RestaurantAPI.Common.Helpers;
 using RestaurantAPI.Models.Domain;
 using RestaurantAPI.Models.DTO;
+using RestaurantAPI.Models.Enums;
+using RestaurantAPI.Repositories;
+using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantAPI.Service
 {
     public class MenuService : IMenuService
     {
         private readonly IMenuRepository menuRepository;
+        private readonly IImageRepository imageRepository;
 
-        public MenuService(IMenuRepository menuRepository)
+        public MenuService(IMenuRepository menuRepository,
+            IImageRepository imageRepository)
         {
             this.menuRepository = menuRepository;
+            this.imageRepository = imageRepository;
         }
 
         public async Task<MenuDto> CreateMenu(AddMenuRequestDto addMenuRequestDto)
@@ -59,6 +66,19 @@ namespace RestaurantAPI.Service
                 is_active = existingMenu.is_active,
                 created_at = existingMenu.created_at ?? DateTime.Now,
                 updated_at = existingMenu.updated_at,
+                MenuIcon = existingMenu.MenuIconImage == null
+                ? null
+                : new ImageDto
+                {
+                    Id = existingMenu.MenuIconImage.Id,
+                    FileName = existingMenu.MenuIconImage.FileName,
+                    FileExtension = existingMenu.MenuIconImage.FileExtension,
+                    FileSizeInBytes = existingMenu.MenuIconImage.FileSizeInBytes,
+                    FilePath = existingMenu.MenuIconImage.FilePath,
+                    ImageType = existingMenu.MenuIconImage.ImageType,
+                    created_at = (DateTime)existingMenu.created_at
+
+                }
 
             };
 
@@ -78,6 +98,18 @@ namespace RestaurantAPI.Service
                 Description = item.Description,
                 is_active = item.is_active,
                 created_at = item.created_at ?? DateTime.Now,
+                MenuIcon = item.MenuIconImage == null
+                ? null
+                : new ImageDto
+                {
+                    Id = item.MenuIconImage.Id,
+                    FileName = item.MenuIconImage.FileName,
+                    FileExtension = item.MenuIconImage.FileExtension,
+                    FileSizeInBytes = item.MenuIconImage.FileSizeInBytes,
+                    FilePath = item.MenuIconImage.FilePath,
+                    ImageType = item.MenuIconImage.ImageType,
+                    created_at = (DateTime)item.created_at
+                }
             });
 
             return new MenuListResponseDto
@@ -115,40 +147,39 @@ namespace RestaurantAPI.Service
         public async Task<MenuDto?> UpdateMenu(Guid menuId, UpdateMenuRequestDto updateMenuRequestDto)
         {
 
-            //Get data from DB  via - Domain model
-            var menuDomainModel = new Menu()
-            {
-                Name = updateMenuRequestDto.Name,
-                Description = updateMenuRequestDto.Description,
-                is_active = updateMenuRequestDto.is_active,
-            };
+            //Get existing Menu
+            var menu = await menuRepository.GetByIdAsync(menuId);
+            
+            if (menu == null) return null;
 
-            menuDomainModel = await menuRepository.UpdateMenuAsync(menuId, menuDomainModel);
+            //Update scalar fiels
+            menu.Name = updateMenuRequestDto.Name;
+            menu.Description = updateMenuRequestDto.Description;
+            menu.is_active = updateMenuRequestDto.is_active;
+            menu.updated_at = DateTime.UtcNow;
+            //menu.url_menu_icon = updateMenuRequestDto.url_menu_icon;
 
-            if (menuDomainModel == null)
+
+            //Optional image association
+            if (updateMenuRequestDto.MenuIconImageId.HasValue)
             {
-                return null;
+                var image = await imageRepository.GetbyIdAsync(updateMenuRequestDto.MenuIconImageId.Value);
+
+                if (image == null) throw new ValidationException("Image us not found");
+
+                if (image.ImageType != ImageType.MenuIcon) throw new ValidationException("Only MenuIcon images allowed");
+                menu.url_menu_icon = image.FilePath;
+                menu.MenuIconImageId = image.Id;
             }
 
-            //Map Dto Model to Domain Model
-            menuDomainModel.Name = updateMenuRequestDto.Name;
-            menuDomainModel.Description = updateMenuRequestDto.Description;
-            menuDomainModel.is_active = updateMenuRequestDto.is_active;
+            //Persist changes
+            await menuRepository.UpdateMenuAsync(menuId, menu);
 
-            //Map Domain model back to DTO
+            //Relode menu WITH Image
+            var updatedMenu = await menuRepository.GetByIdAsync(menuId).ConfigureAwait(false);
 
-            var menuDto = new MenuDto
-            {
-                Id = menuDomainModel.Id,
-                Name = menuDomainModel.Name,
-                Description = menuDomainModel.Description,
-                is_active = menuDomainModel.is_active,
-                updated_at = menuDomainModel.updated_at,
-                created_at = (DateTime)menuDomainModel.created_at,
+            return MenuHelper.ToDto(updatedMenu);
 
-            };
-
-            return menuDto;
         }
 
         public async Task<bool> DeleteMenu(Guid menuId)

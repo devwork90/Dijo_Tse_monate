@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RestaurantAPI.Models.Domain;
+using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantAPI.API.Models.DTO
 {
@@ -13,5 +14,8 @@ namespace RestaurantAPI.API.Models.DTO
 
         [Required]
         public bool is_active { get; set; }
+
+        //public string? url_menu_icon { get; set; }
+        public Guid? MenuIconImageId { get; set; }
     }
 }

@@ -12,8 +12,8 @@ using RestaurantAPI.API.Data;
 namespace RestaurantAPI.Migrations
 {
     [DbContext(typeof(DijoDbContext))]
-    [Migration("20260101230612_Update Image updated_at field to accept null")]
-    partial class UpdateImageupdated_atfieldtoacceptnull
+    [Migration("20260102012147_Add foreign key Id to Image table")]
+    partial class AddforeignkeyIdtoImagetable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -339,6 +339,15 @@ namespace RestaurantAPI.Migrations
                     b.Property<long>("FileSizeInBytes")
                         .HasColumnType("bigint");
 
+                    b.Property<int>("ImageType")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("MenuId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("RestaurantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("created_at")
                         .HasColumnType("datetime2");
 
@@ -346,6 +355,10 @@ namespace RestaurantAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MenuId");
+
+                    b.HasIndex("RestaurantId");
 
                     b.ToTable("Images");
                 });
@@ -423,6 +436,21 @@ namespace RestaurantAPI.Migrations
                         .HasForeignKey("restaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Menu");
+
+                    b.Navigation("Restaurant");
+                });
+
+            modelBuilder.Entity("RestaurantAPI.Models.Domain.Image", b =>
+                {
+                    b.HasOne("RestaurantAPI.API.Models.Domain.Menu", "Menu")
+                        .WithMany()
+                        .HasForeignKey("MenuId");
+
+                    b.HasOne("RestaurantAPI.API.Models.Domain.Restaurant", "Restaurant")
+                        .WithMany()
+                        .HasForeignKey("RestaurantId");
 
                     b.Navigation("Menu");
 

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using RestaurantAPI.Exceptions;
-using RestaurantAPI.Models.DTO;
-
 using RestaurantAPI.Models.Domain;
+using RestaurantAPI.Models.DTO;
+using RestaurantAPI.Models.Enums;
 using RestaurantAPI.Repositories;
 namespace RestaurantAPI.Service
 {
@@ -22,6 +22,19 @@ namespace RestaurantAPI.Service
 
             if (ImageItem == null) { return null; }
 
+            var allowedTyped = new[]
+            {
+                ImageType.MenuIcon,
+                ImageType.MenuItemImage,
+                ImageType.RestaurantIcon,
+
+            };
+
+            if (!allowedTyped.Contains(ImageItem.ImageType))
+            {
+                ValidateRestaurantImageQuery(ImageItem.ImageType);
+            }
+             
             //Map repository response to Dto
             var imageDto = new ImageDto
             {
@@ -30,8 +43,9 @@ namespace RestaurantAPI.Service
                 FileName = ImageItem.FileName,
                 FileExtension = ImageItem.FileExtension,
                 FileSizeInBytes = ImageItem.FileSizeInBytes,
-                FilPath = ImageItem.FilPath,
-                created_at = (DateTime)ImageItem.created_at
+                FilePath = ImageItem.FilePath,
+                ImageType = ImageItem.ImageType,
+                created_at = (DateTime)ImageItem.created_at,
             };
 
             return imageDto;
@@ -50,6 +64,7 @@ namespace RestaurantAPI.Service
                 FileExtension = Path.GetExtension(request.File.FileName),
                 FileSizeInBytes = request.File.Length,
                 FileName = request.FileName,
+                ImageType = request.ImageType,
                 created_at = DateTime.UtcNow,
             };
 
@@ -62,7 +77,8 @@ namespace RestaurantAPI.Service
                 FileName = imageDomainModel.FileName,
                 FileSizeInBytes = imageDomainModel.FileSizeInBytes,
                 FileExtension = imageDomainModel.FileExtension,
-                FilPath = imageDomainModel.FilPath,
+                ImageType = imageDomainModel.ImageType,
+                FilePath = imageDomainModel.FilePath,
                 created_at = (DateTime)imageDomainModel.created_at
             };
 
@@ -73,7 +89,7 @@ namespace RestaurantAPI.Service
         {
             const int MinImageSize = 50 * 1024;
             const int MaxImageSize = 400 * 1024;
-            var allowedExtensions = new string[] { ".jpg", ".jpeg", ".png" };
+            var allowedExtensions = new string[] { ".jpg", ".jpeg", ".png", ".gif" };
 
             if (!allowedExtensions.Contains(Path.GetExtension(imageUploadRequestDto.File.FileName)))
             {
@@ -86,6 +102,11 @@ namespace RestaurantAPI.Service
             {
                 throw new FileSizeExceededException(MaxImageSize);
             }
+        }
+
+        public void ValidateRestaurantImageQuery(ImageType imageType)
+        {
+            throw new InvalidOperationException("Only MenuIcon images are allowed here.");
         }
     }
 }

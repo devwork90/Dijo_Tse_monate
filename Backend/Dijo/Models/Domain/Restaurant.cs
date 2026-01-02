@@ -21,5 +21,7 @@ namespace RestaurantAPI.API.Models.Domain
 
         //public List<SubMenu> SubMenus { get; set; } = new();
         public ICollection<SubMenu> SubMenus { get; set; }
+
+        public ICollection<Image> Images { get; set; } = new LinkedList<Image>();
     }
 }

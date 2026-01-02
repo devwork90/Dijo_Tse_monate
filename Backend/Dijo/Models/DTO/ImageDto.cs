@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using RestaurantAPI.Models.Domain;
+using RestaurantAPI.Models.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RestaurantAPI.Models.DTO
 {
@@ -10,7 +12,8 @@ namespace RestaurantAPI.Models.DTO
         public string FileName { get; set; } = string.Empty;
         public string FileExtension { get; set; } = string.Empty;
         public long FileSizeInBytes { get; set; }
-        public string FilPath { get; set; } = string.Empty; 
+        public string FilePath { get; set; } = string.Empty;
+        public ImageType ImageType { get; set; }
         public DateTime created_at { get; set; }
         public DateTime? updated_at { get; set; }
     }

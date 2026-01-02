@@ -12,8 +12,8 @@ using RestaurantAPI.API.Data;
 namespace RestaurantAPI.Migrations
 {
     [DbContext(typeof(DijoDbContext))]
-    [Migration("20260101230612_Update Image updated_at field to accept null")]
-    partial class UpdateImageupdated_atfieldtoacceptnull
+    [Migration("20260102125931_Define Relationship between Menu and Images")]
+    partial class DefineRelationshipbetweenMenuandImages
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,6 +61,9 @@ namespace RestaurantAPI.Migrations
 
                     b.Property<DateTime?>("updated_at")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("url_menu_icon")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -324,22 +327,32 @@ namespace RestaurantAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FileExtension")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FileName")
                         .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("FileSizeInBytes")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("created_at")
+                    b.Property<int>("ImageType")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("MenuId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("RestaurantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("created_at")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("updated_at")
@@ -347,7 +360,11 @@ namespace RestaurantAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images");
+                    b.HasIndex("MenuId");
+
+                    b.HasIndex("RestaurantId");
+
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("RestaurantAPI.Models.Domain.MenuItem", b =>
@@ -429,6 +446,23 @@ namespace RestaurantAPI.Migrations
                     b.Navigation("Restaurant");
                 });
 
+            modelBuilder.Entity("RestaurantAPI.Models.Domain.Image", b =>
+                {
+                    b.HasOne("RestaurantAPI.API.Models.Domain.Menu", "Menu")
+                        .WithMany("Images")
+                        .HasForeignKey("MenuId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("RestaurantAPI.API.Models.Domain.Restaurant", "Restaurant")
+                        .WithMany("Images")
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Menu");
+
+                    b.Navigation("Restaurant");
+                });
+
             modelBuilder.Entity("RestaurantAPI.Models.Domain.MenuItem", b =>
                 {
                     b.HasOne("RestaurantAPI.API.Models.Domain.SubMenu", "SubMenu")
@@ -450,11 +484,15 @@ namespace RestaurantAPI.Migrations
 
             modelBuilder.Entity("RestaurantAPI.API.Models.Domain.Menu", b =>
                 {
+                    b.Navigation("Images");
+
                     b.Navigation("SubMenus");
                 });
 
             modelBuilder.Entity("RestaurantAPI.API.Models.Domain.Restaurant", b =>
                 {
+                    b.Navigation("Images");
+
                     b.Navigation("SubMenus");
                 });
 

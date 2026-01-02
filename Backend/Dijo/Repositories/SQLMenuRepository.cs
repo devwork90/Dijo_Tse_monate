@@ -44,13 +44,16 @@ namespace RestaurantAPI.API.Repositories
 
         public async Task<List<Menu>> GetAllMenusAsync()
         {
-            return await dbContext.Menu.ToListAsync();
+            return await dbContext.Menu
+                .Include(m => m.MenuIconImage)
+                .ToListAsync();
         }
 
         public Task<Menu?> GetByIdAsync(Guid id)
         {
-            return dbContext.Menu.FirstOrDefaultAsync(x => x.Id == id);
-
+            return dbContext.Menu
+                .Include(m => m.MenuIconImage)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Menu?> UpdateMenuAsync(Guid id, Menu menu)
@@ -66,6 +69,7 @@ namespace RestaurantAPI.API.Repositories
             existingMenu.Description = menu.Description;
             existingMenu.is_active = menu.is_active;
             existingMenu.updated_at = DateTime.UtcNow;
+            existingMenu.url_menu_icon = menu.url_menu_icon;
 
             await dbContext.SaveChangesAsync();
 
