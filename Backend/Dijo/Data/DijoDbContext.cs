@@ -2,6 +2,7 @@
 using RestaurantAPI.API.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Models.Domain;
+using RestaurantAPI.Models.Enums;
 
 namespace RestaurantAPI.API.Data
 {
@@ -296,11 +297,105 @@ namespace RestaurantAPI.API.Data
                  }
             };
 
+            var images = new List<Image>()
+            {
+                new Image()
+                {
+                    Id = Guid.Parse("08FDDB0B-C5F0-4350-93FF-08DE5E5F95AE"),
+                    FileExtension = ".gif",
+                    FileSizeInBytes = 127884,
+                    FileName = "breakfast_menu.gif",
+                    FilePath = "https://localhost:7065/Images/MenuIcon/breakfast_menu.gif",
+                    created_at = new DateTime(2026, 1, 28, 21, 10, 0),
+                    ImageType = ImageType.MenuIcon
+                },
+
+                new Image()
+                {
+                    Id = Guid.Parse("98E2BD9B-2F01-4E40-AEAD-0C06A9D266CB"),
+                    FileExtension = ".gif",
+                    FileSizeInBytes = 103380,
+                    FileName = "seafood_menu.gif",
+                    FilePath = "https://localhost:7065/Images/MenuIcon/seafood_menu.gif",
+                    created_at = new DateTime(2026, 1, 28, 21, 15, 0),
+                    ImageType = ImageType.MenuIcon
+                },
+
+                new Image()
+                {
+                    Id = Guid.Parse("B9C52EC7-517E-4DE4-8A38-4151D9D674B0"),
+                    FileExtension = ".gif",
+                    FileSizeInBytes = 93504,
+                    FileName = "indian_menu.gif",
+                    FilePath = "https://localhost:7065/Images/MenuIcon/indian_menu.gif",
+                    created_at = new DateTime(2026, 1, 28, 21, 20, 0),
+                    ImageType = ImageType.MenuIcon
+                },
+
+                new Image()
+                {
+                    Id = Guid.Parse("DFB0EB59-8AC5-431A-A0A2-B7A5A11AB130"),
+                    FileExtension = ".gif",
+                    FileSizeInBytes = 102576 ,
+                    FileName = "pizza_menu.gif",
+                    FilePath = "https://localhost:7065/Images/MenuIcon/pizza_menu.gif",
+                    created_at = new DateTime(2026, 1, 28, 21, 25, 0),
+                    ImageType = ImageType.MenuIcon
+                },
+
+                new Image()
+                {
+                    Id = Guid.Parse("81A98461-31BC-44D3-AC96-FB2947FB1EBE"),
+                    FileExtension = ".gif",
+                    FileSizeInBytes = 68224,
+                    FileName = "burger_menu.gif",
+                    FilePath = "https://localhost:7065/Images/MenuIcon/burger_menu.gif",
+                    created_at = new DateTime(2026, 1, 28, 21, 20, 0),
+                    ImageType = ImageType.MenuIcon
+                },
+
+                new Image()
+                {
+                    Id = Guid.Parse("C374D2C3-4CF8-47C0-BC0B-4244296DC7AD"),
+                    FileExtension = ".gif",
+                    FileSizeInBytes = 127856,
+                    FileName = "chicken_menu.gif",
+                    FilePath = "https://localhost:7065/Images/MenuIcon/chicken_menu.gif",
+                    created_at = new DateTime(2026, 1, 28, 21, 35, 0),
+                    ImageType = ImageType.MenuIcon
+                },
+
+                new Image()
+                {
+                    Id = Guid.Parse("2D089945-D41A-46D4-B165-F4635C078835"),
+                    FileExtension = ".gif",
+                    FileSizeInBytes = 83721,
+                    FileName = "grilled_menu.gif",
+                    FilePath = "https://localhost:7065/Images/MenuIcon/grilled_menu.gif",
+                    created_at = new DateTime(2026, 1, 28, 21, 37, 0),
+                    ImageType = ImageType.MenuIcon
+                },
+
+                new Image()
+                {
+                    Id = Guid.Parse("B95753B9-8E2F-4D3E-A505-A3AC7AA47214"),
+                    FileExtension = ".gif",
+                    FileSizeInBytes = 360675,
+                    FileName = "healthy_menu.gif",
+                    FilePath = "https://localhost:7065/Images/MenuIcon/health_food_menu.gif",
+                    created_at = new DateTime(2026, 1, 28, 21, 40, 0),
+                    ImageType = ImageType.MenuIcon
+                }
+            };
+
             //Seeds Menu data to the database
             modelBuilder.Entity<Menu>().HasData(menus);
 
             //Seeds Restaurant data to the database
             modelBuilder.Entity<Restaurant>().HasData(restaurants);
+
+            //Seeds Image data to the database
+            modelBuilder.Entity<Image>().HasData(images);
         }
     }
 }
