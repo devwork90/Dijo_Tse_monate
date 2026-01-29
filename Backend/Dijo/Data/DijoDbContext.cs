@@ -1,5 +1,4 @@
-﻿
-using RestaurantAPI.API.Models.Domain;
+﻿using RestaurantAPI.API.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Models.Domain;
 using RestaurantAPI.Models.Enums;
@@ -136,8 +135,8 @@ namespace RestaurantAPI.API.Data
                 new Menu()
                 {
                     Id = Guid.Parse("ec4c5514-ae37-4b7c-ac36-671a3923f6ea"),
-                    Name = "Health food",
-                    Description = "All health menus",
+                    Name = "Healthy food",
+                    Description = "All healthy menus",
                     is_active = true,
                     created_at = new DateTime(2025, 2, 15, 14, 30, 0),
                     updated_at = null,
@@ -382,7 +381,7 @@ namespace RestaurantAPI.API.Data
                     FileExtension = ".gif",
                     FileSizeInBytes = 360675,
                     FileName = "healthy_menu.gif",
-                    FilePath = "https://localhost:7065/Images/MenuIcon/health_food_menu.gif",
+                    FilePath = "https://localhost:7065/Images/MenuIcon/healthy_menu.gif",
                     created_at = new DateTime(2026, 1, 28, 21, 40, 0),
                     ImageType = ImageType.MenuIcon
                 }
@@ -396,6 +395,7 @@ namespace RestaurantAPI.API.Data
 
             //Seeds Image data to the database
             modelBuilder.Entity<Image>().HasData(images);
+
         }
     }
 }

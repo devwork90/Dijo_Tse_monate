@@ -12,6 +12,7 @@ using Serilog;
 using Microsoft.AspNetCore.Diagnostics;
 using RestaurantAPI.Middlewares;
 using Microsoft.Extensions.FileProviders;
+using RestaurantAPI.Data.Data_seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -118,6 +119,15 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+   if (app.Environment.IsDevelopment())
+   {
+       var dbContext = scope.ServiceProvider.GetRequiredService<DijoDbContext>();
+       dbContext.Database.Migrate();
+       MenuIconSeeder.Seed(dbContext);
+   }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

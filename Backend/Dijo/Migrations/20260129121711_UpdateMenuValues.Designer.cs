@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestaurantAPI.API.Data;
 
@@ -11,9 +12,11 @@ using RestaurantAPI.API.Data;
 namespace RestaurantAPI.Migrations
 {
     [DbContext(typeof(DijoDbContext))]
-    partial class DijoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260129121711_UpdateMenuValues")]
+    partial class UpdateMenuValues
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -444,7 +447,7 @@ namespace RestaurantAPI.Migrations
                             Id = new Guid("b95753b9-8e2f-4d3e-a505-a3ac7aa47214"),
                             FileExtension = ".gif",
                             FileName = "healthy_menu.gif",
-                            FilePath = "https://localhost:7065/Images/MenuIcon/healthy_menu.gif",
+                            FilePath = "https://localhost:7065/Images/MenuIcon/healthy_food_menu.gif",
                             FileSizeInBytes = 360675L,
                             ImageType = 1,
                             created_at = new DateTime(2026, 1, 28, 21, 40, 0, 0, DateTimeKind.Unspecified)
