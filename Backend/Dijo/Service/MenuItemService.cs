@@ -1,4 +1,5 @@
 ﻿using RestaurantAPI.API.Models.DTO;
+using RestaurantAPI.API.Repositories;
 using RestaurantAPI.Models.Domain;
 using RestaurantAPI.Models.DTO;
 using RestaurantAPI.Repositories;
@@ -9,14 +10,29 @@ namespace RestaurantAPI.Service
     public class MenuItemService : IMenuItemService
     {
         private readonly IMenuItemRepository menuItemRepository;
+        private readonly ISubMenuRepository subMenuRepository;
 
-        public MenuItemService(IMenuItemRepository menuItemRepository)
+        public MenuItemService(IMenuItemRepository menuItemRepository, ISubMenuRepository subMenuRepository)
         {
             this.menuItemRepository = menuItemRepository;
+            this.subMenuRepository = subMenuRepository;
         }
 
         public async Task<MenuItemsDto> CreateMenuItem(AddMenuItemRequestDto addMenuItemRequestDto)
         {
+
+            var submenu = await subMenuRepository.GetSubMenusByIdAsync(addMenuItemRequestDto.subMenuId);
+            
+            if (submenu == null)
+            {
+                throw new Exception("SubMenu does not exist");
+            }
+
+            if (submenu.restaurantId != addMenuItemRequestDto.restaurantId)
+            {
+                throw new Exception("SubMenu does not belong to the specified restaurant");
+            }
+
             //Map DTOs to Domain Model
             var menuItemModel = new MenuItem
             {
