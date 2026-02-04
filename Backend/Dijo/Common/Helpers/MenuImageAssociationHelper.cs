@@ -5,7 +5,7 @@ using RestaurantAPI.Models.DTO;
 
 namespace RestaurantAPI.Common.Helpers
 {
-    public static class MenuHelper
+    public static class MenuImageAssociationHelper
     {
         public static MenuDto ToDto(Menu menu)
         {

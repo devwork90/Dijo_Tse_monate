@@ -11,11 +11,6 @@ namespace RestaurantAPI.API.Models.DTO
         public string Address { get; set; }
         public string description { get; set; }
 
-        public string logo_url { get; set; }
-        public int rating { get; set; }
-
-        [Required]
-        public bool is_open { get; set; }
-
+        public Guid? RestaurantIconId { get; set; }
     }
 }

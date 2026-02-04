@@ -33,7 +33,6 @@
     <Folder Include="Images\MenuIcon\" />
     <Folder Include="Images\MenuItemImage\" />
     <Folder Include="Images\RestaurantIcon\" />
-    <Folder Include="Logs\" />
     <Folder Include="Images\" />
   </ItemGroup>
 

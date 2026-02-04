@@ -1,8 +1,10 @@
 ﻿using RestaurantAPI.API.Models.Domain;
 using RestaurantAPI.API.Models.DTO;
 using RestaurantAPI.API.Repositories;
+using RestaurantAPI.Common.Helpers;
 using RestaurantAPI.Models.Domain;
 using RestaurantAPI.Models.DTO;
+using RestaurantAPI.Models.Enums;
 using RestaurantAPI.Repositories;
 using System.Linq;
 namespace RestaurantAPI.Service
@@ -13,16 +15,19 @@ namespace RestaurantAPI.Service
         private readonly ISubMenuRepository subMenuRepository;
         private readonly IMenuRepository menuRepository;
         private readonly IMenuItemRepository menuItemRepository;
+        private readonly IImageRepository imageRepository;
 
         public RestaurantService(IRestaurantRepository restaurantRepository,
                                 IMenuItemRepository menuItemRepository,
                                 ISubMenuRepository subMenuRepository,
-                                IMenuRepository menuRepository)
+                                IMenuRepository menuRepository,
+                                IImageRepository imageRepository)
         {
             this.restaurantRepository = restaurantRepository;
             this.menuItemRepository = menuItemRepository;
             this.subMenuRepository = subMenuRepository;
             this.menuRepository = menuRepository;
+            this.imageRepository = imageRepository;
         }
 
         public async Task<RestaurantDto> CreateRestaurantAsync(AddRestaurantRequestDto addRestaurantRequestDto)
@@ -93,6 +98,19 @@ namespace RestaurantAPI.Service
                 rating = r.rating,
                 is_open = r.is_open,
                 created_at = (DateTime)r.created_at,
+                updated_at = r.updated_at,
+                RestaurantIconImage = r.RestaurantIcon == null
+                ? null
+                : new ImageDto
+                {
+                    Id = r.RestaurantIcon.Id,
+                    FileName = r.RestaurantIcon.FileName,
+                    FileExtension = r.RestaurantIcon.FileExtension,
+                    FileSizeInBytes = r.RestaurantIcon.FileSizeInBytes,
+                    FilePath = r.RestaurantIcon.FilePath,
+                    ImageType = r.RestaurantIcon.ImageType,
+                    created_at = (DateTime)r.RestaurantIcon.created_at,
+                }
             }).ToList();
 
             return new RestaurantResponseDto
@@ -101,7 +119,7 @@ namespace RestaurantAPI.Service
             };
 
         }
-        public async Task<List<GroupedMenuItemsDto>> GetMenuItemsByRestaurantAsync(Guid restaurantId)
+        public async Task<RestaurantMenuItemsDto> GetMenuItemsByRestaurantAsync(Guid restaurantId)
         {
             var menuItems = await menuItemRepository.GetAllMenuItemsAsync();
             var SubMenus = await subMenuRepository.GetAllSubMenusAsync();
@@ -129,7 +147,10 @@ namespace RestaurantAPI.Service
 
             }).ToList()
         }).ToList();
-            return groupedMenuItems;
+            return new RestaurantMenuItemsDto
+            {
+                RestaurantsMenuItems = groupedMenuItems
+            };
         }
 
         public async Task<RestaurantDto?> GetRestaurantbyIdAsync(Guid id)
@@ -150,11 +171,22 @@ namespace RestaurantAPI.Service
                 name = restaurant.name,
                 Address = restaurant.Address,
                 description = restaurant.description,
-                logo_url = restaurant.logo_url,
                 rating = restaurant.rating,
                 is_open = restaurant.is_open,
                 created_at = restaurant.created_at ?? DateTime.Now,
                 updated_at = restaurant.updated_at,
+                RestaurantIconImage = restaurant.RestaurantIcon == null
+                ? null 
+                : new ImageDto
+                {
+                    Id = restaurant.RestaurantIcon.Id,
+                    FileName = restaurant.RestaurantIcon.FileName,
+                    FileExtension = restaurant.RestaurantIcon.FileExtension,
+                    FileSizeInBytes = restaurant.RestaurantIcon.FileSizeInBytes,
+                    FilePath = restaurant.RestaurantIcon.FilePath,
+                    ImageType = restaurant.RestaurantIcon.ImageType,
+                    created_at = (DateTime)restaurant.RestaurantIcon.created_at,
+                }   
 
             };
             return restaurantDto;
@@ -163,46 +195,40 @@ namespace RestaurantAPI.Service
         public async Task<RestaurantDto?> UpdateRestaurantAsync(Guid id, UpdateRestaurantRequestDto updateRestaurantRequestDto)
         {
 
-                //Map DTO to Domain Model
-                var restaurantDomainModel = new Restaurant
-                {
-                    name = updateRestaurantRequestDto.name,
-                    Address = updateRestaurantRequestDto.Address,
-                    description = updateRestaurantRequestDto.description,
-                    logo_url = updateRestaurantRequestDto.logo_url,
-                    rating = updateRestaurantRequestDto.rating,
-                    is_open = updateRestaurantRequestDto.is_open,
-                };
+            var restaurant = await restaurantRepository.GetRestaurantbyIdAsync(id);
 
-                //Check if the restaurant exists
-                restaurantDomainModel = await restaurantRepository.UpdateRestaurantAsync(id, restaurantDomainModel);
+            if (restaurant == null)
+            {
+                return null;
+            }
 
-                if (restaurantDomainModel == null)
-                {
-                    return null;
-                }
+            //Update fields
+            restaurant.name = updateRestaurantRequestDto.name;
+            restaurant.Address = updateRestaurantRequestDto.Address;
+            restaurant.description = updateRestaurantRequestDto.description;
+            restaurant.updated_at = DateTime.UtcNow;
 
-                //Convert Domain Model to DTO
+            if (updateRestaurantRequestDto.RestaurantIconId.HasValue)
+            {
+                var image = await imageRepository.GetImageByIdAsync(updateRestaurantRequestDto.RestaurantIconId.Value);
 
-                var restaurantDto = new RestaurantDto
-                {
-                    Id = restaurantDomainModel.Id,
-                    name = restaurantDomainModel.name,
-                    Address = restaurantDomainModel.Address,
-                    description = restaurantDomainModel.description,
-                    logo_url = restaurantDomainModel.logo_url,
-                    rating = restaurantDomainModel.rating,
-                    is_open = restaurantDomainModel.is_open,
-                    created_at = (DateTime)restaurantDomainModel.created_at,
-                    updated_at = restaurantDomainModel.updated_at,
+                if (image == null){ throw new Exception("Image not found");  }
 
-                };
-              return restaurantDto;
+                if (image.ImageType != ImageType.RestaurantIcon) { throw new Exception("Image is not of type RestaurantIcon"); }
+                image.RestaurantId = restaurant.Id;
+                restaurant.RestaurantIcon = image;
+
+                //Assign the image to the restaurant
+                restaurant.logo_url = image.FilePath;
+                
+            }
+
+            //Persist the changes
+            await restaurantRepository.UpdateRestaurantAsync(id, restaurant);
+            
+            var updatedRestaurant = await restaurantRepository.GetRestaurantbyIdAsync(id).ConfigureAwait(false);
+            return RestaurantImageAssociationHelper.ToDto(updatedRestaurant);
+
         }
-
-        //Task<List<RestaurantResponseDto>> IRestaurantService.GetAllRestaurantsAsync(string? menuName)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }

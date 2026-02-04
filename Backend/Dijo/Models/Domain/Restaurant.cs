@@ -16,12 +16,16 @@ namespace RestaurantAPI.API.Models.Domain
         public DateTime? created_at { get; set; } = DateTime.UtcNow;
         public DateTime? updated_at { get;set; }
 
+        public Guid? RestaurantIconId {get; set;}
+
+        public Image? RestaurantIcon { get; set; }
+
         //Specifies Many-to-Many with Menu
         public ICollection<Menu> Menu { get; set; } = new List<Menu>();
 
-        //public List<SubMenu> SubMenus { get; set; } = new();
+        
         public ICollection<SubMenu> SubMenus { get; set; }
 
-        public ICollection<Image> Images { get; set; } = new LinkedList<Image>();
+        //public ICollection<Image> Images { get; set; } = new List<Image>();
     }
 }

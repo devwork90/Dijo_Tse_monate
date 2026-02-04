@@ -163,7 +163,7 @@ namespace RestaurantAPI.Service
             //Optional image association
             if (updateMenuRequestDto.MenuIconImageId.HasValue)
             {
-                var image = await imageRepository.GetbyIdAsync(updateMenuRequestDto.MenuIconImageId.Value);
+                var image = await imageRepository.GetImageByIdAsync(updateMenuRequestDto.MenuIconImageId.Value);
 
                 if (image == null) throw new ValidationException("Image us not found");
 
@@ -178,7 +178,7 @@ namespace RestaurantAPI.Service
             //Relode menu WITH Image
             var updatedMenu = await menuRepository.GetByIdAsync(menuId).ConfigureAwait(false);
 
-            return MenuHelper.ToDto(updatedMenu);
+            return MenuImageAssociationHelper.ToDto(updatedMenu);
 
         }
 

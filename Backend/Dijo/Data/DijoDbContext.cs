@@ -53,7 +53,7 @@ namespace RestaurantAPI.API.Data
                 .HasMany(r => r.SubMenus)
                 .WithOne(s => s.Restaurant)
                 .HasForeignKey(s => s.restaurantId)
-                .OnDelete(DeleteBehavior.Cascade); //When a Menu is deleted, delete its SubMenus
+                .OnDelete(DeleteBehavior.Cascade); //When a restaurant is deleted, delete its SubMenus
 
             //Define a One-to-Many relationship between SubMenu->MenuItem
             modelBuilder.Entity<MenuItem>()
@@ -67,8 +67,8 @@ namespace RestaurantAPI.API.Data
                 .HasOne(mi => mi.Restaurant)
                 .WithMany()
                 .HasForeignKey(mi => mi.restaurantId)
-                .OnDelete(DeleteBehavior.Restrict); //When a Restaurant is deleted, delete its MenuItem
-            
+                .OnDelete(DeleteBehavior.Restrict); //Restrict restaurant delition if there are MenuItems associated
+
             //Explicitly defining Price field as decimal
             {
                 modelBuilder.Entity<MenuItem>()
@@ -88,6 +88,11 @@ namespace RestaurantAPI.API.Data
                     j => j.HasOne<Menu>().WithMany().HasForeignKey("MenuId"),
                     j => j.ToTable("MenuRestaurants")
                 );
+            modelBuilder.Entity<Restaurant>()
+                .HasOne(r => r.RestaurantIcon)
+                .WithOne(i => i.Restaurant)
+                .HasForeignKey<Image>(i => i.RestaurantId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Seed data for Menu model
             var menus = new List<Menu>()

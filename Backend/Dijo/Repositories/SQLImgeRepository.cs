@@ -19,7 +19,7 @@ namespace RestaurantAPI.Repositories
             this.contextAccessor = contextAccessor;
         }
 
-        public async Task<Image?> GetbyIdAsync(Guid id)
+        public async Task<Image?> GetImageByIdAsync(Guid id)
         {
             return await dbContext.Images.FirstOrDefaultAsync(x => x.Id == id);
         }

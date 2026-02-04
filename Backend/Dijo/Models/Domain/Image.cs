@@ -19,7 +19,7 @@ namespace RestaurantAPI.Models.Domain
 
         // Associations (nullable until linked)
         public Guid? RestaurantId { get; set; }
-        public Restaurant?  Restaurant { get; set; }
+        public Restaurant? Restaurant { get; set; }
         public Guid? MenuId { get; set; }
         public Menu? Menu { get; set; }
         public DateTime? created_at { get; set; } = DateTime.UtcNow;

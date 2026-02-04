@@ -15,12 +15,10 @@ namespace RestaurantAPI.Controllers
     public class MenuItemController : ControllerBase
     {
         private readonly IMenuItemService menuItemService;
-        private readonly IMenuItemRepository menuItemRepository;
 
-        public MenuItemController(IMenuItemService menuItemService, IMenuItemRepository menuItemRepository)
+        public MenuItemController(IMenuItemService menuItemService)
         {
             this.menuItemService = menuItemService;
-            this.menuItemRepository = menuItemRepository;
         }
 
         [HttpPost]

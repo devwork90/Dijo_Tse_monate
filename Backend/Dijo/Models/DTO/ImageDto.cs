@@ -16,5 +16,10 @@ namespace RestaurantAPI.Models.DTO
         public ImageType ImageType { get; set; }
         public DateTime created_at { get; set; }
         public DateTime? updated_at { get; set; }
+
+        public static implicit operator string?(ImageDto? v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -18,7 +18,7 @@ namespace RestaurantAPI.Service
 
         public async Task<ImageDto?> GetImageByIdAsync(Guid imageId)
         {
-            var ImageItem = await imageRepository.GetbyIdAsync(imageId);
+            var ImageItem = await imageRepository.GetImageByIdAsync(imageId);
 
             if (ImageItem == null) { return null; }
 

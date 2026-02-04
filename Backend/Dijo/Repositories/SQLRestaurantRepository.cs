@@ -42,6 +42,7 @@ namespace RestaurantAPI.API.Repositories
         public async Task<List<Restaurant>> GetAllAsync()
         {
             return await dbContext.Restaurants
+                .Include(r => r.RestaurantIcon)
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -56,7 +57,9 @@ namespace RestaurantAPI.API.Repositories
         public async Task<Restaurant?> GetRestaurantbyIdAsync(Guid id)
         {
             //Get data from Database via - Domain models
-           return await dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == id);
+           return await dbContext.Restaurants
+                .Include(r => r.RestaurantIcon)
+                .FirstOrDefaultAsync(r => r.Id == id);
         }
 
         public async Task<Restaurant?> UpdateRestaurantAsync(Guid id, Restaurant restaurant)

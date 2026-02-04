@@ -6,6 +6,6 @@ namespace RestaurantAPI.Repositories
     public interface IImageRepository
     {
         Task<Image> UploadImage(Image image);
-        Task<Image?>GetbyIdAsync(Guid id);
+        Task<Image?>GetImageByIdAsync(Guid id);
     }
 }
