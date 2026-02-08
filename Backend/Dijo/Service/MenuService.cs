@@ -184,7 +184,7 @@ namespace RestaurantAPI.Service
 
         public async Task<bool> DeleteMenu(Guid menuId)
         {
-            //Get Data from Data via domain Model
+            //Get menu data from db via the repository layer
             var menuDomainModel = await menuRepository.DeleteMenuAsync(menuId);
 
             //Check if data exist

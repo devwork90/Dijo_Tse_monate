@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using RestaurantAPI.API.Repositories;
 using RestaurantAPI.Exceptions;
 using RestaurantAPI.Models.Domain;
 using RestaurantAPI.Models.DTO;
@@ -10,10 +11,13 @@ namespace RestaurantAPI.Service
     {
 
         public readonly IImageRepository imageRepository;
+        public readonly IRestaurantRepository restaurantRepository;
 
-        public ImageService(IImageRepository imageRepository) 
+        public ImageService(IImageRepository imageRepository,
+                            IRestaurantRepository restaurantRepository) 
         {
             this.imageRepository = imageRepository;
+            this.restaurantRepository = restaurantRepository;
         }
 
         public async Task<ImageDto?> GetImageByIdAsync(Guid imageId)
@@ -107,6 +111,31 @@ namespace RestaurantAPI.Service
         public void ValidateRestaurantImageQuery(ImageType imageType)
         {
             throw new InvalidOperationException("Only MenuIcon images are allowed here.");
+        }
+
+        public async Task<bool> DeleteImageAsync(Guid imageId)
+        {
+            var deletedImage = await imageRepository.GetImageByIdAsync(imageId);
+            
+            if (deletedImage == null)
+            {
+                return false;
+            }
+
+            //Get Restaurant association if exists
+            if (deletedImage.RestaurantId.HasValue) 
+            {
+                var restaurant = await restaurantRepository.GetRestaurantbyIdAsync(deletedImage.RestaurantId.Value);
+                if (restaurant != null) { 
+                    restaurant.RestaurantIconId = null;
+                    restaurant.RestaurantIcon = null;
+                    restaurant.logo_url = null;
+                    await restaurantRepository.UpdateRestaurantAsync(restaurant.Id, restaurant);
+                }
+            }
+
+            var result = await imageRepository.DeleteImageAsync(imageId);
+            return result != null;
         }
     }
 }

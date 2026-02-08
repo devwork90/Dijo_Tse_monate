@@ -7,5 +7,7 @@ namespace RestaurantAPI.Repositories
     {
         Task<Image> UploadImage(Image image);
         Task<Image?>GetImageByIdAsync(Guid id);
+
+        Task<Image?> DeleteImageAsync(Guid id);
     }
 }

@@ -19,6 +19,28 @@ namespace RestaurantAPI.Repositories
             this.contextAccessor = contextAccessor;
         }
 
+        public async Task<Image?> DeleteImageAsync(Guid id)
+        {
+            var deletedImage = dbContext.Images.FirstOrDefaultAsync(x => x.Id == id);
+            if (deletedImage == null)
+            {
+                return await Task.FromResult<Image?>(null);
+            }
+            // Delete the image file from the local storage
+            var filePath = Path.Combine(webHostEnvironment.ContentRootPath, "Images", deletedImage.Result.ImageType.ToString(), $"{deletedImage.Result.FileName}{deletedImage.Result.FileExtension}");
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            // Remove the image record from the database
+            dbContext.Images.Remove(deletedImage.Result);
+
+            await dbContext.SaveChangesAsync();
+
+            return await deletedImage;
+        }
+
         public async Task<Image?> GetImageByIdAsync(Guid id)
         {
             return await dbContext.Images.FirstOrDefaultAsync(x => x.Id == id);

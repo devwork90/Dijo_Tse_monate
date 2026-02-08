@@ -7,5 +7,7 @@ namespace RestaurantAPI.Service
         Task<ImageDto> UploadImageAsync(ImageUploadRequestDto imageUploadRequestDto);
 
         Task<ImageDto?> GetImageByIdAsync(Guid imageId);
+
+        Task<bool> DeleteImageAsync(Guid imageId);
     }
 }

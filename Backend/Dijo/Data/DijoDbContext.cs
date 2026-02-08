@@ -88,6 +88,7 @@ namespace RestaurantAPI.API.Data
                     j => j.HasOne<Menu>().WithMany().HasForeignKey("MenuId"),
                     j => j.ToTable("MenuRestaurants")
                 );
+
             modelBuilder.Entity<Restaurant>()
                 .HasOne(r => r.RestaurantIcon)
                 .WithOne(i => i.Restaurant)

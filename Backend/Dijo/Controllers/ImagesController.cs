@@ -10,7 +10,7 @@ namespace RestaurantAPI.Controllers
     public class ImagesController : ControllerBase
     {
         private readonly IImageService imageService;
-        public ImagesController( IImageService imageService) 
+        public ImagesController(IImageService imageService)
         {
             this.imageService = imageService;
         }
@@ -28,7 +28,7 @@ namespace RestaurantAPI.Controllers
         [Route("Upload")]
         public async Task<IActionResult> Upload([FromForm] ImageUploadRequestDto imageUploadRequestDto)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var uploadImage = await imageService.UploadImageAsync(imageUploadRequestDto);
                 return CreatedAtAction(nameof(GetById), new { id = uploadImage.Id }, uploadImage);
@@ -38,6 +38,15 @@ namespace RestaurantAPI.Controllers
                 return BadRequest(ModelState);
             }
 
+        }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        {
+            var deletedImage = await imageService.DeleteImageAsync(id);
+            if (deletedImage == null) { return NotFound(); }
+            return Ok(deletedImage);
         }
     }
 }

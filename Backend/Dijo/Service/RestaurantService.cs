@@ -94,7 +94,6 @@ namespace RestaurantAPI.Service
             {
                 Id = r.Id,
                 name = r.name,
-                logo_url = r.logo_url,
                 rating = r.rating,
                 is_open = r.is_open,
                 created_at = (DateTime)r.created_at,
@@ -217,6 +216,7 @@ namespace RestaurantAPI.Service
                 if (image.ImageType != ImageType.RestaurantIcon) { throw new Exception("Image is not of type RestaurantIcon"); }
                 image.RestaurantId = restaurant.Id;
                 restaurant.RestaurantIcon = image;
+                restaurant.RestaurantIconId = image.Id;
 
                 //Assign the image to the restaurant
                 restaurant.logo_url = image.FilePath;
