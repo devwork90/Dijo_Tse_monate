@@ -126,7 +126,8 @@ using (var scope = app.Services.CreateScope())
        var dbContext = scope.ServiceProvider.GetRequiredService<DijoDbContext>();
        dbContext.Database.Migrate();
        MenuIconSeeder.Seed(dbContext);
-   }
+       RestaurantIconSeeder.Seed(dbContext);
+    }
 }
 
 // Configure the HTTP request pipeline.

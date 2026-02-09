@@ -390,7 +390,111 @@ namespace RestaurantAPI.API.Data
                     FilePath = "https://localhost:7065/Images/MenuIcon/healthy_menu.gif",
                     created_at = new DateTime(2026, 1, 28, 21, 40, 0),
                     ImageType = ImageType.MenuIcon
-                }
+                },
+
+                new Image()
+                {
+                    Id = Guid.Parse("A1B2C3D4-E5F6-7890-1234-56789ABCDE01"),
+                    FileExtension = ".jpeg",
+                    FileSizeInBytes = 396632,
+                    FileName = "hungry_lion.jpeg",
+                    FilePath = "https://localhost:7065/Images/RestaurantIcon/hungry_lion.jpeg",
+                    created_at = new DateTime(2026, 1, 09, 21, 45, 0),
+                    ImageType = ImageType.RestaurantIcon,
+                },
+
+                new Image()
+                {
+                    Id = Guid.Parse("B1C2D3E4-F5A6-7890-1234-56789ABCDE02"),
+                    FileExtension = ".jpeg",
+                    FileSizeInBytes = 377633,
+                    FileName = "kfc.jpeg",
+                    FilePath = "https://localhost:7065/Images/RestaurantIcon/kfc.jpeg",
+                    created_at = new DateTime(2026, 1, 09, 21, 50, 0),
+                    ImageType = ImageType.RestaurantIcon,
+                },
+
+                new Image()
+                {
+                    Id = Guid.Parse("C1D2E3F4-A5B6-7890-1234-56789ABCDE03"),
+                    FileExtension = ".jpeg",
+                    FileSizeInBytes = 361342,
+                    FileName = "nandos.jpeg",
+                    FilePath = "https://localhost:7065/Images/RestaurantIcon/nandos.jpeg",
+                    created_at = new DateTime(2026, 1, 09, 21, 55, 0),
+                    ImageType = ImageType.RestaurantIcon,
+                },
+                 new Image()
+                {
+                    Id = Guid.Parse("D1E2F3A4-B5C6-7890-1234-56789ABCDE04"),
+                    FileExtension = ".jpeg",
+                    FileSizeInBytes = 373373,
+                    FileName = "pedros.jpeg",
+                    FilePath = "https://localhost:7065/Images/RestaurantIcon/pedros.jpeg",
+                    created_at = new DateTime(2026, 1, 09, 22, 00, 0),
+                    ImageType = ImageType.RestaurantIcon,
+                },
+                 new Image()
+                    {
+                        Id = Guid.Parse("E1F2A3B4-C5D6-7890-1234-56789ABCDE05"),
+                        FileExtension = ".jpeg",
+                        FileSizeInBytes = 388298,
+                        FileName = "steers.jpeg",
+                        FilePath = "https://localhost:7065/Images/RestaurantIcon/steers.jpeg",
+                        created_at = new DateTime(2026, 1, 09, 22, 05, 0),
+                        ImageType = ImageType.RestaurantIcon,
+                    },
+                    new Image()
+                    {
+                        Id = Guid.Parse("F1A2B3C4-D5E6-7890-1234-56789ABCDE06"),
+                        FileExtension = ".jpeg",
+                        FileSizeInBytes = 359922,
+                        FileName = "spur.jpeg",
+                        FilePath = "https://localhost:7065/Images/RestaurantIcon/spur.jpeg",
+                        created_at = new DateTime(2026, 1, 09, 22, 10, 0),
+                        ImageType = ImageType.RestaurantIcon,
+                    },
+                    new Image()
+                    {
+                        Id = Guid.Parse("A2B3C4D5-E6F7-7890-1234-56789ABCDE07"),
+                        FileExtension = ".jpeg",
+                        FileSizeInBytes = 382259,
+                        FileName = "debonairs.jpeg",
+                        FilePath = "https://localhost:7065/Images/RestaurantIcon/debonairs.jpeg",
+                        created_at = new DateTime(2026, 1, 09, 22, 15, 0),
+                        ImageType = ImageType.RestaurantIcon,
+                    },
+                     new Image()
+                    {
+                        Id = Guid.Parse("B2C3D4E5-F6A7-7890-1234-56789ABCDE08"),
+                        FileExtension = ".jpeg",
+                        FileSizeInBytes = 392519,
+                        FileName = "romans.jpeg",
+                        FilePath = "https://localhost:7065/Images/RestaurantIcon/romans.jpeg",
+                        created_at = new DateTime(2026, 1, 09, 22, 20, 0),
+                        ImageType = ImageType.RestaurantIcon,
+                     },
+                     new Image()
+                     {
+                        Id = Guid.Parse("C2D3E4F5-A6B7-7890-1234-56789ABCDE09"),
+                        FileExtension = ".jpeg",
+                        FileSizeInBytes = 267194,
+                        FileName = "macdonalds.jpeg",
+                        FilePath = "https://localhost:7065/Images/RestaurantIcon/macdonalds.jpeg",
+                        created_at = new DateTime(2026, 1, 09, 22, 25, 0),
+                        ImageType = ImageType.RestaurantIcon,
+                     },
+
+                     new Image()
+                        {
+                            Id = Guid.Parse("D2E3F4A5-B6C7-7890-1234-56789ABCDE10"),
+                            FileExtension = ".jpeg",
+                            FileSizeInBytes = 371497,
+                            FileName = "burger_king.jpeg",
+                            FilePath = "https://localhost:7065/Images/RestaurantIcon/burger_king.jpeg",
+                            created_at = new DateTime(2026, 1, 09, 22, 30, 0),
+                            ImageType = ImageType.RestaurantIcon,
+                        },
             };
 
             //Seeds Menu data to the database

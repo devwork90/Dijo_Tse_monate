@@ -48,5 +48,5 @@ namespace RestaurantAPI.Controllers
             if (deletedImage == null) { return NotFound(); }
             return Ok(deletedImage);
         }
-    }
+     }
 }
