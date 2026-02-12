@@ -1,5 +1,6 @@
-﻿using System.Linq;
-using RestaurantAPI.API.Data;
+﻿using RestaurantAPI.API.Data;
+using RestaurantAPI.API.Models.Domain;
+using System.Linq;
 namespace RestaurantAPI.Data.Data_seed
 {
     public class RestaurantIconSeeder
@@ -25,14 +26,28 @@ namespace RestaurantAPI.Data.Data_seed
                     { Guid.Parse("94053C61-D5F8-4D82-A0E8-C6FE2F1D5843"), Guid.Parse("C2D3E4F5-A6B7-7890-1234-56789ABCDE09") },
                     { Guid.Parse("CAF21DBB-ADE5-4F51-8F12-EF9862022BA9"), Guid.Parse("D2E3F4A5-B6C7-7890-1234-56789ABCDE10") },
                 };
+
+            // load all restaurant and image ids into memory to avoid multiple database calls in the loop
+            var restaurantIds = mappings.Keys.ToList();
+            var imageIds = mappings.Values.ToList();
+
+            // Load restaurants and images into dictionaries for quick lookup
+            var restuarants = context.Restaurants.Where(r => restaurantIds.Contains(r.Id)).ToDictionary(r => r.Id);
+            var images = context.Images.Where(i => imageIds.Contains(i.Id)).ToDictionary(i => i.Id);
+
             foreach (var map in mappings)
             {
-                var restaurant = context.Restaurants.Find(map.Key);
-                var image = context.Images.Find(map.Value);
+               if (!restuarants.TryGetValue(map.Key, out var restaurant))
+                {
+                    continue; // skip if restaurant not found
+                }
 
-                if (restaurant == null || image == null)
-                    continue;
+                if (!images.TryGetValue(map.Value, out var image))
+                {
+                    continue; // skip if image not found
+                }
 
+                
                 image.RestaurantId = restaurant.Id;
                 restaurant.RestaurantIcon = image;
                 restaurant.logo_url = image.FilePath;
@@ -40,9 +55,10 @@ namespace RestaurantAPI.Data.Data_seed
                 image.updated_at = DateTime.UtcNow;
                 restaurant.updated_at = DateTime.UtcNow;
 
-                context.SaveChanges();
             }
-           
+            // Save all changes in one batch to optimize performance
+            context.SaveChanges();
+
         }
 
     }
