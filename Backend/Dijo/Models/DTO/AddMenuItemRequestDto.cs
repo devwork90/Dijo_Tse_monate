@@ -8,7 +8,6 @@ namespace RestaurantAPI.Models.DTO
         [Required]
         public required string Name { get; set; }
         public string? Description { get; set; }
-        public  string imageUrl { get; set; }
 
         [Required]
         public bool is_Available { get; set; }

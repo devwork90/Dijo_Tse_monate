@@ -4,6 +4,6 @@
     {
         MenuIcon = 1,
         RestaurantIcon = 2,
-        MenuItemImage = 3
+        MenuItemIcon = 3
     }
 }

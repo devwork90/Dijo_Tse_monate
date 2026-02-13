@@ -13,6 +13,8 @@ namespace RestaurantAPI.Service
 
         Task<MenuItemsDto?> UpdateMenuItem(Guid id, UpdateMenuItemDto updateMenuItemDto);
 
+        Task<MenuItemsDto?> PatchMenuItem(Guid id, PatchMenuItemDto patchMenuItemDto);
+
         Task<MenuItemsDto> CreateMenuItem(AddMenuItemRequestDto addMenuItemRequestDto);
 
         Task<bool?> DeleteMenuItem(Guid id);

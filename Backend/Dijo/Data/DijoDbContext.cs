@@ -89,11 +89,19 @@ namespace RestaurantAPI.API.Data
                     j => j.ToTable("MenuRestaurants")
                 );
 
+            //Define a One-to-One relationship between Restaurant and Image for RestaurantIcon
             modelBuilder.Entity<Restaurant>()
                 .HasOne(r => r.RestaurantIcon)
                 .WithOne(i => i.Restaurant)
                 .HasForeignKey<Image>(i => i.RestaurantId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            //Define a One-to-One relationship between MenuItem and Image for MenuItemIcon
+            modelBuilder.Entity<MenuItem>()
+                .HasOne(mi => mi.MenuItemIcon)
+                .WithOne(i => i.MenuItem)
+                .HasForeignKey<Image>(i => i.MenuItemId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             // Seed data for Menu model
             var menus = new List<Menu>()

@@ -7,9 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Images\MenuItemImage\**" />
     <Compile Remove="NewFolder1\**" />
+    <Content Remove="Images\MenuItemImage\**" />
     <Content Remove="NewFolder1\**" />
+    <EmbeddedResource Remove="Images\MenuItemImage\**" />
     <EmbeddedResource Remove="NewFolder1\**" />
+    <None Remove="Images\MenuItemImage\**" />
     <None Remove="NewFolder1\**" />
   </ItemGroup>
 
@@ -31,7 +35,7 @@
 
   <ItemGroup>
     <Folder Include="Images\MenuIcon\" />
-    <Folder Include="Images\MenuItemImage\" />
+    <Folder Include="Images\MenuItemIcon\" />
     <Folder Include="Images\RestaurantIcon\" />
     <Folder Include="Images\" />
   </ItemGroup>

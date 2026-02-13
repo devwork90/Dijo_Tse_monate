@@ -10,7 +10,7 @@ namespace RestaurantAPI.Common.Helpers
             {
                 ImageType.MenuIcon => "MenuIcon",
                 ImageType.RestaurantIcon => "RestaurantIcon",
-                ImageType.MenuItemImage => "MenuItemImage",
+                ImageType.MenuItemIcon => "MenuItemImage",
                 _ => throw new ArgumentOutOfRangeException(nameof(imageType))
             };
         }

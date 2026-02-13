@@ -1,4 +1,6 @@
-﻿namespace RestaurantAPI.API.Models.DTO
+﻿using RestaurantAPI.Models.DTO;
+
+namespace RestaurantAPI.API.Models.DTO
 {
     public class MenuItemsDto
     {
@@ -12,5 +14,6 @@
         public DateTime? updated_at { get; set; }
         public Guid subMenuId { get; set; }
         public Guid restaurantId { get; set; }
+        public ImageDto? MenuItemIconImage { get; set; }
     }
 }

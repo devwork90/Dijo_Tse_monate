@@ -165,7 +165,7 @@ namespace RestaurantAPI.Service
             {
                 var image = await imageRepository.GetImageByIdAsync(updateMenuRequestDto.MenuIconImageId.Value);
 
-                if (image == null) throw new ValidationException("Image us not found");
+                if (image == null) throw new ValidationException("Image is not found");
 
                 if (image.ImageType != ImageType.MenuIcon) throw new ValidationException("Only MenuIcon images allowed");
                 menu.url_menu_icon = image.FilePath;

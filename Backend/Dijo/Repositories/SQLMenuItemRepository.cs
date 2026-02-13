@@ -39,7 +39,9 @@ namespace RestaurantAPI.Repositories
         public async Task<List<MenuItem>> GetAllMenuItemsAsync()
         {
             //Get Data from the Database through the dbContext
-           return await dbContext.MenuItems.ToListAsync();
+           return await dbContext.MenuItems
+                .Include(mi => mi.MenuItemIcon)
+                .ToListAsync();
         }
 
         public async Task<MenuItem?> GetMenuItemByIdAsync(Guid id)

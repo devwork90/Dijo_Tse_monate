@@ -1,8 +1,11 @@
 ﻿using RestaurantAPI.API.Models.DTO;
 using RestaurantAPI.API.Repositories;
+using RestaurantAPI.Common.Helpers;
 using RestaurantAPI.Models.Domain;
 using RestaurantAPI.Models.DTO;
+using RestaurantAPI.Models.Enums;
 using RestaurantAPI.Repositories;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata.Ecma335;
 
 namespace RestaurantAPI.Service
@@ -11,11 +14,13 @@ namespace RestaurantAPI.Service
     {
         private readonly IMenuItemRepository menuItemRepository;
         private readonly ISubMenuRepository subMenuRepository;
+        private readonly IImageRepository imageRepository;
 
-        public MenuItemService(IMenuItemRepository menuItemRepository, ISubMenuRepository subMenuRepository)
+        public MenuItemService(IMenuItemRepository menuItemRepository, ISubMenuRepository subMenuRepository, IImageRepository imageRepository)
         {
             this.menuItemRepository = menuItemRepository;
             this.subMenuRepository = subMenuRepository;
+            this.imageRepository = imageRepository;
         }
 
         public async Task<MenuItemsDto> CreateMenuItem(AddMenuItemRequestDto addMenuItemRequestDto)
@@ -38,7 +43,6 @@ namespace RestaurantAPI.Service
             {
                 Name = addMenuItemRequestDto.Name,
                 Description = addMenuItemRequestDto.Description,
-                imageUrl = addMenuItemRequestDto.imageUrl,
                 Price = addMenuItemRequestDto.Price,
                 is_Available = addMenuItemRequestDto.is_Available,
                 restaurantId = addMenuItemRequestDto.restaurantId,
@@ -87,11 +91,22 @@ namespace RestaurantAPI.Service
                     Description = item.Description,
                     Price = item.Price,
                     is_Available = item.is_Available,
-                    imageUrl = item.imageUrl,
                     created_at = item.created_at ?? DateTime.UtcNow,
                     updated_at = item.updated_at,
                     subMenuId = item.SubMenuId,
                     restaurantId = item.restaurantId,
+                    MenuItemIconImage = item.MenuItemIcon == null
+                    ? null
+                    : new ImageDto
+                    {
+                        Id = item.MenuItemIcon.Id,
+                        FileName = item.MenuItemIcon.FileName,
+                        FileExtension = item.MenuItemIcon.FileExtension,
+                        FileSizeInBytes = item.MenuItemIcon.FileSizeInBytes,
+                        FilePath = item.MenuItemIcon.FilePath,
+                        ImageType = item.MenuItemIcon.ImageType,
+                        created_at = (DateTime)item.created_at
+                    }
                 });
 
             //Return DTOs back to client
@@ -119,7 +134,6 @@ namespace RestaurantAPI.Service
                 Description = menuItem.Description,
                 is_Available = menuItem.is_Available,
                 Price = menuItem.Price,
-                imageUrl = menuItem.imageUrl,
                 created_at = menuItem.created_at ?? DateTime.UtcNow,
                 updated_at = menuItem.updated_at,
                 subMenuId = menuItem.SubMenuId,
@@ -131,6 +145,36 @@ namespace RestaurantAPI.Service
             return menuItemDto;
         }
 
+        public async Task<MenuItemsDto?> PatchMenuItem(Guid id, PatchMenuItemDto patchMenuItemDto)
+        {
+           var menuItem = await menuItemRepository.GetMenuItemByIdAsync (id);
+
+            if (menuItem == null)
+            {
+                return null;
+            }
+
+            var image = await imageRepository.GetImageByIdAsync(patchMenuItemDto.MenuItemIconId);
+            if (image == null){ throw new Exception("Image is not found"); }
+
+            if (image.ImageType != ImageType.MenuItemIcon) throw new ValidationException("Only MenuIcon images allowed");
+            image.MenuItemId = menuItem.Id;
+            menuItem.MenuItemIcon = image;
+            menuItem.MenuItemIconId = image.MenuId;
+            menuItem.SubMenuId = menuItem.SubMenuId;
+            menuItem.restaurantId = menuItem.restaurantId;
+            menuItem.updated_at = DateTime.UtcNow;
+
+            //Persist the changes to the database
+            await menuItemRepository.UpdateMenuItem(id, menuItem);
+
+            //Reload the updated menu item to get the latest data
+            var updatedMenuItem = await menuItemRepository.GetMenuItemByIdAsync(id).ConfigureAwait(false);
+
+            return MenuItemImageAssociationHelper.ToDto(updatedMenuItem);
+
+        }
+
         public async Task<MenuItemsDto?> UpdateMenuItem(Guid id, UpdateMenuItemDto updateMenuItemDto)
         {
             //Map Dto to Domain Model
@@ -140,7 +184,6 @@ namespace RestaurantAPI.Service
                 Description = updateMenuItemDto.Description,
                 Price = updateMenuItemDto.Price,
                 is_Available = updateMenuItemDto.is_Available,
-                imageUrl = updateMenuItemDto.imageUrl,
             };
 
 

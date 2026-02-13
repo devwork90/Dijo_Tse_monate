@@ -71,6 +71,22 @@ namespace RestaurantAPI.Controllers
             }
         }
 
+        [HttpPatch]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> PatchMenuItem([FromRoute] Guid id, [FromBody] PatchMenuItemDto patchMenuItem)
+        {
+            if (ModelState.IsValid)
+            {
+                var updatedMenuItem = await menuItemService.PatchMenuItem(id, patchMenuItem);
+                if (updatedMenuItem == null) { return NotFound(); }
+                return Ok(updatedMenuItem);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
+
         [HttpDelete]
         [Route("{id:Guid}")]
 

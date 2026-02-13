@@ -12,12 +12,15 @@ namespace RestaurantAPI.Service
 
         public readonly IImageRepository imageRepository;
         public readonly IRestaurantRepository restaurantRepository;
+        public readonly IMenuItemRepository menuItemRepository;
 
         public ImageService(IImageRepository imageRepository,
-                            IRestaurantRepository restaurantRepository) 
+                            IRestaurantRepository restaurantRepository,
+                            IMenuItemRepository menuItemRepository) 
         {
             this.imageRepository = imageRepository;
             this.restaurantRepository = restaurantRepository;
+            this.menuItemRepository = menuItemRepository;
         }
 
         public async Task<ImageDto?> GetImageByIdAsync(Guid imageId)
@@ -29,7 +32,7 @@ namespace RestaurantAPI.Service
             var allowedTyped = new[]
             {
                 ImageType.MenuIcon,
-                ImageType.MenuItemImage,
+                ImageType.MenuItemIcon,
                 ImageType.RestaurantIcon,
 
             };
@@ -131,6 +134,18 @@ namespace RestaurantAPI.Service
                     restaurant.RestaurantIcon = null;
                     restaurant.logo_url = null;
                     await restaurantRepository.UpdateRestaurantAsync(restaurant.Id, restaurant);
+                }
+            }
+
+            else if (deletedImage.MenuItemId.HasValue)
+            {
+                var menuItem = await menuItemRepository.GetMenuItemByIdAsync(deletedImage.MenuItemId.Value);
+                if (menuItem != null)
+                {
+                    menuItem.MenuItemIconId = null;
+                    menuItem.MenuItemIcon = null;
+                    menuItem.imageUrl = null;
+                    await menuItemRepository.UpdateMenuItem(menuItem.Id, menuItem);
                 }
             }
 
