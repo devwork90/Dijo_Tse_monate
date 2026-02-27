@@ -160,9 +160,8 @@ namespace RestaurantAPI.Service
             if (image.ImageType != ImageType.MenuItemIcon) throw new ValidationException("Only MenuIcon images allowed");
             image.MenuItemId = menuItem.Id;
             menuItem.MenuItemIcon = image;
+            menuItem.imageUrl = image.FilePath;
             menuItem.MenuItemIconId = image.MenuId;
-            menuItem.SubMenuId = menuItem.SubMenuId;
-            menuItem.restaurantId = menuItem.restaurantId;
             menuItem.updated_at = DateTime.UtcNow;
 
             //Persist the changes to the database
