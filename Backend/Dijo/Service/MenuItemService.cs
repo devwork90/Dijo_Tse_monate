@@ -63,8 +63,8 @@ namespace RestaurantAPI.Service
                 imageUrl = menuItemModel.imageUrl,
                 Price = menuItemModel.Price,
                 is_Available = menuItemModel.is_Available,
-                restaurantId = menuItemModel.restaurantId,
-                subMenuId = menuItemModel.SubMenuId,
+                //restaurantId = menuItemModel.restaurantId,
+                //subMenuId = menuItemModel.SubMenuId,
                 created_at = menuItemModel.created_at
 
             };
@@ -93,8 +93,6 @@ namespace RestaurantAPI.Service
                     is_Available = item.is_Available,
                     created_at = item.created_at ?? DateTime.UtcNow,
                     updated_at = item.updated_at,
-                    subMenuId = item.SubMenuId,
-                    restaurantId = item.restaurantId,
                     MenuItemIconImage = item.MenuItemIcon == null
                     ? null
                     : new ImageDto
@@ -136,8 +134,8 @@ namespace RestaurantAPI.Service
                 Price = menuItem.Price,
                 created_at = menuItem.created_at ?? DateTime.UtcNow,
                 updated_at = menuItem.updated_at,
-                subMenuId = menuItem.SubMenuId,
-                restaurantId = menuItem.restaurantId,
+                //subMenuId = menuItem.SubMenuId,
+                //restaurantId = menuItem.restaurantId,
 
             };
 
@@ -201,8 +199,8 @@ namespace RestaurantAPI.Service
                 Description = menuItemDomainModel.Description,
                 Price = menuItemDomainModel.Price,
                 imageUrl = menuItemDomainModel.imageUrl,
-                restaurantId = menuItemDomainModel.restaurantId,
-                subMenuId = menuItemDomainModel.SubMenuId,
+                //restaurantId = menuItemDomainModel.restaurantId,
+                //subMenuId = menuItemDomainModel.SubMenuId,
                 updated_at = menuItemDomainModel.updated_at,
                 created_at = menuItemDomainModel.created_at,
 

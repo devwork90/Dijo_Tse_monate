@@ -122,6 +122,7 @@ namespace RestaurantAPI.Service
         {
             var menuItems = await menuItemRepository.GetAllMenuItemsAsync();
             var SubMenus = await subMenuRepository.GetAllSubMenusAsync();
+            var restaurant = await restaurantRepository.GetRestaurantbyIdAsync(restaurantId);
 
             var filteredMenuItems = menuItems
             .Where(mi => mi.restaurantId == restaurantId)
@@ -131,8 +132,8 @@ namespace RestaurantAPI.Service
             .GroupBy(mi => mi.SubMenuId)
             .Select(group => new GroupedMenuItemsDto
             {
-               SubMenuId = group.Key,
-               SubMenuName = SubMenus.FirstOrDefault(sm => sm.Id == group.Key)?.Name,
+               Id = group.Key,
+               Name = SubMenus.FirstOrDefault(sm => sm.Id == group.Key)?.Name,
                Items = group.Select(mi => new MenuItemsDto
                {
                     Id = mi.Id,
@@ -140,15 +141,21 @@ namespace RestaurantAPI.Service
                     Description = mi.Description,
                     imageUrl = mi.imageUrl,
                     Price = mi.Price,
-                    subMenuId = mi.SubMenuId,
                     is_Available = mi.is_Available,
-                    restaurantId = mi.restaurantId
 
             }).ToList()
         }).ToList();
             return new RestaurantMenuItemsDto
             {
-                RestaurantsMenuItems = groupedMenuItems
+                Restaurant = new RestaurantDto
+                {
+                    Id = restaurant.Id,
+                    name = restaurant.name,
+                    description = restaurant.description,
+                    rating = restaurant.rating,
+                    logo_url = restaurant.logo_url 
+                  },
+                Menu = groupedMenuItems
             };
         }
 

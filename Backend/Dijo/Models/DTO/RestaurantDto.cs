@@ -13,7 +13,7 @@ namespace RestaurantAPI.API.Models.DTO
         public int rating { get; set; }
         public bool is_open { get; set; }
 
-        public DateTime created_at { get; set; }
+        public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set;}
 
         public ImageDto? RestaurantIconImage { get; set; }

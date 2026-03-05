@@ -12,8 +12,6 @@ namespace RestaurantAPI.API.Models.DTO
         public decimal Price { get; set; }
         public DateTime? created_at { get; set; } 
         public DateTime? updated_at { get; set; }
-        public Guid subMenuId { get; set; }
-        public Guid restaurantId { get; set; }
         public ImageDto? MenuItemIconImage { get; set; }
     }
 }
