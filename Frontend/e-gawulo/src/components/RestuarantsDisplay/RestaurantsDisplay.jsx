@@ -1,24 +1,37 @@
 import React from 'react'
 import "./restaurantDisplay.css"
-import { useContext } from 'react'
-import {StoreContext} from '../../context/StoreContext'
+import { getAllRestaurants } from '../../api/restaurantApi';
 
-const RestaurantDisplay = () => {
-    const {food_list} = useContext(StoreContext);
+const RestaurantDisplay = ({category, setCategory}) => {
+    const [restaurants, setRestaurants] = React.useState([]);
+
+    React.useEffect(() => {
+        const fetchRestaurants = async () => {
+            try {
+                const data = await getAllRestaurants();
+                setRestaurants(data.restaurants);
+            } catch (error) {
+                console.error("Error fetching restaurants:", error);
+            }
+        };
+
+        fetchRestaurants();
+    }, []);
+
   return (
     <div className='restuarant-display' id="restuarant-display">
-        <h2>Popular Food Joints</h2> 
-        <div className="reastaurants-display-options">
-        {food_list.map((item, index)=>{
-            return(
-                <div key={index} className="restaurant-display-option-circle"> 
-                    <img src={item.image} alt="" />
-                    <p>{item.name}</p>
-                </div>
-            )
-        })}
-        </div>
-        {/* <hr /> */}
+            <h2>Popular Food Joints</h2> 
+            <div className="reastaurants-display-options">
+            {restaurants.map((item, index)=>{
+                return(
+                    <div onClick={()=>setCategory(prev=>prev===item.name?"All":item.name)} key={index} className="restaurant-display-option-circle"> 
+                        <img className={category===item.name?"active": ""} src={item.restaurantIconImage.filePath} alt='' />
+                        <p>{item.name}</p>
+                    </div>
+                )
+            })}
+            </div>
+            {/* <hr /> */}
     </div>
   )
 }

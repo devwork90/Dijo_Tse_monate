@@ -50,8 +50,8 @@
 }
 
 .explore-menus-list-item img {
-  width: 6vw;
-  min-width: 65px;
+  width: 7vw;
+  min-width: 7px;
   border-radius: 50%;
   cursor: pointer;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
