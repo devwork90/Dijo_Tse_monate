@@ -51,6 +51,7 @@ namespace RestaurantAPI.API.Repositories
         {
             return await dbContext.Restaurants 
                 .AsNoTracking()
+                .Include(r => r.RestaurantIcon)
                 .Where(r => r.SubMenus.Any(sm => sm.Menu.Name == menuName)).ToListAsync();
         }
 
