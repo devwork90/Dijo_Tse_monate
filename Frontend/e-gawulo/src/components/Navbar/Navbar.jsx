@@ -20,7 +20,7 @@ const Navbar = ({setShowLogin}) => {
           <img src={assets.basket_icon} alt="basket icon" />
           <div className="dot"></div>
         </div>
-        <button onClick={()=>setShowLogin(true)}>sing in</button>
+        <button onClick={()=>setShowLogin(true)}>sign in</button>
       </div>
     </div>
   );

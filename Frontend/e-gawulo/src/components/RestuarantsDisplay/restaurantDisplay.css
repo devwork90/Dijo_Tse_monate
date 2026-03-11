@@ -45,8 +45,8 @@
 }
 
 .restaurant-display-option-circle img {
-  width: 12vw;
-  height: 12vw;
+  width: 10vw;
+  height: 10vw;
   min-width: 80px;
   min-height: 80px;
   border-radius: 16px;
@@ -71,6 +71,7 @@
   max-width: 90px;
   white-space: normal;
   word-wrap: break-word;
+  cursor: pointer;
 }
 
 .restaurant-display-option-circle .active {
