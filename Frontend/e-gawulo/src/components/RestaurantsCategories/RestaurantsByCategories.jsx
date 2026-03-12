@@ -1,21 +1,52 @@
 import React from 'react'
-import {asserts, assets} from '../../assets/assets'
+import {assets} from '../../assets/assets'
 import "./restaurantsByCategories.css"
-function restaurantsByCategories() {
+import {getRestaurantsByCategories} from '../../api/restaurantByCategoriesApi'
+
+  const RestaurantsByCategories = ({category}) => {
+  const [restaurants, setRestaurants] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+  
+  React.useEffect(() => {
+    const fetchRestaurants = async () => {
+      setLoading(true);
+      try {
+        const data = await getRestaurantsByCategories(category);
+        setRestaurants(data.restaurants);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (category) {
+      fetchRestaurants();
+    }
+  }, [category]);
+
+
   return (
       <div className='restaurant-category'>
-        <div className='restaurant-category-img-container'>
-          <img className='restaurant-category-img'  src={image} alt=''/>
+        <h2>{category} Restaurants</h2>
+        {loading && <p>Loading...</p>}
+        {error && <p>Error: {error}</p>}
+        <div className='restaurant-category-list'>
+          {restaurants.map((item, index) => {
+            return (
+              <>
+              <div key={index} className='restaurant-category-item'>
+                <img className={category===item.name?"active": ""} src={item.restaurantIconImage.filePath} alt=''/>
+                <p className='restaurant-category-name'><strong>{item.name}</strong></p>
+              </div>  
+              </>
+            )
+          })}
         </div>
-        <div className="restaurant-category-item-info">
-          <div className='restaurant-item-name-rating'>
-            <p>{name}</p>
-            <img src={assets.rating_starts} alt=''/>
-
-          </div>
-        </div>
+        {/* <hr /> */}
       </div>
   )
 }
 
-export default restaurantsByCategories
+export default RestaurantsByCategories
