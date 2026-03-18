@@ -3,7 +3,7 @@ import {assets} from '../../assets/assets'
 import "./restaurantsByCategories.css"
 import {getRestaurantsByCategories} from '../../api/restaurantByCategoriesApi'
 
-  const RestaurantsByCategories = ({category}) => {
+  const RestaurantsByCategories = ({category, setSelectedRestaurant}) => {
   const [restaurants, setRestaurants] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
@@ -36,7 +36,7 @@ import {getRestaurantsByCategories} from '../../api/restaurantByCategoriesApi'
           {restaurants.map((item, index) => {
             return (
               <>
-              <div key={index} className='restaurant-category-item'>
+              <div className='restaurant-category-item' onClick={() => setSelectedRestaurant(item.id)} key={index}>
                 <img className={category===item.name?"active": ""} src={item.restaurantIconImage.filePath} alt=''/>
                 <p className='restaurant-category-name'><strong>{item.name}</strong></p>
               </div>  
