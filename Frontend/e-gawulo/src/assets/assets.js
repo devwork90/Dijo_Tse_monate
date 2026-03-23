@@ -22,6 +22,7 @@ import profile_icon from "./profile_icon.png";
 import bag_icon from "./bag_icon.png";
 import logout_icon from "./logout_icon.png";
 import parcel_icon from "./parcel_icon.png";
+import img_placeholder from "./img_placeholder.png"
 
 export const assets = {
   logo,
@@ -47,5 +48,6 @@ export const assets = {
   bag_icon,
   parcel_icon,
   circle_back_icon,
-  map_view
+  map_view,
+  img_placeholder
 };

@@ -60,11 +60,13 @@
     gap: 14px;
 }
 
-.menu-category h4 {
+.menu-category-title{
     font-size: 18px;
     font-weight: 600;
     color: #222;
     padding-left: 4px;
+    line-height: 1;
+   
 }
 
 .menu-item {
@@ -74,6 +76,7 @@
 
     padding: 14px 16px;
     border-radius: 18px;
+    gap: 16px;
 
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(8px);
@@ -90,16 +93,44 @@
 }
 
 .menu-item-details {
+    display: grid;
+    gap: 10px;
+     grid-template-columns: 1fr; /* single column */
+    align-items: start;
+}
+
+.menu-items-container{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    
+}
+
+.menu-item-child-container {
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    justify-content: space-between;
+     margin-top: 0;
+    
+    
+    padding: 16px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid #eee;
+    margin-top: 30px;
+    transition: 0.2s ease;
+}
+
+.menu-item-child-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .menu-item h5 {
+    margin: 0;
     font-size: 15px;
     font-weight: 600;
     color: #111;
-    margin-bottom: 4px;
+    
 }
 
 .menu-item p {
@@ -113,7 +144,7 @@
 }
 
 .menu-item-info {
-    display: flex;
+    flex: 1;
     flex-direction: column;
     gap: 4px;
     max-width: 75%;
@@ -168,4 +199,60 @@
 .map-image:hover {
     transform: scale(1.02);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item-image {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.menu-item-image-container{
+    position: relative;
+}
+
+.add-item-btn{
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+
+    width: 40px;
+    height: 40px;
+
+    cursor: pointer;
+
+    /* nice UI polish */
+    border-radius: 50%;
+    background: #ff5a00;
+    padding: 6px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile responsivenes */
+@media (max-width: 599px) {
+    .menu-item-child-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .menu-items-container {
+        grid-template-columns: 1fr;
+    }
+
+    .add-item-btn{
+        width: 70px;
+        height: 70px;
+    }
+
+    .menu-item-image {
+        width: 100%;
+        height: auto;
+    }
+
+    .menu-item-info {
+        max-width: 100%;
+    }
 }
