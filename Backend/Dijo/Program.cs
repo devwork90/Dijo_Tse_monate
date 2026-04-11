@@ -1,23 +1,21 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using RestaurantAPI.API.Data;
 using RestaurantAPI.API.Repositories;
+using RestaurantAPI.Data.Data_seed;
+using RestaurantAPI.Middlewares;
 using RestaurantAPI.Repositories;
 using RestaurantAPI.Service;
-using System.Text.Json.Serialization;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.OpenApi.Models;
 using Serilog;
-using Microsoft.AspNetCore.Diagnostics;
-using RestaurantAPI.Middlewares;
-using Microsoft.Extensions.FileProviders;
-using RestaurantAPI.Data.Data_seed;
+using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// ---------------- LOGGING ----------------
 var logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .WriteTo.Console()
@@ -28,13 +26,30 @@ var logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
-builder.Services.AddControllers();
+// ---------------- SERVICES ----------------
 builder.Services.AddHttpContextAccessor();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.Converters.Add(
+            new JsonStringEnumConverter());
+    });
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen( options =>
+
+// FIXED SWAGGER CONFIG (FORCE HTTPS)
+builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Dijo API", Version = "v1" });
+
+    // Force Swagger to always use HTTPS
+    options.AddServer(new OpenApiServer
+    {
+        Url = "https://localhost:7065" // Make sure this matches your HTTPS port
+    });
+
     options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -51,20 +66,19 @@ builder.Services.AddSwaggerGen( options =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
-                    Id = JwtBearerDefaults.AuthenticationScheme 
-                },
-                Scheme = "Oauth2",
-                Name = JwtBearerDefaults.AuthenticationScheme,
-                In = ParameterLocation.Header
+                    Id = JwtBearerDefaults.AuthenticationScheme
+                }
             },
             new List<string>()
         }
     });
-});  
+});
 
+// ---------------- DATABASE ----------------
 builder.Services.AddDbContext<DijoDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("DijoConnectionString")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DijoConnectionString")));
 
+// ---------------- DEPENDENCY INJECTION ----------------
 builder.Services.AddScoped<IRestaurantRepository, SQLRestaurantRepository>();
 builder.Services.AddScoped<IMenuRepository, SQLMenuRepository>();
 builder.Services.AddScoped<ISubMenuRepository, SQLSubMenuRepository>();
@@ -77,80 +91,84 @@ builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddScoped<IMenuService, MenuService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-    });
-
+// ---------------- AUTH ----------------
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
-    options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
 
-
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
     });
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(
-            new System.Text.Json.Serialization.JsonStringEnumConverter());
-    });
-
+// ---------------- CORS ----------------
 builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
     {
-        options.AddPolicy("AllowReactApp",
-            policy =>
-            {
-                policy.WithOrigins("http://localhost:5173")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-            });
+        policy.WithOrigins(
+                "http://localhost:5173",
+                "https://localhost:5173"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
+});
 
 var app = builder.Build();
 
+// ---------------- DB SEEDING ----------------
 using (var scope = app.Services.CreateScope())
 {
-   if (app.Environment.IsDevelopment())
-   {
-       var dbContext = scope.ServiceProvider.GetRequiredService<DijoDbContext>();
-       dbContext.Database.Migrate();
-       MenuIconSeeder.Seed(dbContext);
-       RestaurantIconSeeder.Seed(dbContext);
+    if (app.Environment.IsDevelopment())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<DijoDbContext>();
+        dbContext.Database.Migrate();
+        MenuIconSeeder.Seed(dbContext);
+        RestaurantIconSeeder.Seed(dbContext);
     }
 }
 
-// Configure the HTTP request pipeline.
+// ---------------- PIPELINE ----------------
+
+// Dev tools
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-};
+}
 
+// Security
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors("AllowReactApp");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Custom middleware
+app.UseMiddleware<ExceptionHandllerMiddleware>();
+app.UseMiddleware<RestaurantContextMiddleware>();
+
+// Static files
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "Images")),
     RequestPath = "/Images"
 });
 
-app.UseMiddleware<ExceptionHandllerMiddleware>();
-app.UseMiddleware<RestaurantContextMiddleware>();
-app.UseCors("AllowReactApp");
+// Endpoints
 app.MapControllers();
 
 app.Run();
