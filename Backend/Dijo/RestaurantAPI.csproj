@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>d165cee0-2548-47e6-8a2b-71b759d89937</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +28,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
     <PackageReference Include="Serilog" Version="4.2.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
@@ -33,11 +36,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Images\MenuIcon\" />
-    <Folder Include="Images\MenuItemIcon\" />
-    <Folder Include="Images\RestaurantIcon\" />
-    <Folder Include="Images\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Images\MenuIcon\" />
+		<Folder Include="Images\MenuItemIcon\" />
+		<Folder Include="Images\RestaurantIcon\" />
+		<Folder Include="Images\" />
+	</ItemGroup>
 
 </Project>

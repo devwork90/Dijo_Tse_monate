@@ -45,10 +45,10 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Dijo API", Version = "v1" });
 
     // Force Swagger to always use HTTPS
-    options.AddServer(new OpenApiServer
-    {
-        Url = "https://localhost:7065" // Make sure this matches your HTTPS port
-    });
+    //options.AddServer(new OpenApiServer
+    //{
+    //    Url = "https://localhost:7065" // Make sure this matches your HTTPS port
+    //});
 
     options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
     {
@@ -76,7 +76,14 @@ builder.Services.AddSwaggerGen(options =>
 
 // ---------------- DATABASE ----------------
 builder.Services.AddDbContext<DijoDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DijoConnectionString")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DijoConnectionString"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 10,
+            maxRetryDelay: TimeSpan.FromSeconds(5),
+            errorNumbersToAdd: null
+        )
+    ));
 
 // ---------------- DEPENDENCY INJECTION ----------------
 builder.Services.AddScoped<IRestaurantRepository, SQLRestaurantRepository>();
@@ -109,7 +116,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// ---------------- CORS ----------------
+// ---------------- CORS ---------------- c20000
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
@@ -128,19 +135,42 @@ var app = builder.Build();
 // ---------------- DB SEEDING ----------------
 using (var scope = app.Services.CreateScope())
 {
-    if (app.Environment.IsDevelopment())
+    var logger1 = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<DijoDbContext>();
+
+    var retries = 10;
+
+    for (int i = 1; i <= retries; i++)
     {
-        var dbContext = scope.ServiceProvider.GetRequiredService<DijoDbContext>();
-        dbContext.Database.Migrate();
-        MenuIconSeeder.Seed(dbContext);
-        RestaurantIconSeeder.Seed(dbContext);
+        try
+        {
+            logger1.LogInformation($"DB init attempt {i}");
+
+            dbContext.Database.Migrate();
+
+            // Seed QA or Development data only in development environment
+            if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
+            {
+                MenuIconSeeder.Seed(dbContext);
+                RestaurantIconSeeder.Seed(dbContext);
+            }
+
+            logger1.LogInformation("Database ready");
+            break;
+        }
+        catch (Exception ex)
+        {
+            logger1.LogWarning($"DB not ready: {ex.Message}");
+            Thread.Sleep(5000);
+
+            if (i == retries) throw;
+        }
     }
 }
-
 // ---------------- PIPELINE ----------------
 
 // Dev tools
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -161,10 +191,16 @@ app.UseMiddleware<ExceptionHandllerMiddleware>();
 app.UseMiddleware<RestaurantContextMiddleware>();
 
 // Static files
+var imagesPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+
+if (!Directory.Exists(imagesPath))
+{
+    Directory.CreateDirectory(imagesPath);
+}
+
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "Images")),
+    FileProvider = new PhysicalFileProvider(imagesPath),
     RequestPath = "/Images"
 });
 
