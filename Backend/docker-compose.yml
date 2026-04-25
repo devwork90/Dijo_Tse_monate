@@ -18,3 +18,11 @@ services:
       - SA_PASSWORD=YourStrong!Passw0rd
     ports:
       - "1433:1433"
+
+  frontend:
+    build:
+      context: ../Frontend/e-gawulo
+    ports:
+      - "3000:5173"
+    depends_on:
+      - restaurantapi

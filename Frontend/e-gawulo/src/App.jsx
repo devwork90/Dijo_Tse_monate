@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Navbar from "./components/Navbar/Navbar";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/home/home";
-import Cart from "./pages/Cart/Cart";
+import Cart from "./pages/cart/cart";
 import Footer from "./components/Footer/Footer";
 
 import PlaceOrder from "./pages/PlaceOrder/PlaceOrder";
