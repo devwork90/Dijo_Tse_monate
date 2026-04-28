@@ -1,5 +1,4 @@
 import { createContext } from "react";
-import { food_list } from "../assets/assets";
 import { getAllRestaurants } from "../api/restaurantApi";
 export const StoreContext = createContext(null)
 

@@ -96,6 +96,7 @@ namespace RestaurantAPI.Service
                 name = r.name,
                 rating = r.rating,
                 is_open = r.is_open,
+                Address = r.Address,
                 created_at = (DateTime)r.created_at,
                 updated_at = r.updated_at,
                 RestaurantIconImage = r.RestaurantIcon == null

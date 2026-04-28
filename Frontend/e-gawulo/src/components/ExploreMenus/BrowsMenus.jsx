@@ -27,7 +27,7 @@ useEffect(() =>{
       <div className='explore-menus-list'>
         {menus.map((item, index) => {
           return (
-            <div onClick={()=>setCategory(prev=>prev===item.name?"All":item.name)} key={index} className='explore-menus-list-item'>
+            <div onClick={()=>setCategory(prev=>prev===item.name?null:item.name)} key={index} className='explore-menus-list-item'>
               <img className={category===item.name?"active": ""} src ={item.menuIcon.filePath} alt=''/>
               <p>{item.name}</p>
             </div>
