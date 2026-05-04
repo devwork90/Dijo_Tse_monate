@@ -177,7 +177,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 }
 
 // Security
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseRouting();
 

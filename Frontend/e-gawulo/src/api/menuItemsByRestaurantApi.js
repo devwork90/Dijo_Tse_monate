@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 export const getMenuItemsByRestaurant = async (restaurantId) => {
   // Implementation for fetching menu items by restaurant ID   
     const response = await fetch(`${BASE_URL}/Restaurants/menu-items?restaurantId=${restaurantId}`);

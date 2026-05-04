@@ -6,11 +6,11 @@ COPY . .
 
 # Restore using correct path
 
-RUN dotnet restore RestaurantAPI.csproj
+RUN dotnet restore Dijo/RestaurantAPI.csproj
 
 # Publish using correct path
 
-RUN dotnet publish RestaurantAPI.csproj -c Release -o /app/out
+RUN dotnet publish Dijo/RestaurantAPI.csproj -c Release -o /app/out
 
 # Runtime image
 

@@ -13,6 +13,9 @@
 **/*.jfm
 **/azds.yaml
 **/bin
+**/.appsettings.dev
+**/.mdf
+**/.ldf
 **/charts
 **/docker-compose*
 **/Dockerfile*
