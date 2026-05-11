@@ -66,7 +66,7 @@ const RestaurantMenuItems = ({ restaurant, onBack }) => {
                                                         </div>
                                                         <div className='menu-item-image-container'>
                                                             <img src={assets.add_icon_white} alt='' className='add-item-btn'/>
-                                                            <img src={item.imageUrl ||  assets.img_placeholder}className='menu-item-image'/>
+                                                            <img src={`${import.meta.env.VITE_BASE_URL}${item.imageUrl}`} alt='' className='menu-item-image'/>
                                                         </div>
                                                     </div>
                                             ))}

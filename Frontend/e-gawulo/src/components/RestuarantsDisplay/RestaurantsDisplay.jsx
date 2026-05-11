@@ -25,7 +25,7 @@ const RestaurantDisplay = ({category, setCategory}) => {
             {restaurants.map((item, index)=>{
                 return(
                     <div onClick={()=>setCategory(prev=>prev===item.name?"All":item.name)} key={index} className="restaurant-display-option-circle"> 
-                        <img className={category===item.name?"active": ""} src={item.restaurantIconImage.filePath} alt='' />
+                        <img className={category===item.name?"active": ""} src={`${import.meta.env.VITE_BASE_URL}${item.restaurantIconImage?.filePath}`} alt='' />
                         <p>{item.name}</p>
                     </div>
                 )

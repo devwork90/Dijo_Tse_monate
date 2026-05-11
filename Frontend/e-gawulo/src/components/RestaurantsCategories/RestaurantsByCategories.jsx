@@ -37,7 +37,7 @@ import {getRestaurantsByCategories} from '../../api/restaurantByCategoriesApi'
             return (
               <>
               <div className='restaurant-category-item' onClick={() => setSelectedRestaurant(item.id)} key={index}>
-                <img className={category===item.name?"active": ""} src={item.restaurantIconImage.filePath} alt=''/>
+                <img className={category===item.name?"active": ""} src={`${import.meta.env.VITE_BASE_URL}${item.restaurantIconImage?.filePath}`} alt=''/>
                 <p className='restaurant-category-name'><strong>{item.name}</strong></p>
               </div>  
               </>
