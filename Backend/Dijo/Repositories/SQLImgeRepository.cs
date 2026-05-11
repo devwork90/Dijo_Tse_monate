@@ -71,7 +71,8 @@ namespace RestaurantAPI.Repositories
             }
 
 
-            var urlFilePath = $"{contextAccessor.HttpContext.Request.Scheme}://{contextAccessor.HttpContext.Request.Host}{contextAccessor.HttpContext.Request.PathBase}/Images/{subFolder}/{image.FileName}{image.FileExtension}";
+            //var urlFilePath = $"{contextAccessor.HttpContext.Request.Scheme}://{contextAccessor.HttpContext.Request.Host}{contextAccessor.HttpContext.Request.PathBase}/Images/{subFolder}/{image.FileName}{image.FileExtension}";
+            var urlFilePath = $"/Images/{subFolder}/{image.FileName}{image.FileExtension}";
             image.FilePath = urlFilePath;
 
             await dbContext.Images.AddAsync(image);
