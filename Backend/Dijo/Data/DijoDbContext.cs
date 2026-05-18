@@ -314,10 +314,10 @@ namespace RestaurantAPI.API.Data
             {
                 new Image()
                 {
-                    Id = Guid.Parse("08FDDB0B-C5F0-4350-93FF-08DE5E5F95AE"),
+                    Id = Guid.Parse("3B117348-F83B-41D9-32CA-08DEB1D91573"),
                     FileExtension = ".gif",
                     FileSizeInBytes = 127884,
-                    FileName = "breakfast_menu.gif",
+                    FileName = "breakfast_menu",
                     FilePath = "/Images/MenuIcon/breakfast_menu.gif",
                     created_at = new DateTime(2026, 1, 28, 21, 10, 0),
                     ImageType = ImageType.MenuIcon
@@ -325,10 +325,10 @@ namespace RestaurantAPI.API.Data
 
                 new Image()
                 {
-                    Id = Guid.Parse("98E2BD9B-2F01-4E40-AEAD-0C06A9D266CB"),
+                    Id = Guid.Parse("9492D71E-9075-47DF-32CB-08DEB1D91573"),
                     FileExtension = ".gif",
                     FileSizeInBytes = 103380,
-                    FileName = "seafood_menu.gif",
+                    FileName = "seafood_menu",
                     FilePath = "/Images/MenuIcon/seafood_menu.gif",
                     created_at = new DateTime(2026, 1, 28, 21, 15, 0),
                     ImageType = ImageType.MenuIcon
@@ -336,10 +336,10 @@ namespace RestaurantAPI.API.Data
 
                 new Image()
                 {
-                    Id = Guid.Parse("B9C52EC7-517E-4DE4-8A38-4151D9D674B0"),
+                    Id = Guid.Parse("E0D31B84-3383-4DDF-32CD-08DEB1D91573"),
                     FileExtension = ".gif",
                     FileSizeInBytes = 93504,
-                    FileName = "indian_menu.gif",
+                    FileName = "indian_menu",
                     FilePath = "/Images/MenuIcon/indian_menu.gif",
                     created_at = new DateTime(2026, 1, 28, 21, 20, 0),
                     ImageType = ImageType.MenuIcon
@@ -347,10 +347,10 @@ namespace RestaurantAPI.API.Data
 
                 new Image()
                 {
-                    Id = Guid.Parse("DFB0EB59-8AC5-431A-A0A2-B7A5A11AB130"),
+                    Id = Guid.Parse("25C28484-1567-4318-32C8-08DEB1D91573"),
                     FileExtension = ".gif",
                     FileSizeInBytes = 102576 ,
-                    FileName = "pizza_menu.gif",
+                    FileName = "pizza_menu",
                     FilePath = "/Images/MenuIcon/pizza_menu.gif",
                     created_at = new DateTime(2026, 1, 28, 21, 25, 0),
                     ImageType = ImageType.MenuIcon
@@ -361,7 +361,7 @@ namespace RestaurantAPI.API.Data
                     Id = Guid.Parse("81A98461-31BC-44D3-AC96-FB2947FB1EBE"),
                     FileExtension = ".gif",
                     FileSizeInBytes = 68224,
-                    FileName = "burger_menu.gif",
+                    FileName = "burger_menu",
                     FilePath = "/Images/MenuIcon/burger_menu.gif",
                     created_at = new DateTime(2026, 1, 28, 21, 20, 0),
                     ImageType = ImageType.MenuIcon
@@ -369,10 +369,10 @@ namespace RestaurantAPI.API.Data
 
                 new Image()
                 {
-                    Id = Guid.Parse("C374D2C3-4CF8-47C0-BC0B-4244296DC7AD"),
+                    Id = Guid.Parse("E6446ADD-B6C5-4CBF-32CC-08DEB1D91573"),
                     FileExtension = ".gif",
                     FileSizeInBytes = 127856,
-                    FileName = "chicken_menu.gif",
+                    FileName = "chicken_menu",
                     FilePath = "/Images/MenuIcon/chicken_menu.gif",
                     created_at = new DateTime(2026, 1, 28, 21, 35, 0),
                     ImageType = ImageType.MenuIcon
@@ -380,10 +380,10 @@ namespace RestaurantAPI.API.Data
 
                 new Image()
                 {
-                    Id = Guid.Parse("2D089945-D41A-46D4-B165-F4635C078835"),
+                    Id = Guid.Parse("8DD86D7D-2B17-4628-32CF-08DEB1D91573"),
                     FileExtension = ".gif",
                     FileSizeInBytes = 83721,
-                    FileName = "grilled_menu.gif",
+                    FileName = "grilled_menu",
                     FilePath = "/Images/MenuIcon/grilled_menu.gif",
                     created_at = new DateTime(2026, 1, 28, 21, 37, 0),
                     ImageType = ImageType.MenuIcon
@@ -391,10 +391,10 @@ namespace RestaurantAPI.API.Data
 
                 new Image()
                 {
-                    Id = Guid.Parse("B95753B9-8E2F-4D3E-A505-A3AC7AA47214"),
+                    Id = Guid.Parse("92BDA4D1-AD25-45CE-32CE-08DEB1D91573"),
                     FileExtension = ".gif",
                     FileSizeInBytes = 360675,
-                    FileName = "healthy_menu.gif",
+                    FileName = "healthy_menu",
                     FilePath = "/Images/MenuIcon/healthy_menu.gif",
                     created_at = new DateTime(2026, 1, 28, 21, 40, 0),
                     ImageType = ImageType.MenuIcon

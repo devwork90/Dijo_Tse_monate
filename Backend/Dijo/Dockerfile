@@ -14,7 +14,7 @@ RUN dotnet publish RestaurantAPI.csproj -c Release -o /app/out
 
 # Runtime image
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-bookworm-slim
 WORKDIR /app
 
 COPY --from=build /app/out .

@@ -34,7 +34,7 @@ const RestaurantMenuItems = ({ restaurant, onBack }) => {
                         alt='' className='restaurant-back-icon'
                         onClick={onBack} />
                     <div className='restuarant-menu-item-banner'>
-                        <img src={menuItems?.restaurant?.logo_url} alt='' className='logo' />
+                        <img src={`${import.meta.env.VITE_BASE_URL}${menuItems?.restaurant?.logo_url}`} alt='' className='logo' />
                     </div>
                     <div className='restaurant-details'>
                         <h2>{menuItems?.restaurant?.name}, location</h2>
