@@ -1,4 +1,4 @@
-services:
+ services:
   restaurantapi:
     build:
       context: ./Dijo
@@ -10,6 +10,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Staging
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DijoConnectionString=Server=sqlserver,1433;Database=DijoDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+    volumes:
+      - uploads_data:/app/wwwroot/Images
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -18,6 +20,8 @@ services:
       - SA_PASSWORD=YourStrong!Passw0rd
     ports:
       - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
 
   frontend:
     build:
@@ -26,3 +30,7 @@ services:
       - "3000:5173"
     depends_on:
       - restaurantapi
+
+volumes:
+  sqlserver_data:
+  uploads_data:

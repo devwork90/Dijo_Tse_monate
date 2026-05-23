@@ -36,11 +36,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="Images\MenuIcon\" />
-		<Folder Include="Images\MenuItemIcon\" />
-		<Folder Include="Images\RestaurantIcon\" />
-		<Folder Include="Images\" />
-	</ItemGroup>
-
 </Project>
