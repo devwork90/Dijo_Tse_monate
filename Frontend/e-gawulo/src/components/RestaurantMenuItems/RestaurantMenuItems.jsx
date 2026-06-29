@@ -61,7 +61,12 @@ const RestaurantMenuItems = ({ restaurant, onBack }) => {
                                                             <h5>{item.name}</h5>
                                                             <p>{item.description}</p>
                                                             <div className='menu-item-price'>
-                                                                R {item.price}
+                                                               {
+                                                                new Intl.NumberFormat('en-ZA', {
+                                                                    style: 'currency',
+                                                                    currency: 'ZAR'
+                                                                }).format(item.price)
+                                                                }
                                                             </div>
                                                         </div>
                                                         <div className='menu-item-image-container'>

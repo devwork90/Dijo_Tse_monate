@@ -1,7 +1,7 @@
 /* === Banner Container === */
 .header {
   position: relative;
-  height: 25vw;
+  height: 22vw;
   margin: 30px auto;
   margin-top: -15px;
   background: url("../../assets/shisa_header_img_2.png") no-repeat center center;
@@ -27,6 +27,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin-bottom: -50px;
   gap: 1.5vw;
   max-width: 55%;
   bottom: 6vw;
