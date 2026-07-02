@@ -9,8 +9,6 @@ namespace OrderAPI.Repositories
         Task<CartItem?> GetByCartandMenuIdAsync(Guid CartId, Guid menuId);
         Task<CartItem?> AddCartItemAsync(CartItem cartItem);
         Task<Cart> UpdateCartTotalAmountAsync(Guid cartId);
-
-
-
+        Task<Cart> DeleteCartAsync (Guid UserId);
     }
 }

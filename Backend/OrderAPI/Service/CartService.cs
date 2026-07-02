@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using OrderAPI.Data;
 using OrderAPI.Models.Domain;
 using OrderAPI.Models.DTO;
 using OrderAPI.Models.Enums;
@@ -43,10 +44,9 @@ namespace OrderAPI.Service
         public async Task<CartDisplayDTO> AddCartItemAsync(AddCartItemDTO addCartItemRequest)
         {
             var activeCart = await cartRepository.GetCartByIdAsync(addCartItemRequest.UserId);
-            var menuItem = await restaurantService.GetMenuItemAsync(addCartItemRequest.MenuItemId);
-            var existingCartItem = await cartRepository.GetByCartandMenuIdAsync(activeCart?.Id ?? Guid.Empty, addCartItemRequest.MenuItemId);
-            
-            // Check for active existing cart
+            var restaurant = await restaurantService.GetRestaurantByIdAsync(activeCart?.RestaurantId ?? Guid.Empty);
+           
+
             if (activeCart == null)
             {
                 activeCart ??= new Cart
@@ -60,45 +60,91 @@ namespace OrderAPI.Service
                 await cartRepository.AddCartAsync(activeCart);
             }
 
-            if (menuItem == null)
+            foreach (var item in addCartItemRequest.Items) 
             {
-                throw new Exception("Menu item not found.");
-            }
+                var menuItem = await restaurantService.GetMenuItemAsync(item.MenuItemId);
+                var existingCartItem = await cartRepository.GetByCartandMenuIdAsync(activeCart?.Id ?? Guid.Empty, item.MenuItemId);
+                
 
-            if (existingCartItem == null)
-            {
-                var cartItem = new CartItem
+                if (menuItem == null)
                 {
-                    CartId = activeCart.Id,
-                    MenuItemId = addCartItemRequest.MenuItemId,
-                    Quantity = addCartItemRequest.Quantity,
-                    UnitPrice = menuItem.Price,
-                    ItemName = menuItem.Name
-                };
-                await cartRepository.AddCartItemAsync(cartItem);
-                await cartRepository.UpdateCartTotalAmountAsync(activeCart.Id);
+                    throw new Exception($"Menu item with ID {item.MenuItemId} not found.");
+                }
 
-            }
-            else
-            {
-                existingCartItem.Quantity += addCartItemRequest.Quantity;
-                activeCart.TotalAmount = existingCartItem.Quantity * existingCartItem.UnitPrice;
-                await cartRepository.UpdateCartTotalAmountAsync(activeCart.Id);
-                await cartItemRepository.UpdateCartItemAsync(existingCartItem.Id);
+                if (existingCartItem == null) 
+                {
+                    var cartItem = new CartItem
+                    {
+                        CartId = activeCart?.Id ?? Guid.Empty,
+                        MenuItemId = item.MenuItemId,
+                        ItemName = menuItem.Name,
+                        Quantity = item.Quantity,
+                        UnitPrice = menuItem.Price
+                    };
+                    await cartItemRepository.AddCartItemAsync(cartItem);
+                    await cartRepository.UpdateCartTotalAmountAsync(activeCart.Id);
+                }
+                else
+                {
+                    existingCartItem.Quantity += item.Quantity;
+                    activeCart.TotalAmount = existingCartItem.Quantity * existingCartItem.UnitPrice;
+                    await cartRepository.UpdateCartTotalAmountAsync(activeCart.Id);
+                    await cartItemRepository.UpdateCartItemAsync(existingCartItem.Id);
+                }
+
             }
 
             return new CartDisplayDTO
             {
                 CartId = activeCart.Id,
+                UserId = (Guid)activeCart.UserId,
                 RestaurantId = activeCart.RestaurantId,
+                RestaurantName = restaurant?.Name ?? string.Empty,
+                Status = (int)activeCart.Status,
+                Quantity = activeCart.TotalItems,
                 CreatedAt = activeCart.CreatedAt,
-                TotalAmount = activeCart.TotalAmount
+                TotalAmount = activeCart.TotalAmount,
             };
         }
 
-        public async Task<CartDisplayDTO?> GetCartByIdAsync(Guid UserId)
+        public async Task<GetCartResponseDTO> DeleteCartItemAsync(Guid cartItemId, Guid userId)
+        {
+            var existingCartItem = await cartItemRepository.GetCartItemByIdAsync(cartItemId);
+            var activeCart = await cartRepository.GetCartByIdAsync(userId);
+
+            if (existingCartItem == null)
+            {
+                throw new Exception($"Cart item with ID {cartItemId} not found.");
+            }
+
+            if (activeCart == null)
+            {
+                throw new Exception($"Cart for user with ID {userId} not found.");
+            }
+
+            await cartItemRepository.DeleteCartItemAsync(cartItemId);
+            await cartRepository.UpdateCartTotalAmountAsync(activeCart.Id);
+
+            return new GetCartResponseDTO
+            {
+                Cart = new CartDisplayDTO
+                {
+                    CartId = activeCart.Id,
+                    UserId = (Guid)activeCart.UserId,
+                    RestaurantId = activeCart.RestaurantId,
+                    Status = (int)activeCart.Status,
+                    Quantity = activeCart.TotalItems,
+                    CreatedAt = activeCart.CreatedAt,
+                    TotalAmount = activeCart.TotalAmount,
+                }
+            };
+        }
+
+        public async Task<GetCartResponseDTO?> GetCartByIdAsync(Guid UserId)
         {
             var activeCart = await cartRepository.GetCartByIdAsync(UserId);
+            var cartItems = await cartItemRepository.GetCartItems();
+            var restaurant = await restaurantService.GetRestaurantByIdAsync(activeCart?.RestaurantId ?? Guid.Empty);
 
             if (activeCart == null)
             {
@@ -108,11 +154,89 @@ namespace OrderAPI.Service
             var cartResponseDto = new CartDisplayDTO
             {
                 CartId = activeCart.Id,
+                UserId = (Guid)activeCart.UserId,
                 RestaurantId = activeCart.RestaurantId,
+                RestaurantName = restaurant?.Name ?? string.Empty,
+                Status = (int)activeCart.Status,
+                Quantity = activeCart.TotalItems,
                 CreatedAt = activeCart.CreatedAt,
-                TotalAmount = activeCart.TotalAmount
+                TotalAmount = activeCart.TotalAmount,
+
+                CartItems = cartItems.Select(cartItem => new CartItemDisplayDTO
+                {
+                    Id = cartItem.Id,
+                    MenuItemId = cartItem.MenuItemId,
+                    ItemName = cartItem.ItemName,
+                    Quantity = cartItem.Quantity,
+                    UnitPrice = cartItem.UnitPrice,
+                    TotalPrice = cartItem.Quantity * cartItem.UnitPrice
+                }).ToList()
             };
-            return cartResponseDto;
+
+            return new GetCartResponseDTO
+            {
+                Cart = cartResponseDto
+            };
+        }
+
+        public async Task<GetCartResponseDTO> PatchCartItemQuantityAsync(Guid id, PatchCartItemQuantityDTO patchCartItemQuantityDTO)
+        {
+            var existingCartItem = await cartItemRepository.GetCartItemByIdAsync(patchCartItemQuantityDTO.Id);
+            var activeCart = await cartRepository.GetCartByIdAsync(id);
+            
+            var restaurant = await restaurantService.GetRestaurantByIdAsync(activeCart?.RestaurantId ?? Guid.Empty);
+            if (existingCartItem == null) 
+            {
+                throw new Exception($"Menu item with ID {id} not found.");
+            }
+            existingCartItem.Quantity = patchCartItemQuantityDTO.Quantity;
+            
+            await cartItemRepository.UpdateCartItemAsync(existingCartItem.Id);
+
+            var remainingItems = await cartItemRepository.GetCartItemByIdAsync(existingCartItem.Id)
+                .ContinueWith(task => task.Result != null ? new[] { task.Result } : new CartItem[0]);
+
+            // Check if there are no remaining items in the cart, and if so, delete the cart
+            if (!remainingItems.Any())
+            {
+                
+                await cartRepository.DeleteCartAsync((Guid)activeCart.UserId);
+               
+                return null; // Return null if the cart is deleted
+            }
+
+            //Cart still exists, so reload it to get the latest values
+            activeCart = await cartRepository.GetCartByIdAsync(id);
+
+            var cartItems = await cartItemRepository.GetCartItems();
+            await cartRepository.UpdateCartTotalAmountAsync(activeCart.Id);
+
+            var cartResponseDto = new CartDisplayDTO
+            {
+                CartId = activeCart.Id,
+                UserId = (Guid)activeCart.UserId,
+                RestaurantId = activeCart.RestaurantId,
+                RestaurantName = restaurant?.Name ?? string.Empty,
+                Status = (int)activeCart.Status,
+                Quantity = activeCart.TotalItems,
+                CreatedAt = activeCart.CreatedAt,
+                TotalAmount = activeCart.TotalAmount,
+
+                CartItems = cartItems.Select(cartItem => new CartItemDisplayDTO
+                {
+                    Id = cartItem.Id,
+                    MenuItemId = cartItem.MenuItemId,
+                    ItemName = cartItem.ItemName,
+                    Quantity = cartItem.Quantity,
+                    UnitPrice = cartItem.UnitPrice,
+                    TotalPrice = cartItem.Quantity * cartItem.UnitPrice
+                }).ToList()
+            };
+
+            return new GetCartResponseDTO
+            {
+                Cart = cartResponseDto
+            };
         }
     }
 }

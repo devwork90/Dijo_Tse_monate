@@ -40,5 +40,19 @@ namespace OrderAPI.Controllers
             return CreatedAtAction(nameof(AddCartItem), new { id = addedCartItem.CartId }, addedCartItem);
         }
 
+        [HttpPatch]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> PatchCartItemQuantity([FromRoute] Guid id, [FromBody] PatchCartItemQuantityDTO patchCartItemQuantity)
+        {
+            var updatedCartItem = await cartService.PatchCartItemQuantityAsync(id, patchCartItemQuantity);
+            return Ok(updatedCartItem);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCartItem([FromQuery] Guid cartItemId, [FromQuery] Guid userId)
+        {
+            var updatedCart = await cartService.DeleteCartItemAsync(cartItemId, userId);
+            return Ok(updatedCart);
+        }
     }
 }   

@@ -16,5 +16,18 @@ namespace OrderAPI.Service
             return await _httpClient.GetFromJsonAsync<MenuItemDTO>(
                 $"api/MenuItem/{menuItemId}");
         }
+
+        public async Task<RestaurantDTO?> GetRestaurantByIdAsync(Guid restaurantId)
+        {
+          if (restaurantId == Guid.Empty)
+            {
+                return null;
+            }
+            else
+            {
+                return await _httpClient.GetFromJsonAsync<RestaurantDTO>(
+                    $"api/Restaurants/{restaurantId}");
+            }
+        }
     }
 }

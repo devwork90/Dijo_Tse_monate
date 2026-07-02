@@ -25,6 +25,17 @@ namespace OrderAPI.Repositories
             return cartItem;
         }
 
+        public async Task<Cart> DeleteCartAsync(Guid UserId)
+        {
+            var cart = await orderDbContext.Cart.FirstOrDefaultAsync(x => x.UserId == UserId);
+            if (cart != null)
+            {
+                orderDbContext.Cart.Remove(cart);
+                await orderDbContext.SaveChangesAsync();
+            }
+            return cart!;
+        }
+
         public async Task<CartItem?> GetByCartandMenuIdAsync(Guid CartId, Guid menuId)
         {
             return await orderDbContext.CartItem.FirstOrDefaultAsync(x => x.CartId == CartId && x.MenuItemId == menuId);
@@ -41,6 +52,7 @@ namespace OrderAPI.Repositories
                 if (cart != null)
                 {
                     cart.TotalAmount = cart.Items.Sum(ci => ci.UnitPrice * ci.Quantity);
+                    cart.TotalItems = cart.Items.Sum(ci => ci.Quantity);
                     await orderDbContext.SaveChangesAsync();
                 }
                 return cart;

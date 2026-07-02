@@ -1,4 +1,5 @@
 ﻿using OrderAPI.Models.Enums;
+using System.Numerics;
 
 namespace OrderAPI.Models.Domain
 {
@@ -9,6 +10,8 @@ namespace OrderAPI.Models.Domain
         public Guid? UserId { get; set; }
 
         public Guid RestaurantId { get; set; }
+
+        public int TotalItems { get; set; } = 0;
 
         public CartStatus Status { get; set; }
 

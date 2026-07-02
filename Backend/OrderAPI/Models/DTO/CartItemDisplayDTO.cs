@@ -15,5 +15,6 @@ namespace OrderAPI.Models.DTO
         public decimal UnitPrice { get; set; }
 
         public decimal TotalPrice {  get; set; }
+        
     }
 }

@@ -6,7 +6,11 @@ namespace OrderAPI.Service
     public interface ICartService
     {
         Task<CartDisplayDTO> AddCartAsync(AddCartRequestDTO addCartRequest);
-        Task<CartDisplayDTO?> GetCartByIdAsync(Guid UserId);
+        Task<GetCartResponseDTO?> GetCartByIdAsync(Guid UserId);
         Task<CartDisplayDTO> AddCartItemAsync(AddCartItemDTO addCartItemRequest);
+        Task<GetCartResponseDTO> PatchCartItemQuantityAsync(Guid id, PatchCartItemQuantityDTO patchCartItemQuantityDTO);
+
+        Task<GetCartResponseDTO> DeleteCartItemAsync(Guid cartItemId, Guid userId);
     }
 }
+ 

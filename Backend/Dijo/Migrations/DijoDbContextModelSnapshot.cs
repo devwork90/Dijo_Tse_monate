@@ -69,7 +69,7 @@ namespace RestaurantAPI.Migrations
 
                     b.HasIndex("MenuIconImageId");
 
-                    b.ToTable("Menu");
+                    b.ToTable("Menu", (string)null);
 
                     b.HasData(
                         new
@@ -176,7 +176,7 @@ namespace RestaurantAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Restaurants");
+                    b.ToTable("Restaurants", (string)null);
 
                     b.HasData(
                         new
@@ -322,7 +322,7 @@ namespace RestaurantAPI.Migrations
 
                     b.HasIndex("restaurantId");
 
-                    b.ToTable("SubMenu");
+                    b.ToTable("SubMenu", (string)null);
                 });
 
             modelBuilder.Entity("RestaurantAPI.Models.Domain.Image", b =>
@@ -606,7 +606,7 @@ namespace RestaurantAPI.Migrations
 
                     b.HasIndex("restaurantId");
 
-                    b.ToTable("MenuItems");
+                    b.ToTable("MenuItems", (string)null);
                 });
 
             modelBuilder.Entity("MenuRestaurants", b =>
