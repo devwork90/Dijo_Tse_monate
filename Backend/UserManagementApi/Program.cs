@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UserManagementApi.Repositories;
+using UserManagementApi.Service;
 using Microsoft.OpenApi.Models;
 using UserManagementApi.Models.Domain;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,8 @@ builder.Services.AddDbContext<DijoDbAuthContext>(
     options.UseSqlServer(builder.Configuration.GetConnectionString("DijoAuthConnectionString")));
 
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+
+builder.Services.AddScoped<ITokenService, TokenService>();
 // Add Identity
 
 builder.Services.AddIdentity<ExtendedUser, IdentityRole>()

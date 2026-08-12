@@ -23,7 +23,7 @@ namespace UserManagementApi.Repositories
 
             if (!roles.Contains("Customer") && user.RestaurantId.HasValue)
             {
-                claims.Add(new Claim("RestaurantId", user.RestaurantId.ToString()));
+                claims.Add(new Claim("RestaurantId", user.RestaurantId.Value.ToString()));
             }
 
             foreach (var role in roles)
