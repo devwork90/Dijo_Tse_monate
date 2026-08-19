@@ -20,11 +20,11 @@ namespace OrderAPI.Service
             this.cartItemRepository = cartItemRepository;
         }
 
-        public async Task<CartDisplayDTO> AddCartAsync(AddCartRequestDTO addCartRequest)
+        public async Task<CartDisplayDTO> AddCartAsync(AddCartRequestDTO addCartRequest, Guid userId)
         {
             var cart = new Cart
             {
-                UserId = addCartRequest.UserId,
+                UserId = userId,
                 RestaurantId = addCartRequest.RestaurantId,
                 Status = CartStatus.Active,
                 CreatedAt = DateTime.UtcNow
@@ -41,9 +41,9 @@ namespace OrderAPI.Service
             return cartResponseDto;
         }
 
-        public async Task<CartDisplayDTO> AddCartItemAsync(AddCartItemDTO addCartItemRequest)
+        public async Task<CartDisplayDTO> AddCartItemAsync(AddCartItemDTO addCartItemRequest, Guid userId)
         {
-            var activeCart = await cartRepository.GetCartByIdAsync(addCartItemRequest.UserId);
+            var activeCart = await cartRepository.GetCartByIdAsync(userId);
             var restaurant = await restaurantService.GetRestaurantByIdAsync(activeCart?.RestaurantId ?? Guid.Empty);
            
 
@@ -51,7 +51,7 @@ namespace OrderAPI.Service
             {
                 activeCart ??= new Cart
                 {
-                    UserId = addCartItemRequest.UserId,
+                    UserId = userId,
                     RestaurantId = addCartItemRequest.RestaurantId,
                     Status = CartStatus.Active,
                     CreatedAt = DateTime.UtcNow

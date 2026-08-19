@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OrderAPI.Models.DTO;
 using OrderAPI.Service;
 
@@ -26,31 +27,30 @@ namespace OrderAPI.Controllers
             return Ok(cartResponse);
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> CreateCart([FromBody] AddCartRequestDTO addCartRequest)
-        //{
-        //    var createdCart = await cartService.AddCartAsync(addCartRequest);
-        //    return CreatedAtAction(nameof(CreateCart), new { id = createdCart.CartId }, createdCart);
-        //}
-
+        [Authorize(Roles = "Customer")]
         [HttpPost]
         public async Task<IActionResult> AddCartItem([FromBody] AddCartItemDTO addCartItemRequest)
         {
-            var addedCartItem = await cartService.AddCartItemAsync(addCartItemRequest);
+            var userIdClaim = (Guid)HttpContext.Items["UserId"]!;
+            var addedCartItem = await cartService.AddCartItemAsync(addCartItemRequest, userIdClaim);
             return CreatedAtAction(nameof(AddCartItem), new { id = addedCartItem.CartId }, addedCartItem);
         }
 
+        [Authorize(Roles = "Customer")]
         [HttpPatch]
-        [Route("{id:Guid}")]
-        public async Task<IActionResult> PatchCartItemQuantity([FromRoute] Guid id, [FromBody] PatchCartItemQuantityDTO patchCartItemQuantity)
+
+        public async Task<IActionResult> PatchCartItemQuantity([FromBody] PatchCartItemQuantityDTO patchCartItemQuantity)
         {
-            var updatedCartItem = await cartService.PatchCartItemQuantityAsync(id, patchCartItemQuantity);
+            var userIdClaim = (Guid)HttpContext.Items["UserId"]!;
+            var updatedCartItem = await cartService.PatchCartItemQuantityAsync(userIdClaim, patchCartItemQuantity);
             return Ok(updatedCartItem);
         }
 
+        [Authorize(Roles = "Customer")]
         [HttpDelete]
-        public async Task<IActionResult> DeleteCartItem([FromQuery] Guid cartItemId, [FromQuery] Guid userId)
+        public async Task<IActionResult> DeleteCartItem([FromQuery] Guid cartItemId)
         {
+            var userId = (Guid)(Guid)HttpContext.Items["UserId"]!;
             var updatedCart = await cartService.DeleteCartItemAsync(cartItemId, userId);
             return Ok(updatedCart);
         }

@@ -1,9 +1,15 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using OrderAPI.Data;
+using OrderAPI.Middlewares;
 using OrderAPI.Repositories;
 using OrderAPI.Service;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 //-----------------------DATA-----------------------
 builder.Services.AddDbContext<OrderDbContext>(options =>
@@ -14,6 +20,26 @@ builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 
 builder.Services.AddScoped<ICartService, CartService>();
+
+// ---------------- AUTH ----------------
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(
+                    builder.Configuration["Jwt:Key"]!))
+        };
+    });
+
 builder.Services.AddHttpClient<IRestaurantService, RestaurantService>(client => 
 {
     client.BaseAddress = new Uri("https://localhost:7065/");
@@ -23,7 +49,22 @@ builder.Services.AddHttpClient<IRestaurantService, RestaurantService>(client =>
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Enter your JWT token."
+    });
+
+    options.AddSecurityRequirement(document =>
+        new OpenApiSecurityRequirement
+        {
+            [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+        });
+});
 
 var app = builder.Build();
 
@@ -37,8 +78,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Custom middleware
+app.UseMiddleware<OrderContextMiddleWare>();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

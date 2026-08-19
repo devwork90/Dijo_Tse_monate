@@ -25,6 +25,10 @@ namespace UserManagementApi.Repositories
             {
                 claims.Add(new Claim("RestaurantId", user.RestaurantId.Value.ToString()));
             }
+            else
+            {
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
+            }
 
             foreach (var role in roles)
             {
