@@ -23,6 +23,13 @@ namespace OrderAPI.Controllers
             return CreatedAtAction(nameof(CreateOrder), new { id = createdOrder?.Order?.OrderId }, createdOrder);
         }
 
+        [HttpGet("get-order")]
+        public async Task<IActionResult> GetOrder()
+        {
+            var order = await orderService.GetOrderByIdAsync();
+            return Ok(order);
+        }
+
     }
         
 }

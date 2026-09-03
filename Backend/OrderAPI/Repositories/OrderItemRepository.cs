@@ -1,4 +1,5 @@
-﻿using OrderAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using OrderAPI.Data;
 using OrderAPI.Models.Domain;
 
 namespace OrderAPI.Repositories
@@ -15,6 +16,11 @@ namespace OrderAPI.Repositories
             await orderDbContext.OrderItem.AddAsync(orderItem);
             await orderDbContext.SaveChangesAsync();
             return orderItem;
+        }
+
+        public async Task<List<OrderItem>> GetAllOrderItems()
+        {
+            return await orderDbContext.OrderItem.ToListAsync();
         }
     }
 }

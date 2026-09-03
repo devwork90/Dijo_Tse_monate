@@ -26,7 +26,6 @@ namespace OrderAPI.Service
             {
                 UserId = userId,
                 RestaurantId = addCartRequest.RestaurantId,
-                Status = CartStatus.Active,
                 CreatedAt = DateTime.UtcNow
             };
             var savedCart = await cartRepository.AddCartAsync(cart);
@@ -53,7 +52,6 @@ namespace OrderAPI.Service
                 {
                     UserId = userId,
                     RestaurantId = addCartItemRequest.RestaurantId,
-                    Status = CartStatus.Active,
                     CreatedAt = DateTime.UtcNow
                 };
 
@@ -100,7 +98,6 @@ namespace OrderAPI.Service
                 UserId = (Guid)activeCart.UserId,
                 RestaurantId = activeCart.RestaurantId,
                 RestaurantName = restaurant?.Name ?? string.Empty,
-                Status = (int)activeCart.Status,
                 Quantity = activeCart.TotalItems,
                 CreatedAt = activeCart.CreatedAt,
                 TotalAmount = activeCart.TotalAmount,
@@ -132,7 +129,6 @@ namespace OrderAPI.Service
                     CartId = activeCart.Id,
                     UserId = (Guid)activeCart.UserId,
                     RestaurantId = activeCart.RestaurantId,
-                    Status = (int)activeCart.Status,
                     Quantity = activeCart.TotalItems,
                     CreatedAt = activeCart.CreatedAt,
                     TotalAmount = activeCart.TotalAmount,
@@ -157,7 +153,6 @@ namespace OrderAPI.Service
                 UserId = (Guid)activeCart.UserId,
                 RestaurantId = activeCart.RestaurantId,
                 RestaurantName = restaurant?.Name ?? string.Empty,
-                Status = (int)activeCart.Status,
                 Quantity = activeCart.TotalItems,
                 CreatedAt = activeCart.CreatedAt,
                 TotalAmount = activeCart.TotalAmount,
@@ -217,7 +212,6 @@ namespace OrderAPI.Service
                 UserId = (Guid)activeCart.UserId,
                 RestaurantId = activeCart.RestaurantId,
                 RestaurantName = restaurant?.Name ?? string.Empty,
-                Status = (int)activeCart.Status,
                 Quantity = activeCart.TotalItems,
                 CreatedAt = activeCart.CreatedAt,
                 TotalAmount = activeCart.TotalAmount,

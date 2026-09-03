@@ -5,5 +5,7 @@ namespace OrderAPI.Repositories
     public interface IOrderItemRepository
     {
         Task<OrderItem> AddOrderItem(OrderItem orderItem);
+
+        Task<List<OrderItem>> GetAllOrderItems();
     }
 }

@@ -33,7 +33,6 @@ namespace OrderAPI.Service
 
             var order = new Order
             {
-                Id = existingCart.Id,
                 UserId = existingCart.UserId,
                 RestaurantId = existingCart.RestaurantId,
                 TotalAmount = existingCart.TotalAmount,
@@ -50,12 +49,13 @@ namespace OrderAPI.Service
             {
                 var orderItem = new OrderItem
                 {
-                    Id = item.Id,
                     OrderId = order.Id,
                     MenuItemId = item.MenuItemId,
+                    ItemName = item.ItemName,
                     Quantity = item.Quantity,
                     UnitPrice = item.UnitPrice,
                     TotalPrice = item.TotalPrice,
+                    CreatedAt = DateTime.UtcNow
                 };
                 await orderItemRepository.AddOrderItem(orderItem);
             }
@@ -73,6 +73,7 @@ namespace OrderAPI.Service
                 OrderItems = cartItems.Select(item => new OrderItemResponseDto
                 {
                     Id = item.Id,
+                    ItemName = item.ItemName,
                     MenuItemId = item.MenuItemId,
                     Quantity = item.Quantity,
                     UnitPrice = item.UnitPrice,
@@ -81,6 +82,40 @@ namespace OrderAPI.Service
             };
 
             return new GetOrderResponseDTO
+            {
+                Order = orderResponseDto
+            };
+        }
+
+        public async Task<GetOrderResponseDTO> GetOrderByIdAsync()
+        {
+            var userId = "B218DDD6-3861-4641-9C03-1F93A618BB87";
+            var existingOrder = await orderRepository.GetOrderByUserId(Guid.Parse(userId));
+            var existingOrderItems = await orderItemRepository.GetAllOrderItems();
+
+            if (existingOrder == null)
+            {
+                throw new Exception("Order not found");
+            }
+
+            var orderResponseDto = new OrderResponseDto
+            {
+                OrderId = existingOrder.Id,
+                RestaurantId = existingOrder.RestaurantId,
+                TotalAmount = existingOrder.TotalAmount,
+                Status = existingOrder.Status,
+                PaymentStatus = existingOrder.PaymentStatus,
+                TotalItems = existingOrder.TotalItems,
+                OrderItems = existingOrderItems.Select(item => new OrderItemResponseDto
+                {
+                    Id = item.Id,
+                    MenuItemId = item.MenuItemId,
+                    ItemName = item.ItemName,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice,
+                    TotalPrice = item.TotalPrice,
+                }).ToList()
+            }; return new GetOrderResponseDTO
             {
                 Order = orderResponseDto
             };

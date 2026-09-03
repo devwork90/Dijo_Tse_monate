@@ -13,8 +13,6 @@ namespace OrderAPI.Models.DTO
 
         public string RestaurantName { get; set; } = string.Empty;
 
-        public int Status { get; set; }
-
         public int Quantity { get; set; }
         public decimal TotalAmount { get; set; }
 

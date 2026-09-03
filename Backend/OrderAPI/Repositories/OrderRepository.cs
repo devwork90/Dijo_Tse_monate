@@ -1,4 +1,5 @@
-﻿using OrderAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using OrderAPI.Data;
 using OrderAPI.Models.Domain;
 
 namespace OrderAPI.Repositories
@@ -15,6 +16,11 @@ namespace OrderAPI.Repositories
             await orderDbContext.Order.AddAsync(order);
             await orderDbContext.SaveChangesAsync();
             return order;
-        }   
+        }
+
+        public async Task<Order?> GetOrderByUserId(Guid UserId)
+        {
+            return await orderDbContext.Order.FirstOrDefaultAsync(o => o.UserId == UserId);
+        }
     }
 }
