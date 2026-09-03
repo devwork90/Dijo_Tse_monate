@@ -17,9 +17,12 @@ builder.Services.AddDbContext<OrderDbContext>(options =>
 
 // ---------------- DEPENDENCY INJECTION -----------
 builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 // ---------------- AUTH ----------------
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

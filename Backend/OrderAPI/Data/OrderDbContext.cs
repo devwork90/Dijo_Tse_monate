@@ -14,7 +14,11 @@ namespace OrderAPI.Data
         public DbSet<Cart> Cart {  get; set; }
         public DbSet<CartItem> CartItem { get; set; }
 
-       protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public DbSet<Order> Order { get; set; }
+
+        public DbSet<OrderItem> OrderItem { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Cart>()
@@ -29,6 +33,32 @@ namespace OrderAPI.Data
 
             modelBuilder.Entity<CartItem>()
                 .Property(ci => ci.UnitPrice)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Order>()
+                .HasMany(o => o.OrderItems)
+                .WithOne(oi => oi.Order)
+                .HasForeignKey(oi => oi.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+           modelBuilder.Entity<Order>()
+                .Property(o => o.Status)
+                .HasConversion<string>();
+
+           modelBuilder.Entity<Order>()
+                .Property(o => o.PaymentStatus)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Order>()
+                .Property(o => o.TotalAmount)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<OrderItem>()
+                .Property(oi => oi.UnitPrice)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<OrderItem>()
+                .Property(oi => oi.TotalPrice)
                 .HasPrecision(18, 2);
         }
     }
