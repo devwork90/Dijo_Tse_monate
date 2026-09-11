@@ -18,6 +18,14 @@ namespace OrderAPI.Repositories
             return order;
         }
 
+        public async Task<Order?> DeleteOrder()
+        {
+            var Order = await orderDbContext.Order.FirstOrDefaultAsync();
+                orderDbContext.Order.Remove(Order!);
+                await orderDbContext.SaveChangesAsync();
+            return Order;
+        }
+
         public async Task<Order?> GetOrderByUserId(Guid UserId)
         {
             return await orderDbContext.Order.FirstOrDefaultAsync(o => o.UserId == UserId);

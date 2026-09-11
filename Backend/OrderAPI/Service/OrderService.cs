@@ -2,6 +2,7 @@
 using OrderAPI.Models.DTO;
 using OrderAPI.Models.Enums;
 using OrderAPI.Repositories;
+using System.Reflection.Metadata.Ecma335;
 
 namespace OrderAPI.Service
 {
@@ -23,29 +24,85 @@ namespace OrderAPI.Service
         {
             var userId = "B218DDD6-3861-4641-9C03-1F93A618BB87";
             var existingCart = await cartRepository.GetCartByIdAsync(Guid.Parse(userId));
-            //var existingCartItem = await cartItemRepository.GetCartItemByIdAsync(existingCart.Items.First().Id);
             var cartItems = await cartItemRepository.GetCartItems();
 
-            if (!existingCart.Items.Any())
+
+            if (existingCart == null)
             {
-                throw new Exception("Cannot create order from empty cart");
+
+                return new GetOrderResponseDTO
+                {
+                    Order = null
+                };
             }
 
+            var existingOrder = await orderRepository.GetOrderByUserId(Guid.Parse(userId));
+
+            if (existingOrder != null) 
+            {
+               if (existingOrder.Status == OrderStatus.PendingPayment)
+                {
+                    await orderRepository.DeleteOrder();
+                    existingOrder = null;
+                }
+                else
+                {
+                    return new GetOrderResponseDTO
+                    {
+                        Order = null
+                    };
+                }
+            }
+            var order = await CreateOrderFromCartAsync(existingCart);
+
+            return new GetOrderResponseDTO
+            {
+                Order = MapToOrderResponseDto(order, existingCart, cartItems)
+            };
+            
+        }
+
+        private OrderResponseDto MapToOrderResponseDto(Order order, Cart cart, IEnumerable<CartItem> cartItems)
+        {
+            
+            return new OrderResponseDto
+            {
+                OrderId = order.Id,
+                RestaurantId = order.RestaurantId,
+                TotalAmount = order.TotalAmount,
+                Status = order.Status,
+                PaymentStatus = order.PaymentStatus,
+                TotalItems = order.TotalItems,
+
+                OrderItems = order.OrderItems.Select(cartItems => new OrderItemResponseDto
+                {
+                    Id = cartItems.Id,
+                    MenuItemId = cartItems.MenuItemId,
+                    ItemName = cartItems.ItemName,
+                    Quantity = cartItems.Quantity,
+                    UnitPrice = cartItems.UnitPrice,
+                    TotalPrice = cartItems.TotalPrice,
+                }).ToList()
+            };
+        }
+
+        public async Task<Order> CreateOrderFromCartAsync(Cart cart)
+        {
             var order = new Order
             {
-                UserId = existingCart.UserId,
-                RestaurantId = existingCart.RestaurantId,
-                TotalAmount = existingCart.TotalAmount,
+                UserId = cart.UserId,
+                RestaurantId = cart.RestaurantId,
+                TotalAmount = cart.TotalAmount,
                 Status = OrderStatus.PendingPayment,
                 PaymentStatus = PaymentStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                TotalItems = existingCart.TotalItems,
+                TotalItems = cart.TotalItems,
             };
 
             await orderRepository.CreateOrderAsync(order);
 
-            foreach (var item in existingCart.Items)
+            foreach (var item in cart.Items)
             {
                 var orderItem = new OrderItem
                 {
@@ -59,32 +116,8 @@ namespace OrderAPI.Service
                 };
                 await orderItemRepository.AddOrderItem(orderItem);
             }
-            
 
-            var orderResponseDto = new OrderResponseDto
-            {
-                OrderId = order.Id,
-                RestaurantId = order.RestaurantId,
-                TotalAmount = order.TotalAmount,
-                Status = order.Status,
-                PaymentStatus = order.PaymentStatus,
-                TotalItems = order.TotalItems,
-
-                OrderItems = cartItems.Select(item => new OrderItemResponseDto
-                {
-                    Id = item.Id,
-                    ItemName = item.ItemName,
-                    MenuItemId = item.MenuItemId,
-                    Quantity = item.Quantity,
-                    UnitPrice = item.UnitPrice,
-                    TotalPrice = item.TotalPrice,
-                }).ToList()
-            };
-
-            return new GetOrderResponseDTO
-            {
-                Order = orderResponseDto
-            };
+            return order;
         }
 
         public async Task<GetOrderResponseDTO> GetOrderByIdAsync()

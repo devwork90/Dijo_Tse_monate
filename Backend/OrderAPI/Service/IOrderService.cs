@@ -1,4 +1,5 @@
-﻿using OrderAPI.Models.DTO;
+﻿using OrderAPI.Models.Domain;
+using OrderAPI.Models.DTO;
 
 namespace OrderAPI.Service
 {
@@ -7,5 +8,7 @@ namespace OrderAPI.Service
         Task<GetOrderResponseDTO> CreateOrderAsync();
 
         Task<GetOrderResponseDTO> GetOrderByIdAsync();
+
+        Task<Order> CreateOrderFromCartAsync(Cart cart);
     }
 }

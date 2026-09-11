@@ -188,8 +188,8 @@ namespace OrderAPI.Service
             
             await cartItemRepository.UpdateCartItemAsync(existingCartItem.Id);
 
-            var remainingItems = await cartItemRepository.GetCartItemByIdAsync(existingCartItem.Id)
-                .ContinueWith(task => task.Result != null ? new[] { task.Result } : new CartItem[0]);
+            var remainingItems = await cartItemRepository.GetCartItems();
+                //.ContinueWith(task => task.Result != null ? new[] { task.Result } : new CartItem[0]);
 
             // Check if there are no remaining items in the cart, and if so, delete the cart
             if (!remainingItems.Any())

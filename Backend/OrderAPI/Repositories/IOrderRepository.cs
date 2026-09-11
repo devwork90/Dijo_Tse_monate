@@ -7,5 +7,7 @@ namespace OrderAPI.Repositories
         Task<Order> CreateOrderAsync(Order order);
 
         Task<Order?> GetOrderByUserId(Guid UserId);
+
+        Task<Order?> DeleteOrder();
     }
 }
